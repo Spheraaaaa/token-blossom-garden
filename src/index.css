@@ -1,0 +1,501 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 263 84% 74%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 263 84% 74%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-y: scroll !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body[data-state="open"] {
+    overflow: hidden !important;
+    padding-right: var(--removed-body-scroll-bar-size) !important;
+  }
+}
+
+.nft-card {
+  @apply relative overflow-hidden rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-xl;
+  background: linear-gradient(225deg, #2a2a2a 0%, #1a1f2c 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%);
+}
+
+.bg-usdt {
+  background-color: #26A17B;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(147,39,143,0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(147,39,143,0.4);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(147,39,143,0.2);
+  }
+}
+
+.animate-glow {
+  animation: glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.1;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 0.1;
+    transform: scale(0.98);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Updated bid card styling to match screenshot */
+.bid-card {
+  @apply relative rounded-lg p-4 border;
+  background: #131B31;
+  border-color: #2A3047;
+}
+
+.bid-badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium;
+}
+
+.badge-verified {
+  @apply bg-green-900/40 text-green-500 border border-green-500/30;
+}
+
+.badge-not-verified {
+  @apply bg-red-900/40 text-red-500 border border-red-500/30;
+}
+
+.badge-highest {
+  @apply bg-yellow-900/40 text-yellow-500 border border-yellow-500/30;
+}
+
+.bid-amount {
+  @apply flex items-center text-primary-foreground font-bold;
+}
+
+.bid-time {
+  @apply flex items-center text-xs text-gray-400;
+}
+
+.accept-button {
+  @apply bg-green-600 hover:bg-green-700 text-white w-full flex justify-center items-center;
+}
+
+.decline-button {
+  @apply bg-transparent border border-red-500 text-red-400 hover:bg-red-950/30 w-full flex justify-center items-center;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  /* General padding adjustments for mobile */
+  .container {
+    @apply px-4;
+  }
+  
+  /* Fix header spacing for mobile */
+  header {
+    @apply py-2;
+  }
+  
+  /* Adjust font sizes for better mobile reading */
+  h1 {
+    @apply text-3xl;
+  }
+  
+  h2 {
+    @apply text-2xl;
+  }
+  
+  h3 {
+    @apply text-xl;
+  }
+  
+  p {
+    @apply text-sm;
+  }
+  
+  /* Smaller buttons on mobile */
+  .btn-mobile {
+    @apply px-3 py-1.5 text-sm;
+  }
+  
+  /* Adjust card padding for mobile */
+  .card-mobile {
+    @apply p-3;
+  }
+  
+  .accordion-content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  .bid-card {
+    padding: 0.75rem !important;
+  }
+  
+  .bid-details {
+    font-size: 0.75rem !important;
+  }
+  
+  .action-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  
+  .action-button {
+    width: 100% !important;
+    margin-top: 0.5rem !important;
+  }
+  
+  .bidder-address {
+    max-width: 100px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: inline-block !important;
+  }
+  
+  /* Improved tab navigation for mobile */
+  .tabs-navigation {
+    gap: 0.25rem !important;
+  }
+  
+  .tab-trigger {
+    padding: 0.5rem !important;
+    min-width: 65px !important;
+  }
+
+  /* Improved transaction table for mobile */
+  .transaction-table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed !important;
+    overflow-x: visible !important;
+  }
+  
+  .transaction-table th, 
+  .transaction-table td {
+    padding: 0.5rem 0.25rem !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .transaction-table .date-column {
+    width: 15% !important;
+  }
+  
+  .transaction-table .type-column {
+    width: 15% !important;
+    text-align: center !important;
+  }
+  
+  .transaction-table .amount-column {
+    width: 20% !important;
+  }
+  
+  .transaction-table .status-column {
+    width: 50% !important;
+  }
+  
+  /* Username truncation on mobile */
+  .username-truncate {
+    max-width: 150px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: inline-block !important;
+  }
+  
+  /* Fix for marketplace grid on mobile */
+  .marketplace-nft-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  
+  /* Make NFT cards fully visible on mobile */
+  .marketplace-nft-card {
+    height: auto !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+  }
+  
+  .marketplace-nft-card .aspect-square {
+    max-height: 300px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* NFT image centering on mobile */
+  .aspect-square img {
+    object-fit: contain !important;
+    max-height: 100% !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Transaction table container shouldn't scroll horizontally */
+  .transaction-table-container {
+    overflow-x: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Add more padding to the hero section on mobile */
+  .hero-section {
+    padding-top: 5rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  /* Adjust spacing between sections on mobile */
+  .section-spacing {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  /* Additional mobile-specific header adjustments */
+  .mobile-header {
+    height: 60px !important;
+  }
+  
+  /* Mobile menu dropdown adjustments */
+  .mobile-menu {
+    top: 60px !important;
+  }
+  
+  /* Adjust icon sizes for mobile */
+  .mobile-icon {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+  
+  /* Improve form fields on mobile */
+  .mobile-form-field {
+    height: 42px !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Responsive tab styles */
+.responsive-tabs-list {
+  @apply flex flex-wrap gap-1 !important;
+}
+
+.responsive-tab-trigger {
+  @apply flex-grow flex-shrink-0 !important;
+}
+
+/* NFT collection view animations */
+.animate-in {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+/* Glassmorphism styles */
+.glass-panel {
+  background: rgba(26, 31, 44, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(147, 39, 143, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* View mode transition */
+.view-transition {
+  transition: all 0.3s ease;
+}
+
+/* NFT card sizing for marketplace */
+@media (max-width: 640px) {
+  .marketplace-nft-grid {
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  .marketplace-nft-card .aspect-square {
+    height: 300px !important;
+  }
+}
+
+/* Transaction type icon-only styles */
+.transaction-type-icon-only {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transaction-type-icon-only span {
+  display: none;
+}
+
+/* Glass effect for the circular button */
+.circular-button-glow {
+  position: relative;
+  z-index: 10;
+}
+
+.circular-button-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #9b87f5, #7e69ab, #d946ef);
+  border-radius: 50%;
+  filter: blur(8px);
+  opacity: 0.7;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.circular-button-glow:hover::before {
+  opacity: 1;
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+  .header-logo {
+    font-size: 1.25rem !important;
+  }
+  
+  .header-logo-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+  
+  /* Adjust spacing for content below fixed header */
+  .main-content {
+    padding-top: 4.5rem !important;
+  }
+  
+  /* Make buttons easier to tap on mobile */
+  button, 
+  .button,
+  a.button,
+  [role="button"] {
+    min-height: 42px !important;
+    min-width: 42px !important;
+  }
+  
+  /* Improve form elements spacing on mobile */
+  .form-group {
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Adjust card styling for mobile */
+  .card {
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+}
