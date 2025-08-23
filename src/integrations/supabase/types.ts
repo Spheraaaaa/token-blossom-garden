@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -167,6 +167,7 @@ export type Database = {
           is_frozen: boolean | null
           is_frozen_exchange: boolean | null
           item: string | null
+          rejection_reason: string | null
           status: Database["public"]["Enums"]["transaction_status"] | null
           type: Database["public"]["Enums"]["transaction_type"]
           user_id: string
@@ -180,6 +181,7 @@ export type Database = {
           is_frozen?: boolean | null
           is_frozen_exchange?: boolean | null
           item?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["transaction_status"] | null
           type: Database["public"]["Enums"]["transaction_type"]
           user_id: string
@@ -193,6 +195,7 @@ export type Database = {
           is_frozen?: boolean | null
           is_frozen_exchange?: boolean | null
           item?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["transaction_status"] | null
           type?: Database["public"]["Enums"]["transaction_type"]
           user_id?: string
@@ -236,7 +239,7 @@ export type Database = {
         Returns: Json
       }
       update_frozen_transaction_currency: {
-        Args: { transaction_id: string; new_currency_type: string }
+        Args: { new_currency_type: string; transaction_id: string }
         Returns: Json
       }
     }
