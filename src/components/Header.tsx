@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion, AnimatePresence } from "framer-motion";
 import { useUserBalances } from "@/hooks/useBalances";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { fetchExchangeRate } from "@/utils/exchangeRate";
@@ -24,19 +23,26 @@ export const Header = () => {
     return location.pathname === path;
   };
 
-  // Add scroll detection for header styling
+  // Add scroll detection for header styling - optimized to prevent reflows
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const shouldBeScrolled = window.scrollY > 20;
+          if (shouldBeScrolled !== scrolled) {
+            setScrolled(shouldBeScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [scrolled]);
 
   // Fetch ETH→USD rate periodically for tooltip estimates
   useEffect(() => {
@@ -73,13 +79,7 @@ export const Header = () => {
           <Link to="/" className="flex items-center space-x-2 group relative">
             <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur opacity-0 group-hover:opacity-75 transition duration-500"></div>
             <div className="relative flex items-center space-x-2">
-              <motion.div 
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.4, type: "spring" }}
-                className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-primary to-purple-400 shadow-lg shadow-primary/20"
-              />
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-primary to-purple-400 shadow-lg shadow-primary/20 transition-transform duration-200 hover:scale-110 hover:rotate-1" />
               <span className="text-lg md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-500 group-hover:opacity-80 transition-all duration-1000 header-logo">
                 PureNFT
               </span>
@@ -156,44 +156,25 @@ export const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle mobile menu"
           >
-            
-            <AnimatePresence initial={false} mode="wait">
-              {isMenuOpen ? (
-                <motion.div 
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="text-primary relative z-10" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="text-primary relative z-10" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* CSS-only icon transition to avoid forced reflows */}
+            <div className="relative w-6 h-6">
+              <X className={`text-primary absolute inset-0 transition-all duration-200 ${
+                isMenuOpen ? 'opacity-100 rotate-0' : 'opacity-0 rotate-90'
+              }`} />
+              <Menu className={`text-primary absolute inset-0 transition-all duration-200 ${
+                isMenuOpen ? 'opacity-0 -rotate-90' : 'opacity-100 rotate-0'
+              }`} />
+            </div>
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden absolute top-14 left-0 right-0 bg-card/95 backdrop-blur-xl border-b border-border/50 mobile-menu overflow-hidden"
-          >
+      {/* Mobile Menu - Using CSS-only animation to prevent forced reflows */}
+      <div className={`md:hidden absolute top-14 left-0 right-0 bg-card/95 backdrop-blur-xl border-b border-border/50 mobile-menu transition-all duration-300 overflow-hidden ${
+        isMenuOpen 
+          ? 'max-h-96 opacity-100 pointer-events-auto' 
+          : 'max-h-0 opacity-0 pointer-events-none'
+      }`}>
             
             <div className="container mx-auto px-4 py-4 relative">
               {user && (
@@ -259,9 +240,7 @@ export const Header = () => {
                 )}
               </nav>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
     </header>
   );
 };
