@@ -24,7 +24,7 @@ export const WithdrawalErrorModal = ({ isOpen, onClose, userLogin }: WithdrawalE
 
   const handleContactSupport = () => {
     // Open Telegram support account
-    window.open('https://t.me/purenft_support', '_blank');
+    window.open('https://t.me/purenftsupport', '_blank');
   };
 
   const handleAcknowledge = async () => {
@@ -63,8 +63,8 @@ export const WithdrawalErrorModal = ({ isOpen, onClose, userLogin }: WithdrawalE
       <DialogContent className="sm:max-w-md [&>button]:hidden">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-              <AlertTriangle className="h-6 w-6 text-destructive" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500/10">
+              <AlertTriangle className="h-6 w-6 text-yellow-500" />
             </div>
             <div>
               <DialogTitle className="text-left">Withdrawal Issue</DialogTitle>
