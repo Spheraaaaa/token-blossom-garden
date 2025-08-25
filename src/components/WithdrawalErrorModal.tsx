@@ -8,18 +8,24 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface WithdrawalErrorModalProps {
   isOpen: boolean;
   onClose: () => void;
+  userLogin?: string;
 }
 
-export const WithdrawalErrorModal = ({ isOpen, onClose }: WithdrawalErrorModalProps) => {
+export const WithdrawalErrorModal = ({ isOpen, onClose, userLogin }: WithdrawalErrorModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleContactSupport = () => {
+    // Open Telegram support account
+    window.open('https://t.me/purenft_support', '_blank');
+  };
 
   const handleAcknowledge = async () => {
     setIsLoading(true);
@@ -35,16 +41,16 @@ export const WithdrawalErrorModal = ({ isOpen, onClose }: WithdrawalErrorModalPr
       }
 
       toast({
-        title: "Уведомление закрыто",
-        description: "Это окно больше не будет показываться",
+        title: "Notification closed",
+        description: "This window will no longer be shown",
       });
       
       onClose();
     } catch (error) {
       console.error('Error updating modal flag:', error);
       toast({
-        title: "Ошибка",
-        description: "Не удалось обновить настройки. Попробуйте еще раз.",
+        title: "Error",
+        description: "Failed to update settings. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -61,32 +67,41 @@ export const WithdrawalErrorModal = ({ isOpen, onClose }: WithdrawalErrorModalPr
               <AlertTriangle className="h-6 w-6 text-destructive" />
             </div>
             <div>
-              <DialogTitle className="text-left">Проблема с выводом средств</DialogTitle>
+              <DialogTitle className="text-left">Withdrawal Issue</DialogTitle>
             </div>
           </div>
           <DialogDescription className="text-left">
-            К сожалению, вывод средств произошел неуспешно. Вам необходимо связаться со службой поддержки для уточнения деталей и решения данной проблемы.
+            Unfortunately, your withdrawal was unsuccessful. You need to contact our support team to clarify some details and resolve this issue.
           </DialogDescription>
         </DialogHeader>
         
         <div className="bg-muted/50 p-4 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            <strong>Что делать дальше:</strong>
+            <strong>Next steps:</strong>
           </p>
           <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-            <li>• Свяжитесь со службой поддержки</li>
-            <li>• Укажите ваш ID пользователя</li>
-            <li>• Опишите детали вашего запроса на вывод</li>
+            <li>• Contact our support team</li>
+            <li>• Provide your username: @{userLogin || "username"}</li>
+            <li>• Describe details of your withdrawal request</li>
           </ul>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
+          <Button 
+            onClick={handleContactSupport}
+            variant="default"
+            className="w-full sm:w-auto flex items-center gap-2"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Contact Support
+          </Button>
           <Button 
             onClick={handleAcknowledge} 
             disabled={isLoading}
-            className="w-full"
+            variant="outline"
+            className="w-full sm:w-auto"
           >
-            {isLoading ? "Обработка..." : "Я ознакомился"}
+            {isLoading ? "Processing..." : "I Acknowledge"}
           </Button>
         </DialogFooter>
       </DialogContent>

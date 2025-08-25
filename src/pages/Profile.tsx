@@ -547,6 +547,7 @@ const Profile = () => {
       <WithdrawalErrorModal 
         isOpen={isWithdrawalErrorModalOpen}
         onClose={() => setIsWithdrawalErrorModalOpen(false)}
+        userLogin={userData?.login}
       />
     </div>
   );
