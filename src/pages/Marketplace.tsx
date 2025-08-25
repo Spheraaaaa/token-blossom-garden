@@ -123,44 +123,23 @@ const Marketplace = () => {
   const allNFTs = data?.pages.flatMap(page => page.data) || [];
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/3 overflow-hidden">
-      {/* Simplified animated background elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Primary floating orbs - reduced complexity */}
-        <div className="absolute top-1/4 -left-8 w-72 h-72 optimized-gradient rounded-full mix-blend-multiply filter blur-2xl animate-simple-float opacity-60" />
-        <div className="absolute top-3/4 -right-8 w-64 h-64 bg-gradient-to-l from-secondary/4 to-accent/3 rounded-full mix-blend-multiply filter blur-xl animate-simple-float opacity-50" style={{ animationDelay: '3s' }} />
-        
-        {/* Simplified grid pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.01]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)`,
-          backgroundSize: '60px 60px'
-        }} />
-        
-        {/* Reduced floating particles */}
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-simple-float opacity-40"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${6 + Math.random() * 3}s`
-            }}
-          >
-            <div className="relative">
-              <Sparkles className="w-3 h-3 text-primary/20" />
-            </div>
-          </div>
-        ))}
+    <div className="relative min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 overflow-hidden">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl animate-simple-float opacity-50" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '3s' }} />
       </div>
 
       <div className="relative container mx-auto py-8 px-4 mt-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 gap-8">
             <ScrollAnimation animation="zoom-in" delay={100}>
-              <Card className="marketplace-hero-card relative overflow-hidden border-border/30 shadow-xl transition-all duration-500 light-blur rounded-3xl group hover:shadow-primary/10 hover:border-primary/20 hw-accelerated">
-                {/* Simplified glow effect */}
-                <div className="absolute inset-0 optimized-gradient opacity-0 group-hover:opacity-30 transition-opacity duration-500 rounded-3xl" />
+              <Card className="relative overflow-hidden border border-border/30 bg-card/80 backdrop-blur-xl shadow-2xl transition-all duration-500 rounded-3xl group hover:shadow-primary/10 hover:border-primary/20">
+                {/* Subtle glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/3 to-secondary/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
                 
                 <CardHeader className="relative pb-10">
                   <div className="relative z-10">

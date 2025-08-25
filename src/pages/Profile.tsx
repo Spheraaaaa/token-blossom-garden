@@ -442,12 +442,20 @@ const Profile = () => {
   }
   
   return (
-    <div className="container mx-auto py-8 px-4 mt-16 min-h-screen bg-gradient-to-b from-background via-background/80 to-background/60">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="container mx-auto py-8 px-4 mt-16 min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl animate-simple-float opacity-30" />
+        <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-25" style={{ animationDelay: '2s' }} />
+      </div>
+      <div className="max-w-4xl mx-auto space-y-8 relative z-10">
         <ProfileHeader userData={userData} handleAvatarUpload={handleAvatarUpload} />
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="w-full responsive-tabs-list p-1.5 bg-background/50 backdrop-blur-sm rounded-xl border border-primary/10 mb-6">
+          <TabsList className="w-full responsive-tabs-list p-1.5 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/30 shadow-lg mb-6">
             {["profile", "settings", "wallet", "verification", "nft"].map(tab => (
               <TabsTrigger 
                 key={tab} 
