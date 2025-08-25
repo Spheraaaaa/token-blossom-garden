@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      cron_job_logs: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          id: string
+          job_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          job_name: string
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          job_name?: string
+        }
+        Relationships: []
+      }
       nft_bids: {
         Row: {
           bid_amount: number
@@ -157,6 +178,41 @@ export type Database = {
         }
         Relationships: []
       }
+      transaction_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          transaction_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          transaction_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_logs_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           amount: number
@@ -211,8 +267,12 @@ export type Database = {
         Args: { bid_id: string }
         Returns: Json
       }
+      decline_bid: {
+        Args: { bid_id: string }
+        Returns: Json
+      }
       exchange_to_usdt: {
-        Args: { amount: number }
+        Args: { amount: number } | { amount: number; is_frozen?: boolean }
         Returns: Json
       }
       get_user_frozen_balances: {
@@ -230,6 +290,10 @@ export type Database = {
           total_withdrawals: number
         }[]
       }
+      process_expired_frozen_transactions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       process_frozen_balances: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -237,6 +301,10 @@ export type Database = {
       purchase_nft: {
         Args: { nft_id: string }
         Returns: Json
+      }
+      scheduled_process_expired_frozen_transactions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       update_frozen_transaction_currency: {
         Args: { new_currency_type: string; transaction_id: string }
