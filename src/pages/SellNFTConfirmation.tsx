@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { NFT } from "@/types/nft";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -14,7 +14,7 @@ const SellNFTConfirmation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const [isVerifying, setIsVerifying] = useState(false);
   const [marketplace, setMarketplace] = useState<string | null>(null);
   const [marketplaceName, setMarketplaceName] = useState<string>("selected marketplace");

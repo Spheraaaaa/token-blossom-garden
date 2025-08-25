@@ -4,7 +4,7 @@ import { ArrowLeft, Flag } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { NFTImage } from "@/components/nft/NFTImage";
 import { NFTHeader } from "@/components/nft/NFTHeader";
 import { NFTDetails } from "@/components/nft/NFTDetails";
@@ -20,7 +20,7 @@ import FraudWarningDialog from "@/components/FraudWarningDialog";
 const NFTDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showFraudWarning, setShowFraudWarning] = useState(false);

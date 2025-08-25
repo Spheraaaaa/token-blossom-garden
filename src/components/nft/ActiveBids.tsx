@@ -21,7 +21,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Bid {
@@ -50,7 +50,7 @@ const ActiveBids = ({
   onBidDeclined,
 }: ActiveBidsProps = {}) => {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const [bids, setBids] = useState<Bid[]>(initialBids || []);
   const [isLoading, setIsLoading] = useState(true);
   const [processingBidId, setProcessingBidId] = useState<string | null>(null);

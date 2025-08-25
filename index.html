@@ -3,15 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PureNFT</title>
-    <meta name="description" content="Discover and collect extraordinary NFTs from talented creators around the world" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <title>PureNFT - Secure Digital Asset Marketplace</title>
+    <meta name="description" content="Discover, buy, and sell unique digital assets on PureNFT - the secure marketplace for digital collectibles and NFTs with advanced security features." />
+    <meta name="keywords" content="NFT, digital assets, marketplace, blockchain, crypto, collectibles, secure trading">
     <meta name="author" content="PureNFT" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="PureNFT - Secure Digital Asset Marketplace">
+    <meta property="og:description" content="Discover, buy, and sell unique digital assets on PureNFT - the secure marketplace for digital collectibles and NFTs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://token-blossom-garden.lovable.app">
     <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PureNFT - Secure Digital Asset Marketplace">
+    <meta name="twitter:description" content="Discover, buy, and sell unique digital assets on PureNFT - the secure marketplace for digital collectibles and NFTs.">
+    <meta name="twitter:image" content="/og-image.png">
+    
     <link rel="icon" type="image/png" href="/favicon.ico" />
     
-    <!-- Resource hints to improve loading performance -->
-    <link rel="dns-prefetch" href="https://cdn.gpteng.co" />
+    <!-- Preconnect to External Domains -->
+    <link rel="preconnect" href="https://odgteaatruydxlogpbda.supabase.co">
     <link rel="preconnect" href="https://cdn.gpteng.co" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.gpteng.co" />
     
     <!-- Preload critical resources -->
     <link rel="modulepreload" href="/src/main.tsx" />
@@ -144,5 +167,21 @@
     <div id="root"></div>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PureNFT",
+      "description": "Secure digital asset marketplace for NFTs and collectibles",
+      "url": "https://token-blossom-garden.lovable.app",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://token-blossom-garden.lovable.app/marketplace?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </body>
 </html>

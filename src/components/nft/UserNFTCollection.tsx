@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ShoppingBag, ImageIcon, Info, Wallet, Grid3X3, GridIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { NFTCard } from "@/components/NFTCard";
 import { EmptyNFTState } from "@/components/EmptyNFTState";
 import { useToast } from "@/hooks/use-toast";
@@ -24,7 +24,7 @@ export const UserNFTCollection = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedNft, setSelectedNft] = useState<string | null>(null);
   const [showBids, setShowBids] = useState(false);
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const { toast } = useToast();
 
   useEffect(() => {

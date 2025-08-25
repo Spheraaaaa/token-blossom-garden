@@ -5,7 +5,7 @@ import { User, Settings, Wallet, ArrowUpCircle, Shield, ShoppingBag } from "luci
 import { useNavigate } from "react-router-dom";
 import WalletAddressModal from "@/components/WalletAddressModal";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import FraudWarningDialog from "@/components/FraudWarningDialog";
 import KYCIdentityDialog from "@/components/KYCIdentityDialog";
 import KYCAddressDialog from "@/components/KYCAddressDialog";
@@ -21,7 +21,7 @@ import { useProfileAnimations } from "@/hooks/useProfileAnimations";
 import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from "@/types/user";
 
 const Profile = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useSecureAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);

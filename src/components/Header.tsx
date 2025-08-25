@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, User, Search } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUserBalances } from "@/hooks/useBalances";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -13,7 +13,7 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const isMobile = useIsMobile();
   const { data: balances, isLoading: balancesLoading } = useUserBalances();
   const [rate, setRate] = useState<number | null>(null);

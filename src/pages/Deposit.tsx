@@ -13,11 +13,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 
 const Deposit = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const [step, setStep] = useState<'amount' | 'hash'>('amount');
   const [depositAmount, setDepositAmount] = useState("");
   const [transactionHash, setTransactionHash] = useState("");

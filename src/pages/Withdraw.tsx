@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowUpCircle, Loader2, AlertCircle, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 
 const Withdraw = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const { toast } = useToast();
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawWalletAddress, setWithdrawWalletAddress] = useState("");

@@ -21,7 +21,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { useNavigate } from "react-router-dom";
 import { KeyRound, Mail, User } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { validateEmail, validatePassword, sanitizeText, rateLimitCheck } from "@/utils/validation";
 
 interface AuthModalProps {
@@ -42,7 +42,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   
   useEffect(() => {
     if (user && isOpen) {

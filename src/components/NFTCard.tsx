@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { Input } from "@/components/ui/input";
 import { Check, X, ExternalLink, Edit, Tag, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -50,7 +50,7 @@ export const NFTCard = ({
   onViewBids
 }: NFTCardProps) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useSecureAuth();
   const { toast } = useToast();
   const [isEditingPrice, setIsEditingPrice] = useState(false);
   const [newPrice, setNewPrice] = useState(price);
