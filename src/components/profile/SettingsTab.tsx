@@ -168,56 +168,54 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
   }, [newPassword]);
 
   return (
-    <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden relative rounded-2xl">
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:20px_20px] opacity-30"></div>
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600/50 via-primary/40 to-purple-600/50"></div>
-      
-      <CardHeader className="space-y-2 border-b border-primary/10 pb-4 relative z-10">
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/20">
-            <Settings className="w-6 h-6 text-primary" />
+    <Card className="bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
+            <Settings className="w-5 h-5 text-primary" />
           </div>
           Account Settings
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="space-y-8 p-6 relative z-10">
+      <CardContent className="space-y-8">
         {/* Account Security Section */}
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold flex items-center gap-2 text-white/90">
-            <Shield className="w-5 h-5 text-primary/80" />
-            Account Security
-          </h3>
-          <p className="text-sm text-white/60">
-            Manage your account email and password settings
-          </p>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
+              <Shield className="w-4 h-4 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Account Security</h3>
+              <p className="text-sm text-muted-foreground">Manage your account email and password settings</p>
+            </div>
+          </div>
         </div>
         
-        <Separator className="bg-primary/10" />
+        <Separator className="bg-border/30" />
         
         {/* Email Change Form */}
-        <form onSubmit={handleEmailChange} className="space-y-5 relative">
-          <div className="space-y-2">
-            <h4 className="text-md font-medium flex items-center gap-2">
-              <Mail className="w-4 h-4 text-primary/80" />
-              Update Email Address
-            </h4>
-            <p className="text-xs text-white/60">
+        <form onSubmit={handleEmailChange} className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-primary" />
+              <h4 className="font-medium text-foreground">Update Email Address</h4>
+            </div>
+            <p className="text-sm text-muted-foreground">
               A verification link will be sent to your new email address
             </p>
           </div>
           
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+          <div className="relative">
             <Input 
               type="email" 
               value={newEmail} 
               onChange={e => setNewEmail(e.target.value)} 
               placeholder="Enter new email address" 
               required 
-              className="bg-white/5 border-white/10 group-hover:border-primary/30 transition-all pl-10 focus:border-primary/30 focus:ring-1 focus:ring-primary/20 pr-10 text-white/90 h-12"
+              className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl"
             />
-            <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary/60" />
+            <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             
             {emailSent && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
@@ -227,7 +225,7 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
           </div>
           
           {emailSent && (
-            <div className="text-sm text-green-500 flex items-center gap-2 animate-pulse">
+            <div className="text-sm text-green-500 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Verification email sent!
             </div>
@@ -236,47 +234,35 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
           <Button 
             type="submit" 
             disabled={isEmailLoading}
-            variant="gradient"
-            size="settings"
-            className="group text-primary-foreground"
+            className="bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12 px-6"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <span className="relative z-10 flex items-center gap-2">
-              {isEmailLoading ? (
-                <>
-                  <span className="animate-pulse">Processing</span>
-                  <span className="inline-block animate-spin">◌</span>
-                </>
-              ) : (
-                <>Update Email</>
-              )}
-            </span>
+            {isEmailLoading ? "Processing..." : "Update Email"}
           </Button>
         </form>
         
-        <Separator className="bg-primary/10" />
+        <Separator className="bg-border/30" />
         
         {/* Password Change Form */}
-        <form onSubmit={handlePasswordChange} className="space-y-5 relative">
-          <div className="space-y-2">
-            <h4 className="text-md font-medium flex items-center gap-2">
-              <Key className="w-4 h-4 text-primary/80" />
-              Change Password
-            </h4>
-            <p className="text-xs text-white/60">
-              Please make sure your new password is at least 6 characters long
+        <form onSubmit={handlePasswordChange} className="space-y-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Key className="w-4 h-4 text-primary" />
+              <h4 className="font-medium text-foreground">Change Password</h4>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Please make sure your new password is at least 8 characters long
             </p>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* Current Password */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-white/70 flex items-center justify-between">
-                <span>Current Password</span>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-foreground">Current Password</label>
                 <button 
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="text-primary/60 hover:text-primary/80 transition-colors text-xs flex items-center gap-1"
+                  className="text-primary hover:text-primary/80 transition-colors text-sm flex items-center gap-1"
                 >
                   {showPassword ? (
                     <>
@@ -290,39 +276,37 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
                     </>
                   )}
                 </button>
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+              </div>
+              <div className="relative">
                 <Input 
                   type={showPassword ? "text" : "password"}
                   value={currentPassword} 
                   onChange={e => setCurrentPassword(e.target.value)} 
                   required 
-                  className="bg-white/5 border-white/10 group-hover:border-primary/30 pl-10 transition-all focus:border-primary/30 focus:ring-1 focus:ring-primary/20 text-white/90 h-12" 
+                  className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl" 
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary/60" />
+                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
             
             {/* New Password */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-white/70">New Password</label>
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">New Password</label>
+              <div className="relative">
                 <Input 
                   type={showPassword ? "text" : "password"}
                   value={newPassword} 
                   onChange={e => setNewPassword(e.target.value)} 
                   required 
-                  className="bg-white/5 border-white/10 group-hover:border-primary/30 pl-10 transition-all focus:border-primary/30 focus:ring-1 focus:ring-primary/20 text-white/90 h-12" 
+                  className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl" 
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary/60" />
+                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
               
               {newPassword && (
-                <div className="mt-2 space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-white/70">Password strength:</span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Password strength:</span>
                     <span className={`font-medium ${
                       passwordStrength.text === "Weak" || passwordStrength.text === "Fair" 
                         ? "text-orange-500" 
@@ -333,33 +317,32 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
                       {passwordStrength.text}
                     </span>
                   </div>
-                  <div className="w-full h-1 bg-gray-700/50 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden">
                     <div 
                       className={`h-full ${passwordStrength.color} transition-all duration-300`}
                       style={{ width: `${(passwordStrength.strength / 4) * 100}%` }}
-                    ></div>
+                    />
                   </div>
                 </div>
               )}
             </div>
             
             {/* Confirm New Password */}
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-white/70">Confirm New Password</label>
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Confirm New Password</label>
+              <div className="relative">
                 <Input 
                   type={showPassword ? "text" : "password"}
                   value={confirmNewPassword} 
                   onChange={e => setConfirmNewPassword(e.target.value)} 
                   required 
-                  className={`bg-white/5 border-white/10 group-hover:border-primary/30 pl-10 transition-all focus:border-primary/30 focus:ring-1 focus:ring-primary/20 text-white/90 h-12 ${
+                  className={`bg-muted/40 border-border/30 pl-10 pr-10 h-12 rounded-xl ${
                     newPassword && confirmNewPassword && newPassword !== confirmNewPassword
-                      ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+                      ? "border-red-500 focus:border-red-500"
                       : ""
                   }`} 
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-primary/60" />
+                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 
                 {newPassword && confirmNewPassword && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -373,8 +356,8 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
               </div>
               
               {newPassword && confirmNewPassword && newPassword !== confirmNewPassword && (
-                <p className="text-xs text-red-500 mt-1 flex items-center">
-                  <AlertTriangle className="w-3 h-3 mr-1" />
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" />
                   Passwords don't match
                 </p>
               )}
@@ -382,7 +365,7 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
           </div>
           
           {passwordChanged && (
-            <div className="text-sm text-green-500 flex items-center gap-2 animate-pulse">
+            <div className="text-sm text-green-500 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               Password updated successfully!
             </div>
@@ -391,35 +374,21 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
           <Button 
             type="submit"
             disabled={isLoading || (newPassword && confirmNewPassword && newPassword !== confirmNewPassword)} 
-            variant="gradient"
-            size="settings"
-            className="group text-primary-foreground"
+            className="bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12 px-6"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <span className="relative z-10 flex items-center gap-2">
-              {isLoading ? (
-                <>
-                  <span className="animate-pulse">Updating</span>
-                  <span className="inline-block animate-spin">◌</span>
-                </>
-              ) : (
-                <>Update Password</>
-              )}
-            </span>
+            {isLoading ? "Updating..." : "Update Password"}
           </Button>
         </form>
       </CardContent>
       
-      <CardFooter className="p-6 pt-0 border-t border-primary/10 mt-6 relative z-10">
+      <CardFooter className="pt-0 border-t border-border/30 mt-6">
         <Button 
           variant="destructive" 
-          size="settings"
-          className="text-destructive-foreground"
           onClick={handleLogout}
+          className="flex items-center gap-2"
         >
-          
-          <LogOut className="w-4 h-4 relative z-10" />
-          <span className="relative z-10">Logout</span>
+          <LogOut className="w-4 h-4" />
+          <span>Logout</span>
         </Button>
       </CardFooter>
     </Card>

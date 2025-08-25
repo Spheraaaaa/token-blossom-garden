@@ -162,97 +162,115 @@ export const TransactionHistory = ({
   }, [onLoadMore, hasMore, isFetchingNext]);
 
   if (!transactions || transactions.length === 0) {
-    return <div className="mt-6 text-center p-8 rounded-lg border border-primary/20 bg-white/5 backdrop-blur-sm">
-        <p className="text-sm text-muted-foreground">No transactions found</p>
-      </div>;
+    return (
+      <div className="mt-6 text-center p-8 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl">
+        <p className="text-muted-foreground">No transactions found</p>
+      </div>
+    );
   }
-  return <div className="mt-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base font-semibold text-white/90 flex items-center">
-          <span className="bg-primary/15 p-1.5 rounded-md mr-2">
+
+  return (
+    <div className="mt-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
             <RotateCw className="h-4 w-4 text-primary" />
-          </span>
-          Transaction History
-        </h3>
+          </div>
+          <h3 className="text-lg font-bold text-foreground">Transaction History</h3>
+        </div>
         
-        {transactions.length > 0 && <span className="text-xs text-muted-foreground bg-card px-2 py-1 rounded-md border border-border/50">
+        {transactions.length > 0 && (
+          <span className="text-sm text-muted-foreground bg-muted/40 px-3 py-1 rounded-xl border border-border/30">
             {transactions.length} transactions
-          </span>}
+          </span>
+        )}
       </div>
       
-      <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/90 transition-all hover:border-border/60 shadow-xl">
-        <div className="overflow-x-auto scrollbar-none">
+      <div className="overflow-hidden rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-primary/10 hover:bg-transparent">
-                <TableHead className="w-[100px] text-2xs uppercase tracking-wider font-semibold text-white/50">Date</TableHead>
-                {!isMobile && <TableHead className="text-2xs uppercase tracking-wider font-semibold text-white/50">Type</TableHead>}
-                <TableHead className="text-2xs uppercase tracking-wider font-semibold text-white/50 text-right">Amount</TableHead>
-                <TableHead className="text-2xs uppercase tracking-wider font-semibold text-white/50 text-right">Status</TableHead>
+              <TableRow className="border-b border-border/30 hover:bg-transparent">
+                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Date</TableHead>
+                {!isMobile && <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Type</TableHead>}
+                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground text-right">Amount</TableHead>
+                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground text-right">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {transactions.map(transaction => {
-              const typeDetails = getTypeDetails(transaction.type);
-              const statusDetails = getStatusDetails(transaction.status, transaction.is_frozen || false, transaction.is_frozen_exchange || false, transaction.type);
-              const currencyBadge = getCurrencyBadge(transaction.currency_type || 'eth');
-              return <TableRow key={transaction.id} className="border-b border-primary/10 hover:bg-white/[0.03]">
-                    <TableCell className="py-3 text-xs text-white/70">
-                      <div className="flex items-center gap-1.5">
-                        <span className="inline-block p-1 rounded-full bg-white/10">
-                          <Calendar className="h-3 w-3 text-white/60" />
-                        </span>
+                const typeDetails = getTypeDetails(transaction.type);
+                const statusDetails = getStatusDetails(transaction.status, transaction.is_frozen || false, transaction.is_frozen_exchange || false, transaction.type);
+                const currencyBadge = getCurrencyBadge(transaction.currency_type || 'eth');
+                
+                return (
+                  <TableRow key={transaction.id} className="border-b border-border/20 hover:bg-muted/10">
+                    <TableCell className="py-3 text-sm text-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-3 w-3 text-muted-foreground" />
                         <span>{transaction.created_at}</span>
                       </div>
                     </TableCell>
                     
-                    {!isMobile && <TableCell className="py-3">
+                    {!isMobile && (
+                      <TableCell className="py-3">
                         <div className="flex items-center gap-2">
                           <div className={`p-1.5 rounded-full ${typeDetails.className}`}>
                             {typeDetails.icon}
                           </div>
-                          <span className={`text-xs font-medium ${typeDetails.className.replace('bg-', 'text-').split(' ')[0]}`}>
+                          <span className="text-sm font-medium text-foreground">
                             {typeDetails.label}
                           </span>
                         </div>
-                      </TableCell>}
+                      </TableCell>
+                    )}
                     
                     <TableCell className="py-3 text-right">
                       <div className="flex items-center gap-2 justify-end">
-                        {isMobile && <div className={`p-1 rounded-full ${typeDetails.className}`}>
+                        {isMobile && (
+                          <div className={`p-1 rounded-full ${typeDetails.className}`}>
                             {typeDetails.icon}
-                          </div>}
-                        <div className="flex items-center gap-1.5">
-                          <span className={`text-xs font-medium ${transaction.type === 'deposit' || transaction.type === 'sale' ? 'text-green-400' : transaction.type === 'withdraw' || transaction.type === 'purchase' ? 'text-red-400' : 'text-white/80'}`}>
-                            {transaction.type === 'deposit' || transaction.type === 'sale' ? '+' : transaction.type === 'withdraw' || transaction.type === 'purchase' ? '-' : ''}
-                            {parseFloat(transaction.amount).toFixed(transaction.currency_type === 'eth' ? 3 : 2)}
-                          </span>
-                          
-                          
-                        </div>
+                          </div>
+                        )}
+                        <span className={`text-sm font-medium ${
+                          transaction.type === 'deposit' || transaction.type === 'sale' ? 'text-green-500' : 
+                          transaction.type === 'withdraw' || transaction.type === 'purchase' ? 'text-red-500' : 
+                          'text-foreground'
+                        }`}>
+                          {transaction.type === 'deposit' || transaction.type === 'sale' ? '+' : 
+                           transaction.type === 'withdraw' || transaction.type === 'purchase' ? '-' : ''}
+                          {parseFloat(transaction.amount).toFixed(transaction.currency_type === 'eth' ? 3 : 2)}
+                        </span>
                       </div>
                     </TableCell>
                     
                     <TableCell className="py-3 text-right">
-                      <Badge variant={statusDetails.variant} className={`font-medium text-2xs px-2 py-0.5 ${statusDetails.className}`}>
+                      <Badge variant={statusDetails.variant} className={`text-xs px-2 py-1 ${statusDetails.className}`}>
                         {statusDetails.text}
                       </Badge>
                     </TableCell>
-                  </TableRow>;
-            })}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
+        
         <div ref={sentinelRef} className="h-4" />
+        
         {isFetchingNext && (
-          <div className="py-2 flex items-center justify-center gap-2 text-xs text-muted-foreground border-t border-primary/10">
+          <div className="py-4 flex items-center justify-center gap-2 text-sm text-muted-foreground border-t border-border/30">
             <Spinner className="h-4 w-4" />
             <span>Loading...</span>
           </div>
         )}
+        
         {!hasMore && transactions.length > 0 && (
-          <div className="py-2 text-center text-2xs text-muted-foreground border-t border-primary/10">End of history</div>
+          <div className="py-4 text-center text-sm text-muted-foreground border-t border-border/30">
+            End of history
+          </div>
         )}
       </div>
-    </div>;
+    </div>
+  );
 };

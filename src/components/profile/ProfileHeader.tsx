@@ -11,9 +11,8 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderProps) => {
   return (
-    <div className="relative p-6 sm:p-8 rounded-2xl overflow-hidden border border-border/50 bg-card/90 shadow-xl">
-      
-      <div className="relative flex flex-col sm:flex-row items-center gap-4 sm:gap-6 z-10">
+    <div className="relative p-8 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg">
+      <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="relative group">
           <input 
             type="file" 
@@ -23,24 +22,30 @@ export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderPro
             id="avatar-upload" 
           />
           <label htmlFor="avatar-upload" className="cursor-pointer block relative">
-            <Avatar className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-border/60 ring-2 ring-primary/25 shadow-md transition-all duration-300 group-hover:ring-primary/40">
+            <Avatar className="w-24 h-24 rounded-2xl border-2 border-border/30 shadow-xl transition-all duration-300 group-hover:border-primary/20 group-hover:shadow-primary/10">
               {userData?.avatar_url ? (
-                <AvatarImage src={userData.avatar_url} alt={userData.login} />
+                <AvatarImage src={userData.avatar_url} alt={userData.login} className="rounded-2xl" />
               ) : (
-                <AvatarFallback className="bg-gradient-to-br from-primary/80 to-purple-600 text-white">
-                  <UserRound className="w-10 h-10 sm:w-12 sm:h-12" />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl">
+                  <UserRound className="w-12 h-12 text-primary" />
                 </AvatarFallback>
               )}
             </Avatar>
-            <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <p className="text-white text-xs font-medium">Change Avatar</p>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <p className="text-white text-sm font-medium">Change Avatar</p>
             </div>
           </label>
         </div>
+        
         <div className="text-center sm:text-left">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground uppercase tracking-wide username-truncate max-w-full">
-            @{userData?.login}
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              @{userData?.login}
+            </span>
           </h1>
+          <p className="text-muted-foreground">
+            Member since {new Date(userData?.created_at || '').toLocaleDateString()}
+          </p>
         </div>
       </div>
     </div>

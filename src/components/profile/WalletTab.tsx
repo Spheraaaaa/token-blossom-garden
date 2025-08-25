@@ -33,18 +33,17 @@ export const WalletTab = ({
   hasMore
 }: WalletTabProps) => {
   return (
-    <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden relative rounded-2xl">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600/50 via-primary/40 to-purple-600/50"></div>
-      <CardHeader className="space-y-2 border-b border-border/50 pb-4 relative z-10 px-4">
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/20">
+    <Card className="bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
             <Wallet className="w-5 h-5 text-primary" />
           </div>
           Wallet
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="p-4 relative z-10">
+      <CardContent className="space-y-8">
         <WalletBalance 
           userData={userData}
           frozenBalanceDetails={frozenBalanceDetails}
@@ -56,7 +55,12 @@ export const WalletTab = ({
         
         <TransactionButtons />
         
-        <TransactionHistory transactions={transactions} onLoadMore={onLoadMore} isFetchingNext={isFetchingNext} hasMore={hasMore} />
+        <TransactionHistory 
+          transactions={transactions} 
+          onLoadMore={onLoadMore} 
+          isFetchingNext={isFetchingNext} 
+          hasMore={hasMore} 
+        />
       </CardContent>
     </Card>
   );
