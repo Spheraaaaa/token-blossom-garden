@@ -170,17 +170,17 @@ export const TransactionHistory = ({
   }
 
   return (
-    <div className="mt-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="mt-4 md:mt-6">
+      <div className="flex items-center justify-between mb-4 md:mb-6">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
             <RotateCw className="h-4 w-4 text-primary" />
           </div>
-          <h3 className="text-lg font-bold text-foreground">Transaction History</h3>
+          <h3 className="text-base md:text-lg font-bold text-foreground">Transaction History</h3>
         </div>
         
         {transactions.length > 0 && (
-          <span className="text-sm text-muted-foreground bg-muted/40 px-3 py-1 rounded-xl border border-border/30">
+          <span className="text-xs md:text-sm text-muted-foreground bg-muted/40 px-2 md:px-3 py-1 rounded-xl border border-border/30">
             {transactions.length} transactions
           </span>
         )}

@@ -67,11 +67,11 @@ export const WalletBalance = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
       {/* Available Balance */}
       <div className="rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="p-4 md:p-6">
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
               <Wallet className="h-5 w-5 text-primary" />
             </div>
@@ -134,8 +134,8 @@ export const WalletBalance = ({
       {/* Frozen Balance */}
       {Number(userData?.frozen_balance || 0) > 0 && (
         <div className="rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
+          <div className="p-4 md:p-6">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center">
                   <LockIcon className="h-5 w-5 text-orange-500" />
