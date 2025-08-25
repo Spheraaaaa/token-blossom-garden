@@ -22,6 +22,7 @@ import { supabase } from "@/lib/supabase";
 import { useNavigate } from "react-router-dom";
 import { KeyRound, Mail, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { validateEmail, validatePassword, sanitizeText, rateLimitCheck } from "@/utils/validation";
 
 interface AuthModalProps {
   trigger: React.ReactNode;
@@ -54,6 +55,28 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
     setIsLoading(true);
 
     try {
+      // Rate limiting check
+      if (!rateLimitCheck('auth_attempt', 5, 300000)) { // 5 attempts per 5 minutes
+        toast({
+          title: "Error",
+          description: "Too many attempts. Please try again later.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Input validation
+      if (!validateEmail(email)) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -70,14 +93,31 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
         setIsOpen(false);
         navigate("/profile");
       } else {
+        // Additional validation for registration
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+          toast({
+            title: "Error",
+            description: passwordValidation.errors[0],
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         if (password !== confirmPassword) {
           toast({
             title: "Error",
             description: "Passwords do not match",
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
+
+        // Sanitize user input
+        const sanitizedLogin = sanitizeText(login);
+        const sanitizedCountry = sanitizeText(country);
 
         if (!seedAccessAgreed || !seedTransferAgreed || !policyAgreed) {
           toast({
@@ -85,6 +125,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
             description: "Please agree to all terms",
             variant: "destructive",
           });
+          setIsLoading(false);
           return;
         }
 
@@ -92,9 +133,10 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
           email,
           password,
           options: {
+            emailRedirectTo: `${window.location.origin}/`,
             data: {
-              login,
-              country,
+              login: sanitizedLogin,
+              country: sanitizedCountry,
             }
           },
         });

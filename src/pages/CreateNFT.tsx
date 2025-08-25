@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Plus, Wand2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Textarea } from "@/components/ui/textarea";
+import { validateNFTPrice, sanitizeText, validateImageFile } from "@/utils/validation";
 
 interface Property {
   key: string;
@@ -121,14 +122,43 @@ const CreateNFT = () => {
     setIsLoading(true);
 
     try {
+      // Input validation
+      const price = parseFloat(formData.price);
+      if (!validateNFTPrice(price)) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid price between 0 and 1,000,000 ETH.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Sanitize inputs
+      const sanitizedName = sanitizeText(formData.name);
+      const sanitizedCreator = sanitizeText(formData.creator);
+      const sanitizedDescription = sanitizeText(formData.description);
+
+      if (!sanitizedName || !sanitizedCreator) {
+        toast({
+          title: "Error",
+          description: "Name and creator are required fields.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
       const { error } = await supabase.from('nfts').insert([
         {
-          name: formData.name,
+          name: sanitizedName,
           price: formData.price,
-          creator: formData.creator,
-          description: formData.description,
+          creator: sanitizedCreator,
+          description: sanitizedDescription,
           image: formData.image || 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=800&auto=format&fit=crop',
-          properties: properties.length > 0 ? properties : null,
+          properties: properties.length > 0 ? properties.map(p => ({
+            key: sanitizeText(p.key),
+            value: sanitizeText(p.value)
+          })) : null,
         }
       ]);
 
@@ -155,6 +185,17 @@ const CreateNFT = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate image file
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        toast({
+          title: "Error",
+          description: validation.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData(prev => ({ ...prev, image: reader.result as string }));

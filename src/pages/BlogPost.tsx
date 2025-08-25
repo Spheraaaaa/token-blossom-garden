@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Calendar, User, Clock } from "lucide-react";
+import DOMPurify from "dompurify";
 
 const blogPosts = [
   {
@@ -311,7 +312,7 @@ const BlogPost = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="prose prose-invert max-w-none mt-8"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
             />
           </div>
         </motion.article>

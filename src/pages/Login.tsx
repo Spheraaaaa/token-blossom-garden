@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { validateEmail, rateLimitCheck } from "@/utils/validation";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
@@ -52,6 +53,27 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      // Rate limiting check
+      if (!rateLimitCheck('login_attempt', 5, 300000)) { // 5 attempts per 5 minutes
+        toast({
+          title: "Error",
+          description: "Too many login attempts. Please try again later.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Input validation
+      if (!validateEmail(email)) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
