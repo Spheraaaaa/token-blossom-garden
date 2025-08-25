@@ -47,48 +47,87 @@ export const NFTGrid = ({
     const cards = cardsRef.current.filter(Boolean);
     if (cards.length === 0) return;
 
+    // Ensure all existing cards are visible first
+    cards.forEach((card, index) => {
+      const nftId = nfts[index]?.id;
+      if (nftId && animatedNFTs.has(nftId)) {
+        // Make sure existing cards are visible
+        gsap.set(card, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotationX: 0,
+        });
+      }
+    });
+
     // Find new NFTs that haven't been animated yet
     const newNFTs = nfts.filter(nft => !animatedNFTs.has(nft.id));
     const newNFTIds = new Set(newNFTs.map(nft => nft.id));
 
-    if (newNFTs.length === 0) return;
+    if (newNFTs.length > 0) {
+      // Get only the cards for new NFTs
+      const newCards = cards.filter((card, index) => {
+        const nftId = nfts[index]?.id;
+        return nftId && newNFTIds.has(nftId);
+      });
 
-    // Get only the cards for new NFTs
-    const newCards = cards.filter((card, index) => {
-      const nftId = nfts[index]?.id;
-      return nftId && newNFTIds.has(nftId);
-    });
+      if (newCards.length > 0) {
+        // Clear previous animations only for new cards
+        gsap.killTweensOf(newCards);
 
-    if (newCards.length === 0) return;
+        // Initial state for new cards only
+        gsap.set(newCards, {
+          opacity: 0,
+          y: 60,
+          scale: 0.8,
+          rotationX: 15,
+        });
 
-    // Clear previous animations only for new cards
-    gsap.killTweensOf(newCards);
+        // Stagger animation for new cards only
+        const tl = gsap.timeline();
+        tl.to(newCards, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotationX: 0,
+          duration: 0.8,
+          ease: "back.out(1.7)",
+          stagger: {
+            amount: 0.4,
+            from: "start",
+          },
+        });
 
-    // Initial state for new cards only
-    gsap.set(newCards, {
-      opacity: 0,
-      y: 60,
-      scale: 0.8,
-      rotationX: 15,
-    });
+        // Update animated NFTs set
+        setAnimatedNFTs(prev => new Set([...prev, ...newNFTIds]));
+      }
+    } else if (animatedNFTs.size === 0) {
+      // First load - animate all cards
+      gsap.set(cards, {
+        opacity: 0,
+        y: 60,
+        scale: 0.8,
+        rotationX: 15,
+      });
 
-    // Stagger animation for new cards only
-    const tl = gsap.timeline();
-    tl.to(newCards, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotationX: 0,
-      duration: 0.8,
-      ease: "back.out(1.7)",
-      stagger: {
-        amount: 0.4,
-        from: "start",
-      },
-    });
+      const tl = gsap.timeline();
+      tl.to(cards, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotationX: 0,
+        duration: 0.8,
+        ease: "back.out(1.7)",
+        stagger: {
+          amount: 0.6,
+          from: "start",
+        },
+      });
 
-    // Update animated NFTs set
-    setAnimatedNFTs(prev => new Set([...prev, ...newNFTIds]));
+      // Mark all current NFTs as animated
+      setAnimatedNFTs(new Set(nfts.map(nft => nft.id)));
+    }
 
     // Setup hover animations for all cards (existing and new)
     cards.forEach((card, index) => {
@@ -96,7 +135,6 @@ export const NFTGrid = ({
 
       // Remove existing event listeners to avoid duplicates
       const existingEnter = card.getAttribute('data-mouse-enter');
-      const existingLeave = card.getAttribute('data-mouse-leave');
       
       if (!existingEnter) {
         // Hover animations
@@ -143,7 +181,6 @@ export const NFTGrid = ({
         card.addEventListener('mouseenter', handleMouseEnter);
         card.addEventListener('mouseleave', handleMouseLeave);
         card.setAttribute('data-mouse-enter', 'true');
-        card.setAttribute('data-mouse-leave', 'true');
       }
     });
 
@@ -158,11 +195,7 @@ export const NFTGrid = ({
     }
 
     setPreviousNFTCount(nfts.length);
-
-    return () => {
-      gsap.killTweensOf(newCards);
-    };
-  }, [nfts, animatedNFTs, previousNFTCount]);
+  }, [nfts, animatedNFTs.size]);
 
   // Reset animated NFTs when starting fresh (e.g., new search)
   useEffect(() => {
