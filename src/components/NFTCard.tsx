@@ -139,20 +139,20 @@ export const NFTCard = ({
     return (
       <>
         <Link to={`/nft/${id}`} className="block group">
-          <div className="relative rounded-2xl overflow-hidden nft-card-enhanced hover-elastic hw-accelerated">
+          <div className="relative rounded-xl md:rounded-2xl overflow-hidden nft-card-enhanced hover-elastic hw-accelerated">
             <div className="relative">
               {/* Simplified backdrop */}
               <div className="absolute inset-0 light-blur" />
               
               {/* Marketplace badge */}
               {marketplace && isForSale && (
-                <div className="absolute top-3 left-3 z-20">
+                <div className="absolute top-2 md:top-3 left-2 md:left-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="flex items-center gap-1.5 bg-background/80 text-foreground border-border/50 px-3 py-1.5 text-xs rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hw-accelerated"
+                    className="flex items-center gap-1 md:gap-1.5 bg-background/80 text-foreground border-border/50 px-2 md:px-3 py-1 md:py-1.5 text-xs rounded-lg md:rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hw-accelerated"
                   >
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                    {getMarketplaceDisplay()}
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary rounded-full animate-pulse" />
+                    <span className="hidden sm:inline">{getMarketplaceDisplay()}</span>
                     <ExternalLink className="w-3 h-3" />
                   </Badge>
                 </div>
@@ -160,19 +160,19 @@ export const NFTCard = ({
               
               {/* For Sale badge */}
               {isForSale && (
-                <div className="absolute top-3 right-3 z-20">
+                <div className="absolute top-2 md:top-3 right-2 md:right-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="flex items-center gap-1.5 optimized-gradient text-primary border-primary/30 px-3 py-1.5 text-xs rounded-xl font-medium shadow-lg"
+                    className="flex items-center gap-1 md:gap-1.5 optimized-gradient text-primary border-primary/30 px-2 md:px-3 py-1 md:py-1.5 text-xs rounded-lg md:rounded-xl font-medium shadow-lg"
                   >
-                    <div className="w-2 h-2 bg-accent rounded-full animate-ping" />
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-accent rounded-full animate-ping" />
                     For Sale
                   </Badge>
                 </div>
               )}
               
               {/* NFT Image with optimized container */}
-              <div className="aspect-square w-full overflow-hidden flex items-center justify-center relative nft-image-container rounded-t-2xl">
+              <div className="aspect-square w-full overflow-hidden flex items-center justify-center relative nft-image-container rounded-t-xl md:rounded-t-2xl">
                 <img
                   src={image}
                   alt={name}
@@ -182,44 +182,44 @@ export const NFTCard = ({
               </div>
               
               {/* NFT Info with optimized styling */}
-              <div className="relative p-4 space-y-3 light-blur">
-                <div className="space-y-2">
-                  <h3 className="font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-300">
+              <div className="relative p-3 md:p-4 space-y-2 md:space-y-3 light-blur">
+                <div className="space-y-1 md:space-y-2">
+                  <h3 className="font-bold text-base md:text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-300">
                     {name}
                   </h3>
                   
-                  <p className="text-sm text-muted-foreground line-clamp-1 group-hover:text-foreground/80 transition-colors duration-300">
+                  <p className="text-xs md:text-sm text-muted-foreground line-clamp-1 group-hover:text-foreground/80 transition-colors duration-300">
                     by <span className="font-medium text-accent">{creator}</span>
                   </p>
                 </div>
                 
-                <div className="flex items-center justify-between pt-3 border-t border-border/30 group-hover:border-primary/30 transition-colors duration-300">
+                <div className="flex items-center justify-between pt-2 md:pt-3 border-t border-border/30 group-hover:border-primary/30 transition-colors duration-300">
                   {isEditingPrice ? (
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Input 
                         type="number" 
                         value={newPrice} 
                         onChange={(e) => setNewPrice(e.target.value)}
-                        className="h-8 w-20 text-sm border-primary/30 focus:border-primary"
+                        className="h-7 md:h-8 w-16 md:w-20 text-xs md:text-sm border-primary/30 focus:border-primary"
                         min="0.01"
                         step="0.01"
                         onClick={(e) => e.stopPropagation()}
                       />
                       <Button 
                         size="icon" 
-                        className="h-7 w-7 bg-accent hover:bg-accent/80"
+                        className="h-6 w-6 md:h-7 md:w-7 bg-accent hover:bg-accent/80"
                         variant="default"
                         onClick={handleSavePrice}
                       >
-                        <Check className="h-3.5 w-3.5" />
+                        <Check className="h-3 w-3 md:h-3.5 md:w-3.5" />
                       </Button>
                       <Button 
                         size="icon" 
-                        className="h-7 w-7 bg-destructive/20 hover:bg-destructive/30 text-destructive"
+                        className="h-6 w-6 md:h-7 md:w-7 bg-destructive/20 hover:bg-destructive/30 text-destructive"
                         variant="ghost"
                         onClick={handleCancelEdit}
                       >
-                        <X className="h-3.5 w-3.5" />
+                        <X className="h-3 w-3 md:h-3.5 md:w-3.5" />
                       </Button>
                     </div>
                   ) : (
@@ -227,9 +227,9 @@ export const NFTCard = ({
                       <img 
                         src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" 
                         alt="ETH"
-                        className="h-5 w-5"
+                        className="h-4 w-4 md:h-5 md:w-5"
                       />
-                      <span className="text-base font-bold text-primary">
+                      <span className="text-sm md:text-base font-bold text-primary">
                         {price}
                       </span>
                     </div>
@@ -237,7 +237,7 @@ export const NFTCard = ({
                   
                   {/* Action buttons */}
                   {isProfileView && (
-                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex gap-1 md:gap-2" onClick={(e) => e.stopPropagation()}>
                       {isForSale ? (
                         <>
                           {!isEditingPrice && (
@@ -245,20 +245,20 @@ export const NFTCard = ({
                               onClick={handleEditPrice} 
                               size="sm"
                               variant="secondary"
-                              className="h-8 px-3 text-xs rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all duration-200 hover:scale-105 hw-accelerated"
+                              className="h-6 md:h-8 px-2 md:px-3 text-xs rounded-md md:rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all duration-200 hover:scale-105 hw-accelerated"
                               title="Edit Price"
                             >
-                              <Edit className="h-3.5 w-3.5" />
+                              <Edit className="h-3 w-3 md:h-3.5 md:w-3.5" />
                             </Button>
                           )}
                           <Button 
                             onClick={openCancelDialog} 
                             size="sm"
                             variant="secondary"
-                            className="h-8 px-3 text-xs rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-all duration-200 hover:scale-105 hw-accelerated"
+                            className="h-6 md:h-8 px-2 md:px-3 text-xs rounded-md md:rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-all duration-200 hover:scale-105 hw-accelerated"
                             title="Cancel Sale"
                           >
-                            <X className="h-3.5 w-3.5" />
+                            <X className="h-3 w-3 md:h-3.5 md:w-3.5" />
                           </Button>
                         </>
                       ) : (
@@ -266,11 +266,11 @@ export const NFTCard = ({
                           onClick={handleSellNFT} 
                           size="sm"
                           variant="default"
-                          className="h-8 px-3 text-xs rounded-lg optimized-gradient hover:from-accent/80 hover:to-primary/80 transition-all duration-200 hover:scale-105 hw-accelerated"
+                          className="h-6 md:h-8 px-2 md:px-3 text-xs rounded-md md:rounded-lg optimized-gradient hover:from-accent/80 hover:to-primary/80 transition-all duration-200 hover:scale-105 hw-accelerated"
                           title="Sell NFT"
                         >
-                          <Tag className="h-3.5 w-3.5 mr-1" />
-                          Sell
+                          <Tag className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1" />
+                          <span className="hidden sm:inline">Sell</span>
                         </Button>
                       )}
                     </div>
@@ -279,15 +279,15 @@ export const NFTCard = ({
                 
                 {/* View Bids button with optimized styling */}
                 {isProfileView && isForSale && (
-                  <div className="mt-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="mt-2 md:mt-3" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleViewBids}
-                      className="w-full text-sm justify-center light-blur hover:bg-primary/10 border-border/50 hover:border-primary/30 text-foreground hover:text-primary transition-all duration-200 rounded-lg hw-accelerated"
+                      className="w-full text-xs md:text-sm justify-center light-blur hover:bg-primary/10 border-border/50 hover:border-primary/30 text-foreground hover:text-primary transition-all duration-200 rounded-md md:rounded-lg hw-accelerated h-7 md:h-auto"
                     >
                       <span>View Bids</span>
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                      <ArrowRight className="h-3 w-3 md:h-4 md:w-4 ml-1 md:ml-2 group-hover:translate-x-1 transition-transform duration-200" />
                     </Button>
                   </div>
                 )}

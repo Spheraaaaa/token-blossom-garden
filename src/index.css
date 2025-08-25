@@ -1087,4 +1087,36 @@
   .stagger-3 { animation-delay: 0.3s; }
   .stagger-4 { animation-delay: 0.4s; }
   .stagger-5 { animation-delay: 0.5s; }
+  
+  /* Mobile-specific marketplace fixes */
+  @media (max-width: 640px) {
+    .marketplace-nft-grid {
+      justify-items: center;
+    }
+    
+    .nft-card-enhanced {
+      max-width: 320px;
+      width: 100%;
+    }
+    
+    .price-badge {
+      @apply flex items-center gap-1.5 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20;
+    }
+    
+    /* Ensure proper touch targets on mobile */
+    .responsive-tab-trigger {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Better spacing for mobile search */
+    .search-input {
+      font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+    
+    /* Mobile-friendly scroll area */
+    .marketplace-scroll-area {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
