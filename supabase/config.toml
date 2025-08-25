@@ -1,1 +1,4 @@
 project_id = "odgteaatruydxlogpbda"
+
+[functions.update-marketplace-stats]
+verify_jwt = false

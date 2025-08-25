@@ -35,6 +35,30 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_stats: {
+        Row: {
+          id: string
+          latest_drop_time: string
+          total_nfts: number
+          total_sales: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          latest_drop_time?: string
+          total_nfts?: number
+          total_sales?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          latest_drop_time?: string
+          total_nfts?: number
+          total_sales?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       nft_bids: {
         Row: {
           bid_amount: number
@@ -278,6 +302,10 @@ export type Database = {
         Args: { amount: number } | { amount: number; is_frozen?: boolean }
         Returns: Json
       }
+      get_marketplace_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_user_frozen_balances: {
         Args: { user_uuid: string }
         Returns: {
@@ -315,6 +343,10 @@ export type Database = {
       }
       update_frozen_transaction_currency: {
         Args: { new_currency_type: string; transaction_id: string }
+        Returns: Json
+      }
+      update_marketplace_stats: {
+        Args: Record<PropertyKey, never>
         Returns: Json
       }
     }

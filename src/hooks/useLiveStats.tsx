@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface LiveStats {
   totalNFTs: number;
@@ -18,47 +19,88 @@ export const useLiveStats = () => {
     totalSales: false
   });
 
+  // Load initial stats from database
+  const loadStats = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_marketplace_stats');
+      if (data && !error) {
+        const statsData = data as any; // Type assertion for RPC response
+        setStats({
+          totalNFTs: Number(statsData.total_nfts),
+          totalSales: Number(statsData.total_sales),
+          latestDropTime: String(statsData.latest_drop_time)
+        });
+      }
+    } catch (err) {
+      console.error('Error loading marketplace stats:', err);
+    }
+  };
+
+  // Update stats on server
+  const updateStats = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('update-marketplace-stats');
+      if (data?.data && !error) {
+        // Animate the increments
+        if (data.data.nft_increment > 0) {
+          setAnimatingStats(prev => ({ ...prev, totalNFTs: true }));
+          setTimeout(() => {
+            setAnimatingStats(prev => ({ ...prev, totalNFTs: false }));
+          }, 800);
+        }
+        
+        if (data.data.sales_increment > 0) {
+          setAnimatingStats(prev => ({ ...prev, totalSales: true }));
+          setTimeout(() => {
+            setAnimatingStats(prev => ({ ...prev, totalSales: false }));
+          }, 800);
+        }
+
+        // Reload stats from database to get updated values
+        await loadStats();
+      }
+    } catch (err) {
+      console.error('Error updating marketplace stats:', err);
+    }
+  };
+
   useEffect(() => {
+    // Load initial stats
+    loadStats();
+
+    // Set up real-time subscription for stats updates
+    const channel = supabase
+      .channel('marketplace-stats-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'marketplace_stats'
+        },
+        (payload) => {
+          console.log('Real-time stats update:', payload);
+          if (payload.new) {
+            const newData = payload.new as any; // Type assertion for realtime payload
+            setStats({
+              totalNFTs: Number(newData.total_nfts),
+              totalSales: Number(newData.total_sales),
+              latestDropTime: String(newData.latest_drop_time)
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    // Set up interval to update stats every 5-8 seconds
     const interval = setInterval(() => {
-      // Рандомно выбираем какую статистику обновить
-      const shouldUpdateNFTs = Math.random() > 0.7;
-      const shouldUpdateSales = Math.random() > 0.6;
+      updateStats();
+    }, 5000 + Math.random() * 3000);
 
-      if (shouldUpdateNFTs) {
-        const increment = Math.floor(Math.random() * 10) + 1;
-        setAnimatingStats(prev => ({ ...prev, totalNFTs: true }));
-        setStats(prev => ({ 
-          ...prev, 
-          totalNFTs: prev.totalNFTs + increment 
-        }));
-        setTimeout(() => {
-          setAnimatingStats(prev => ({ ...prev, totalNFTs: false }));
-        }, 800);
-      }
-
-      if (shouldUpdateSales) {
-        const increment = Math.floor(Math.random() * 10) + 1;
-        setAnimatingStats(prev => ({ ...prev, totalSales: true }));
-        setStats(prev => ({ 
-          ...prev, 
-          totalSales: prev.totalSales + increment 
-        }));
-        setTimeout(() => {
-          setAnimatingStats(prev => ({ ...prev, totalSales: false }));
-        }, 800);
-      }
-
-      // Обновляем время последнего дропа
-      const timeOptions = ['~1m ago', '~2m ago', '~3m ago', '~30s ago', '~45s ago'];
-      const randomTime = timeOptions[Math.floor(Math.random() * timeOptions.length)];
-      setStats(prev => ({ 
-        ...prev, 
-        latestDropTime: randomTime 
-      }));
-
-    }, 3000 + Math.random() * 4000); // Интервал от 3 до 7 секунд
-
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return { stats, animatingStats };
