@@ -204,7 +204,7 @@ export const TransactionHistory = ({
                 const currencyBadge = getCurrencyBadge(transaction.currency_type || 'eth');
                 
                 return (
-                  <TableRow key={transaction.id} className="border-b border-border/20 hover:bg-muted/10">
+                  <TableRow key={transaction.id} className="transaction-row border-b border-border/20 hover:bg-muted/10">
                     <TableCell className="py-3 text-sm text-foreground">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-3 w-3 text-muted-foreground" />

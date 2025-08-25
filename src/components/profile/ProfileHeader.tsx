@@ -11,9 +11,9 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderProps) => {
   return (
-    <div className="relative p-8 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg">
+    <div className="balance-card relative p-8 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg">
       <div className="flex flex-col sm:flex-row items-center gap-6">
-        <div className="relative group">
+        <div className="relative group balance-card">
           <input 
             type="file" 
             accept="image/*" 
@@ -22,7 +22,7 @@ export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderPro
             id="avatar-upload" 
           />
           <label htmlFor="avatar-upload" className="cursor-pointer block relative">
-            <Avatar className="w-24 h-24 rounded-2xl border-2 border-border/30 shadow-xl transition-all duration-300 group-hover:border-primary/20 group-hover:shadow-primary/10">
+            <Avatar className="w-24 h-24 rounded-2xl border-2 border-border/30 shadow-xl transition-all duration-300 group-hover:border-primary/20 group-hover:shadow-primary/10 hover:scale-105">
               {userData?.avatar_url ? (
                 <AvatarImage src={userData.avatar_url} alt={userData.login} className="rounded-2xl" />
               ) : (
@@ -31,13 +31,13 @@ export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderPro
                 </AvatarFallback>
               )}
             </Avatar>
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center transform group-hover:scale-105">
               <p className="text-white text-sm font-medium">Change Avatar</p>
             </div>
           </label>
         </div>
         
-        <div className="text-center sm:text-left">
+        <div className="text-center sm:text-left balance-card">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
             <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
               @{userData?.login}

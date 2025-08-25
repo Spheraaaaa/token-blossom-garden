@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { User, Settings, Wallet, ArrowUpCircle, Shield, ShoppingBag } from "lucide-react";
@@ -17,6 +17,7 @@ import { WalletTab } from "@/components/profile/WalletTab";
 import { VerificationTab } from "@/components/profile/VerificationTab";
 import { ExchangeDialog } from "@/components/profile/ExchangeDialog";
 import { WithdrawalErrorModal } from "@/components/WithdrawalErrorModal";
+import { useProfileAnimations } from "@/hooks/useProfileAnimations";
 import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from "@/types/user";
 
 const Profile = () => {
@@ -43,6 +44,16 @@ const Profile = () => {
   const PAGE_SIZE = 20;
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingNext, setIsFetchingNext] = useState(false);
+
+  const { 
+    profileRef, 
+    headerRef, 
+    tabsRef, 
+    addToCardsRef, 
+    animateTabChange, 
+    animateCardHover, 
+    animateButtonPress 
+  } = useProfileAnimations();
 
   const showDelayedToast = (title: string, description: string, variant: "default" | "destructive" = "default") => {
     setTimeout(() => {
@@ -442,72 +453,94 @@ const Profile = () => {
   }
   
   return (
-    <div className="container mx-auto py-8 px-4 mt-16 min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative">
+    <div 
+      ref={profileRef} 
+      className="container mx-auto py-8 px-4 mt-16 min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative"
+    >
       {/* Clean background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
       
-      {/* Elegant floating elements */}
+      {/* Elegant floating elements with GSAP classes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl animate-simple-float opacity-30" />
-        <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-25" style={{ animationDelay: '2s' }} />
+        <div className="floating-bg absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl opacity-30" />
+        <div className="floating-bg absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl opacity-25" />
       </div>
+      
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        <ProfileHeader userData={userData} handleAvatarUpload={handleAvatarUpload} />
+        <div ref={headerRef}>
+          <ProfileHeader userData={userData} handleAvatarUpload={handleAvatarUpload} />
+        </div>
 
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="w-full responsive-tabs-list p-1.5 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/30 shadow-lg mb-6">
-            {["profile", "settings", "wallet", "verification", "nft"].map(tab => (
-              <TabsTrigger 
-                key={tab} 
-                value={tab} 
-                className="responsive-tab-trigger flex items-center justify-center gap-1 transition-all duration-300 data-[state=active]:bg-primary/20 data-[state=active]:text-primary relative overflow-hidden group py-2"
-              >
-                {tab === "profile" && <User className="w-4 h-4" />}
-                {tab === "settings" && <Settings className="w-4 h-4" />}
-                {tab === "wallet" && <Wallet className="w-4 h-4" />}
-                {tab === "verification" && <Shield className="w-4 h-4" />}
-                {tab === "nft" && <ShoppingBag className="w-4 h-4" />}
-                <span className="relative z-10 capitalize hidden sm:inline">{tab}</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <div ref={tabsRef}>
+          <Tabs defaultValue="profile" className="w-full">
+            <TabsList className="w-full responsive-tabs-list p-1.5 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/30 shadow-lg mb-6">
+              {["profile", "settings", "wallet", "verification", "nft"].map(tab => (
+                <TabsTrigger 
+                  key={tab} 
+                  value={tab} 
+                  className="responsive-tab-trigger flex items-center justify-center gap-1 transition-all duration-300 data-[state=active]:bg-primary/20 data-[state=active]:text-primary relative overflow-hidden group py-2"
+                  onClick={(e) => {
+                    const tabContent = document.querySelector(`[data-state="active"][data-orientation="horizontal"]`);
+                    if (tabContent) animateTabChange(tabContent as HTMLElement);
+                  }}
+                >
+                  {tab === "profile" && <User className="w-4 h-4" />}
+                  {tab === "settings" && <Settings className="w-4 h-4" />}
+                  {tab === "wallet" && <Wallet className="w-4 h-4" />}
+                  {tab === "verification" && <Shield className="w-4 h-4" />}
+                  {tab === "nft" && <ShoppingBag className="w-4 h-4" />}
+                  <span className="relative z-10 capitalize hidden sm:inline">{tab}</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-          <TabsContent value="profile">
-            <ProfileInfo userData={userData} setIsWalletModalOpen={setIsWalletModalOpen} setIsTrcWalletModalOpen={setIsTrcWalletModalOpen} />
-          </TabsContent>
+            <TabsContent value="profile">
+              <div ref={addToCardsRef}>
+                <ProfileInfo userData={userData} setIsWalletModalOpen={setIsWalletModalOpen} setIsTrcWalletModalOpen={setIsTrcWalletModalOpen} />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="settings">
-            <SettingsTab handleLogout={handleLogout} />
-          </TabsContent>
+            <TabsContent value="settings">
+              <div ref={addToCardsRef}>
+                <SettingsTab handleLogout={handleLogout} />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="wallet">
-            <WalletTab 
-              userData={userData}
-              frozenBalanceDetails={frozenBalanceDetails}
-              showFrozenDetails={showFrozenDetails}
-              setShowFrozenDetails={setShowFrozenDetails}
-              setIsExchangeDialogOpen={setIsExchangeDialogOpen}
-              transactions={transactions}
-              setExchangeType={setExchangeType}
-              onLoadMore={fetchMoreTransactions}
-              isFetchingNext={isFetchingNext}
-              hasMore={hasMore}
-            />
-          </TabsContent>
+            <TabsContent value="wallet">
+              <div ref={addToCardsRef}>
+                <WalletTab 
+                  userData={userData}
+                  frozenBalanceDetails={frozenBalanceDetails}
+                  showFrozenDetails={showFrozenDetails}
+                  setShowFrozenDetails={setShowFrozenDetails}
+                  setIsExchangeDialogOpen={setIsExchangeDialogOpen}
+                  transactions={transactions}
+                  setExchangeType={setExchangeType}
+                  onLoadMore={fetchMoreTransactions}
+                  isFetchingNext={isFetchingNext}
+                  hasMore={hasMore}
+                />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="verification">
-            <VerificationTab 
-              userData={userData}
-              startKYCVerification={startKYCVerification}
-              continueKYCVerification={continueKYCVerification}
-            />
-          </TabsContent>
+            <TabsContent value="verification">
+              <div ref={addToCardsRef}>
+                <VerificationTab 
+                  userData={userData}
+                  startKYCVerification={startKYCVerification}
+                  continueKYCVerification={continueKYCVerification}
+                />
+              </div>
+            </TabsContent>
 
-          <TabsContent value="nft">
-            <UserNFTCollection />
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="nft">
+              <div ref={addToCardsRef}>
+                <UserNFTCollection />
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
 
       <WalletAddressModal 

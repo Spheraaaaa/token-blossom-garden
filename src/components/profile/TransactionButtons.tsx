@@ -12,7 +12,13 @@ export const TransactionButtons = () => {
       <Button 
         onClick={() => navigate('/deposit')} 
         variant="outline" 
-        className="group relative rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg hover:bg-card/80 hover:border-primary/20 transition-all duration-300 h-16 md:h-20 p-0"
+        className="group relative rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg hover:bg-card/80 hover:border-primary/20 transition-all duration-300 h-16 md:h-20 p-0 balance-card"
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
       >
         <div className="flex items-center justify-between w-full px-4 md:px-6">
           <div className="flex items-center gap-3 md:gap-4">
@@ -33,7 +39,13 @@ export const TransactionButtons = () => {
       <Button 
         onClick={() => navigate('/withdraw')} 
         variant="outline" 
-        className="group relative rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg hover:bg-card/80 hover:border-primary/20 transition-all duration-300 h-16 md:h-20 p-0"
+        className="group relative rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg hover:bg-card/80 hover:border-primary/20 transition-all duration-300 h-16 md:h-20 p-0 balance-card"
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
       >
         <div className="flex items-center justify-between w-full px-4 md:px-6">
           <div className="flex items-center gap-3 md:gap-4">
