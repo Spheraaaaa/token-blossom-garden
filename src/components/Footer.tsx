@@ -17,119 +17,130 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative pb-10 overflow-hidden bg-card/80 border-t border-border/50">
+    <footer className="relative bg-gradient-to-br from-background via-background/98 to-background/95 border-t border-border/30">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/1 via-accent/0.5 to-secondary/0.5" />
       
-      <div className="container mx-auto px-4 py-12 relative">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-1/4 w-[200px] h-[200px] bg-gradient-to-br from-primary/3 via-accent/2 to-transparent rounded-full blur-3xl animate-simple-float opacity-30" />
+        <div className="absolute bottom-1/4 right-1/4 w-[150px] h-[150px] bg-gradient-to-br from-accent/2 via-secondary/1 to-transparent rounded-full blur-2xl animate-simple-float opacity-20" style={{ animationDelay: '3s' }} />
+      </div>
+      
+      <div className="container mx-auto px-6 py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {/* Brand Section */}
           <div className="space-y-6">
-            <div className="flex items-center space-x-2 group relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur opacity-0 group-hover:opacity-75 transition duration-500"></div>
-              <div className="relative flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-500 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20"></div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                  PureNFT
-                </span>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-full" />
               </div>
+              <span className="text-2xl font-black bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                PureNFT
+              </span>
             </div>
-            <p className="text-base text-muted-foreground leading-relaxed">
-              Discover, collect, and sell extraordinary NFTs on the world's first & largest NFT marketplace
+            
+            <p className="text-muted-foreground leading-relaxed">
+              Discover, collect, and sell extraordinary NFTs on the world's premier digital marketplace
             </p>
+            
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-primary">
-                Stay connected with us
+              <h4 className="text-sm font-semibold text-foreground">
+                Stay Updated
               </h4>
-              <form onSubmit={handleSubscribe} className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-lg blur opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative flex flex-col sm:flex-row gap-2">
-                  <Input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                    className="bg-card border border-border/50 focus:border-primary/40 focus:ring-2 focus:ring-primary/40 text-foreground placeholder:text-muted-foreground rounded-full"
-                  />
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-5 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-200 shadow-sm"
-                  >
-                    Subscribe
-                  </button>
-                </div>
+              <form onSubmit={handleSubscribe} className="space-y-3">
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  className="bg-card/60 backdrop-blur-xl border border-border/30 focus:border-primary/30 focus:ring-2 focus:ring-primary/20 rounded-xl"
+                />
+                <button
+                  type="submit"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-primary/20"
+                >
+                  Subscribe
+                </button>
               </form>
             </div>
           </div>
           
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+          {/* Navigation */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-foreground">
               Marketplace
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link 
                   to="/marketplace" 
-                  className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center space-x-2 group"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm"
                 >
-                  <span className="relative">
-                    <span className="absolute -inset-1 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 h-px bg-gradient-to-r from-primary/50 to-purple-500/50"></span>
-                    All NFTs
-                  </span>
+                  All NFTs
                 </Link>
               </li>
             </ul>
           </div>
           
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+          {/* Resources */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-bold text-foreground">
               Resources
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link 
                   to="/help" 
-                  className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center space-x-2 group"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm"
                 >
-                  <span className="relative">
-                    <span className="absolute -inset-1 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 h-px bg-gradient-to-r from-primary/50 to-purple-500/50"></span>
-                    Help Center
-                  </span>
+                  Help Center
                 </Link>
               </li>
               <li>
                 <Link 
                   to="/partners" 
-                  className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center space-x-2 group"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm"
                 >
-                  <span className="relative">
-                    <span className="absolute -inset-1 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 h-px bg-gradient-to-r from-primary/50 to-purple-500/50"></span>
-                    Partners
-                  </span>
+                  Partners
                 </Link>
               </li>
               <li>
                 <Link 
                   to="/blog" 
-                  className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center space-x-2 group"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm"
                 >
-                  <span className="relative">
-                    <span className="absolute -inset-1 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 h-px bg-gradient-to-r from-primary/50 to-purple-500/50"></span>
-                    Blog
-                  </span>
+                  Blog
                 </Link>
               </li>
-              <li className="pb-2">
+              <li>
                 <a 
                   href="https://t.me/purenftsupport" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center space-x-2 group"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-300 text-sm"
                 >
-                  <span className="relative">
-                    <span className="absolute -inset-1 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 h-px bg-gradient-to-r from-primary/50 to-purple-500/50"></span>
-                    Telegram Support
-                  </span>
+                  Telegram Support
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+        
+        {/* Bottom divider and copyright */}
+        <div className="mt-12 pt-8 border-t border-border/30">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              © 2024 PureNFT. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6">
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300">
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </div>
