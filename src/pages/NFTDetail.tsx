@@ -147,8 +147,17 @@ const NFTDetail = () => {
   };
 
   return (
-    <div className="min-h-[90vh] bg-background">
-      <div className="container mx-auto px-4 pt-16 sm:pt-24 pb-16">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/6 via-accent/4 to-transparent rounded-full blur-3xl animate-simple-float opacity-40" />
+        <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/4 via-secondary/3 to-transparent rounded-full blur-2xl animate-simple-float opacity-30" style={{ animationDelay: '2s' }} />
+      </div>
+
+      <div className="container mx-auto px-6 pt-24 pb-16 relative z-10">
         <motion.div 
           initial={{ x: -20, opacity: 0 }} 
           animate={{ x: 0, opacity: 1 }}
@@ -157,12 +166,11 @@ const NFTDetail = () => {
         >
           <Link
             to="/marketplace"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-all duration-300 mb-6 sm:mb-8 group relative overflow-hidden"
+            className="inline-flex items-center gap-3 text-muted-foreground hover:text-primary transition-all duration-300 group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
-            <div className="relative z-10 flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 bg-card/90 rounded-full border border-border/50 shadow-sm">
-              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-              <span className="text-sm sm:text-base">Back to Marketplace</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-card/60 backdrop-blur-xl rounded-xl border border-border/30 shadow-lg hover:bg-card/80 hover:border-primary/20 transition-all duration-300">
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
+              <span className="text-sm font-medium">Back to Marketplace</span>
             </div>
           </Link>
         </motion.div>
@@ -171,76 +179,75 @@ const NFTDetail = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12"
         >
           <motion.div variants={itemVariants} className="relative">
-            <div className="rounded-2xl overflow-hidden border border-border/50 bg-card/90 shadow-lg p-1">
+            <div className="rounded-2xl overflow-hidden border border-border/30 bg-card/60 backdrop-blur-xl shadow-2xl hover:shadow-primary/10 transition-all duration-500">
               <NFTImage image={nft.image} name={nft.name} />
             </div>
             
             {nft.marketplace && isForSale && (
               <div className="absolute top-6 left-6 z-10">
-                <Badge className="bg-card/90 text-foreground border border-border/50 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium shadow-sm">
+                <div className="bg-card/80 backdrop-blur-xl text-foreground border border-border/30 px-4 py-2 text-sm font-medium rounded-xl shadow-lg">
                   Listed on {getMarketplaceDisplay()}
-                </Badge>
+                </div>
               </div>
             )}
-            
           </motion.div>
 
-          <motion.div variants={containerVariants} className="space-y-8 sm:space-y-10">
+          <motion.div variants={containerVariants} className="space-y-8">
             <motion.div variants={itemVariants}>
               <NFTHeader name={nft.name} creator={nft.creator} />
             </motion.div>
             
             <motion.div variants={itemVariants}>
-              <div className="flex items-center justify-between bg-card/90 p-6 sm:p-8 rounded-xl border border-border/50 shadow-sm">
-                <div>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-2">Current price</p>
-                  <div className="flex items-center gap-2">
-                    <img 
-                      src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" 
-                      alt="ETH"
-                      className="h-5 w-5 sm:h-6 sm:w-6"
-                    />
-                    <span className="text-2xl sm:text-3xl font-bold text-foreground">
-                      {nft.price} ETH
-                    </span>
+              <div className="bg-card/60 backdrop-blur-xl p-8 rounded-2xl border border-border/30 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-3">Current price</p>
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" 
+                        alt="ETH"
+                        className="h-6 w-6"
+                      />
+                      <span className="text-3xl font-black bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                        {nft.price} ETH
+                      </span>
+                    </div>
                   </div>
+                  {nft.owner_id && !isForSale && (
+                    <div className="bg-muted/40 px-4 py-2 rounded-xl border border-border/30 text-sm">
+                      <p className="text-muted-foreground">Already purchased</p>
+                    </div>
+                  )}
+                  {isOwned && (
+                    <div className="bg-gradient-to-r from-primary/20 to-accent/20 px-4 py-2 rounded-xl border border-primary/30 text-sm">
+                      <p className="text-primary font-medium">You own this</p>
+                    </div>
+                  )}
                 </div>
-                {nft.owner_id && !isForSale && (
-                  <div className="bg-muted/30 px-4 py-2.5 rounded-full border border-border/50 text-sm">
-                    <p className="text-muted-foreground">
-                      Already purchased
-                    </p>
-                  </div>
-                )}
-                {isOwned && (
-                  <div className="bg-accent/20 px-4 py-2.5 rounded-full border border-border/50 text-sm">
-                    <p className="text-primary font-medium">
-                      You own this
-                    </p>
-                  </div>
-                )}
               </div>
             </motion.div>
 
             {nft.description && (
               <motion.div variants={itemVariants}>
-                <div className="space-y-2 text-muted-foreground bg-card/90 p-6 sm:p-8 rounded-xl border border-border/50 shadow-sm">
-                  <p className="leading-relaxed text-sm sm:text-base">{nft.description}</p>
+                <div className="bg-card/60 backdrop-blur-xl p-8 rounded-2xl border border-border/30 shadow-lg">
+                  <p className="text-muted-foreground leading-relaxed">{nft.description}</p>
                 </div>
               </motion.div>
             )}
 
             <motion.div variants={itemVariants} className="flex gap-4">
               {isOwned ? (
-                <div className="w-full py-4 sm:py-5 px-6 sm:px-8 text-center bg-gradient-to-r from-primary/20 to-purple-500/20 border border-primary/30 rounded-xl backdrop-blur-xl shadow-lg">
-                  <p className="text-lg sm:text-xl font-medium bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">You own this NFT</p>
+                <div className="w-full py-5 px-8 text-center bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 rounded-2xl backdrop-blur-xl shadow-lg">
+                  <p className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                    You own this NFT
+                  </p>
                 </div>
               ) : (nft.owner_id && !isForSale) ? (
-                <div className="w-full py-4 sm:py-5 px-6 sm:px-8 text-center bg-white/10 border border-white/10 rounded-xl backdrop-blur-xl">
-                  <p className="text-lg sm:text-xl text-muted-foreground">This NFT has already been purchased</p>
+                <div className="w-full py-5 px-8 text-center bg-muted/20 border border-border/30 rounded-2xl backdrop-blur-xl">
+                  <p className="text-xl text-muted-foreground">This NFT has already been purchased</p>
                 </div>
               ) : (
                 <>
@@ -256,7 +263,7 @@ const NFTDetail = () => {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="hidden sm:inline-flex"
+                    className="bg-card/60 backdrop-blur-xl border border-border/30 hover:border-primary/20 hover:bg-card/80 transition-all duration-300"
                     onClick={() => setShowFraudWarning(true)}
                     aria-label="Report this NFT"
                     title="Report this NFT"

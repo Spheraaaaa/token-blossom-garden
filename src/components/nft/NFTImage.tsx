@@ -34,12 +34,12 @@ export const NFTImage = ({ image, name }: NFTImageProps) => {
 
   return (
     <div className="relative group">
-      <div className="rounded-xl overflow-hidden relative">
+      <div className="rounded-xl overflow-hidden">
         <div className="aspect-square w-full overflow-hidden flex items-center justify-center">
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <motion.div 
             initial={{ opacity: 0 }} 
@@ -50,24 +50,24 @@ export const NFTImage = ({ image, name }: NFTImageProps) => {
             <Button
               variant="secondary"
               size="icon"
-              className="h-10 w-10 bg-black/40 hover:bg-black/60 border border-white/10 rounded-full shadow-md"
+              className="h-10 w-10 bg-black/60 backdrop-blur-xl hover:bg-black/80 border border-white/20 rounded-xl shadow-lg"
               onClick={handleShare}
             >
-              <Share2 className="h-4 w-4" />
+              <Share2 className="h-4 w-4 text-white" />
             </Button>
             <Button
               variant="secondary"
               size="icon"
-              className={`h-10 w-10 ${liked ? 'bg-pink-600/80 border-pink-500/50' : 'bg-black/40 border-white/10'} hover:bg-black/60 border rounded-full shadow-md transition-colors`}
+              className={`h-10 w-10 ${liked ? 'bg-pink-600/80 border-pink-500/50' : 'bg-black/60 border-white/20'} backdrop-blur-xl hover:bg-black/80 border rounded-xl shadow-lg transition-colors`}
               onClick={handleLike}
             >
-              <Heart className={`h-4 w-4 ${liked ? 'fill-white' : ''}`} />
+              <Heart className={`h-4 w-4 text-white ${liked ? 'fill-white' : ''}`} />
             </Button>
           </motion.div>
         </div>
         
-        {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
     </div>
   );
