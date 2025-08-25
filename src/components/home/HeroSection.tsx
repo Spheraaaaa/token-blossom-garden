@@ -103,16 +103,6 @@ export const HeroSection = () => {
                 </Button>
               </Link>
               
-              <Link to="/create-nft" className="group">
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="bg-card/50 backdrop-blur-xl border-2 border-primary/20 hover:border-primary/40 text-foreground font-semibold px-8 py-4 h-14 text-lg rounded-2xl hover:bg-primary/5 transition-all duration-300 hover:scale-105"
-                >
-                  <Sparkles className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-300" />
-                  <span>Create NFT</span>
-                </Button>
-              </Link>
             </div>
           </ScrollAnimation>
 

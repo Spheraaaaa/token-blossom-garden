@@ -44,67 +44,63 @@ const steps = [
 
 export const HowItWorksSection = () => {
   return (
-    <div className="py-32 bg-background/50 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-purple-500/5 to-pink-500/5"></div>
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px] animate-[pulse_10s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[150px] animate-[pulse_12s_ease-in-out_infinite] delay-1000"></div>
+    <div className="py-20 relative overflow-hidden bg-gradient-to-br from-background via-background/98 to-background/95">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-primary/6 via-accent/4 to-transparent rounded-full blur-3xl animate-simple-float opacity-40" />
+        <div className="absolute bottom-1/4 left-1/4 w-[150px] h-[150px] bg-gradient-to-br from-accent/4 via-secondary/3 to-transparent rounded-full blur-2xl animate-simple-float opacity-30" style={{ animationDelay: '2s' }} />
       </div>
 
-      <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16 max-w-2xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-500 drop-shadow-lg">
-            How It Works
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-card/60 to-card/40 backdrop-blur-xl rounded-xl px-4 py-2 border border-primary/10 shadow-lg mb-6">
+            <div className="w-3 h-3 bg-gradient-to-br from-primary to-accent rounded-full" />
+            <span className="text-sm font-medium text-muted-foreground">How It Works</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">
+            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Simple</span>
+            <span className="block bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Process</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Follow these simple steps to start your journey in the world of digital collectibles
+          <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-4" />
+          <p className="text-lg text-muted-foreground font-light">
+            Get started with NFTs in just a few simple steps
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {steps.map((step, index) => (
             <div 
               key={index} 
-              className="p-8 rounded-2xl bg-background/30 backdrop-blur-xl border border-primary/10 hover:border-primary/30 transition-all duration-700 hover:scale-[1.03] group relative overflow-hidden animate-fade-in"
-              style={{ animationDelay: `${index * 200}ms` }}
+              className="p-6 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/30 hover:border-primary/20 transition-all duration-300 hover:bg-card/60 group"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              
-              <div className="relative z-10">
-                <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${step.color} p-0.5 mb-8 group-hover:scale-105 transition-transform duration-700 shadow-lg`}>
-                  <div className="w-full h-full rounded-xl bg-background/90 backdrop-blur-xl flex items-center justify-center">
-                    <step.icon className="w-10 h-10 text-white group-hover:rotate-6 transition-all duration-700" />
-                  </div>
-                </div>
-                
-                <div className="min-h-[60px] flex items-center justify-center">
-                  <h3 className="text-2xl font-semibold text-center bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-500">
-                    {step.title}
-                  </h3>
-                </div>
-                
-                <p className="text-muted-foreground text-center text-base leading-relaxed mt-4 group-hover:text-muted-foreground/90 transition-colors duration-700">
-                  {step.description}
-                </p>
-                
-                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                    <ArrowRight className="w-3 h-3 text-primary" />
-                  </div>
-                </div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mb-4 group-hover:from-primary/20 group-hover:to-accent/20 transition-colors duration-300">
+                <step.icon className={`w-6 h-6 text-primary`} />
               </div>
+              
+              <h3 className="text-lg font-bold mb-3 text-foreground">
+                {step.title}
+              </h3>
+              
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>
         
         <div className="text-center mt-12">
-          <Link to="/register">
+          <Link to="/register" className="group relative inline-block">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-secondary rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
             <Button 
-              size="lg" 
-              className="bg-primary/90 hover:bg-primary backdrop-blur-sm px-8 py-6 text-lg shadow-lg hover:shadow-primary/20 transition-all duration-700 group"
+              size="lg"
+              className="relative bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-bold px-8 py-4 h-14 text-lg rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-500 border-0"
             >
-              Get Started Today
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              <span>Get Started Today</span>
+              <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
           </Link>
         </div>

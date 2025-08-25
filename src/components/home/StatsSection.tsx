@@ -42,44 +42,47 @@ const stats = [
 
 export const StatsSection = () => {
   return (
-    <div className="py-24 bg-secondary/5 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-purple-500/5 to-pink-500/5"></div>
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[150px] animate-[pulse_8s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[150px] animate-[pulse_10s_ease-in-out_infinite] delay-1000"></div>
+    <div className="py-20 relative overflow-hidden bg-gradient-to-br from-background via-background/98 to-background/95">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      
+      {/* Elegant floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 left-1/4 w-[200px] h-[200px] bg-gradient-to-br from-primary/6 via-accent/4 to-transparent rounded-full blur-3xl animate-simple-float opacity-40" />
+        <div className="absolute bottom-1/4 right-1/4 w-[150px] h-[150px] bg-gradient-to-br from-accent/4 via-secondary/3 to-transparent rounded-full blur-2xl animate-simple-float opacity-30" style={{ animationDelay: '2s' }} />
       </div>
       
-      <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16 max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-500">
-            Platform Statistics
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-card/60 to-card/40 backdrop-blur-xl rounded-xl px-4 py-2 border border-primary/10 shadow-lg mb-6">
+            <div className="w-3 h-3 bg-gradient-to-br from-primary to-accent rounded-full" />
+            <span className="text-sm font-medium text-muted-foreground">Platform Statistics</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight">
+            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Growing</span>
+            <span className="block bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Community</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
-            PureNFT continues to grow as the leading marketplace for digital art and collectibles
+          <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-4" />
+          <p className="text-lg text-muted-foreground font-light">
+            Join thousands of creators and collectors in our thriving marketplace
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {stats.map((stat, index) => (
             <div 
               key={index} 
-              className="text-center p-10 rounded-2xl bg-background/30 backdrop-blur-xl border border-primary/10 hover:border-primary/30 transition-all duration-700 hover:scale-[1.03] group relative overflow-hidden animate-fade-in"
-              style={{ animationDelay: `${index * 200}ms` }}
+              className="text-center p-6 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/30 hover:border-primary/20 transition-all duration-300 hover:bg-card/60 group"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-              <div className="relative z-10">
-                <div className="mx-auto w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-700 group-hover:bg-primary/20">
-                  <stat.icon className="w-10 h-10 text-primary group-hover:rotate-6 transition-all duration-700" />
-                </div>
-                <div className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-400 to-pink-500 mb-2 tracking-tight">
-                  {stat.value}
-                </div>
-                <div className="text-lg text-foreground font-medium mb-3 transition-colors duration-700">
-                  {stat.label}
-                </div>
-                <div className="text-sm text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-500">
-                  {stat.description}
-                </div>
+              <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mb-4 group-hover:from-primary/20 group-hover:to-accent/20 transition-colors duration-300">
+                <stat.icon className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl md:text-3xl font-black bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent mb-2">
+                {stat.value}
+              </div>
+              <div className="text-sm text-muted-foreground font-medium">
+                {stat.label}
               </div>
             </div>
           ))}
