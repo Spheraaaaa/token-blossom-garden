@@ -26,32 +26,53 @@ export const MarketplaceSearch = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 md:gap-4 max-w-5xl mx-auto px-3 mb-2 md:mb-0">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-6 max-w-6xl mx-auto px-4 mb-4">
       <div className="flex-1 relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+        {/* Enhanced glow effect */}
+        <div className="absolute -inset-2 bg-gradient-to-r from-primary/30 via-accent/20 to-secondary/30 rounded-2xl blur-lg opacity-60 group-hover:opacity-100 transition-all duration-700 group-hover:duration-300 animate-pulse" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary/40 via-accent/30 to-secondary/40 rounded-xl blur opacity-0 group-hover:opacity-80 transition-all duration-500" />
+        
         <div className="relative">
           <Input
             type="text"
-            placeholder={isMobile ? "Search NFTs..." : "Search by name or creator..."}
+            placeholder={isMobile ? "Search NFTs..." : "Search by name, creator, or collection..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 rounded-full bg-card border border-border/50 focus:border-primary/40 focus:ring-2 focus:ring-primary/40 shadow-sm transition-all duration-200 text-foreground placeholder:text-muted-foreground h-11"
+            className="search-input pl-12 pr-6 py-4 rounded-2xl bg-gradient-to-r from-card/95 to-card/90 backdrop-blur-lg border-2 border-border/30 focus:border-primary/50 focus:ring-4 focus:ring-primary/20 shadow-xl hover:shadow-2xl transition-all duration-500 text-foreground placeholder:text-muted-foreground/70 h-14 text-base font-medium group-hover:scale-[1.02] group-hover:shadow-primary/20"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 p-1.5 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
+            <Search className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-300" />
+          </div>
+          
+          {/* Search highlight effect */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         </div>
       </div>
       
-      <Select value={sortBy} onValueChange={setSortBy}>
-        <SelectTrigger className="w-full md:w-[200px] rounded-full bg-card border border-border/50 focus:border-primary/40 focus:ring-2 focus:ring-primary/40 shadow-sm h-11">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent className="bg-background/95 backdrop-blur-md border border-border/50">
-          <SelectItem value="newest">Newest First</SelectItem>
-          <SelectItem value="oldest">Oldest First</SelectItem>
-          <SelectItem value="price-asc">Price: Low to High</SelectItem>
-          <SelectItem value="price-desc">Price: High to Low</SelectItem>
-        </SelectContent>
-      </Select>
+      <div className="relative group">
+        {/* Sort dropdown glow */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-accent/25 to-primary/25 rounded-xl blur opacity-0 group-hover:opacity-100 transition-all duration-500" />
+        
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="sort-trigger w-full md:w-[240px] rounded-2xl bg-gradient-to-r from-card/95 to-card/90 backdrop-blur-lg border-2 border-border/30 focus:border-accent/50 focus:ring-4 focus:ring-accent/20 shadow-xl hover:shadow-2xl transition-all duration-500 h-14 text-base font-medium group-hover:scale-[1.02] group-hover:shadow-accent/20">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent className="bg-card/95 backdrop-blur-2xl border-2 border-border/40 rounded-xl shadow-2xl">
+            <SelectItem value="newest" className="focus:bg-primary/10 focus:text-primary rounded-lg m-1 cursor-pointer transition-colors duration-200">
+              🆕 Newest First
+            </SelectItem>
+            <SelectItem value="oldest" className="focus:bg-primary/10 focus:text-primary rounded-lg m-1 cursor-pointer transition-colors duration-200">
+              📅 Oldest First
+            </SelectItem>
+            <SelectItem value="price-asc" className="focus:bg-accent/10 focus:text-accent rounded-lg m-1 cursor-pointer transition-colors duration-200">
+              💰 Price: Low to High
+            </SelectItem>
+            <SelectItem value="price-desc" className="focus:bg-accent/10 focus:text-accent rounded-lg m-1 cursor-pointer transition-colors duration-200">
+              💎 Price: High to Low
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };

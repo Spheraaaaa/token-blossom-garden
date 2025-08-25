@@ -139,90 +139,101 @@ export const NFTCard = ({
     return (
       <>
         <Link to={`/nft/${id}`} className="block group">
-          <div className="relative rounded-xl overflow-hidden">
-              <div className="rounded-2xl border border-border/50 bg-card/90 text-foreground shadow-xl backdrop-blur-sm transition-all duration-500">
+          <div className="relative rounded-2xl overflow-hidden nft-card-enhanced hover-elastic neon-glow">
+            <div className="relative">
+              {/* Enhanced backdrop with multiple layers */}
+              <div className="absolute inset-0 bg-gradient-to-br from-card/95 via-card/80 to-card/95 backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
               {/* Marketplace badge */}
               {marketplace && isForSale && (
-                <div className="absolute top-2 left-2 z-10">
+                <div className="absolute top-3 left-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="flex items-center gap-1 bg-background/60 text-foreground border-border/30 px-2 py-1 text-xs rounded-md"
+                    className="flex items-center gap-1.5 bg-background/90 text-foreground border-border/50 px-3 py-1.5 text-xs rounded-xl backdrop-blur-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                   >
+                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                     {getMarketplaceDisplay()}
-                    <ExternalLink className="w-3 h-3 ml-0.5" />
+                    <ExternalLink className="w-3 h-3" />
                   </Badge>
                 </div>
               )}
               
               {/* For Sale badge */}
               {isForSale && (
-                <div className="absolute top-2 right-2 z-10">
+                <div className="absolute top-3 right-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="bg-primary/15 text-primary border-primary/30 px-2 py-1 text-xs rounded-md"
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-primary/20 to-accent/20 text-primary border-primary/30 px-3 py-1.5 text-xs rounded-xl backdrop-blur-lg font-medium shadow-lg animate-pulse"
                   >
+                    <div className="w-2 h-2 bg-accent rounded-full animate-ping" />
                     For Sale
                   </Badge>
                 </div>
               )}
               
-              {/* NFT Image */}
-              <div className="aspect-square w-full overflow-hidden flex items-center justify-center relative rounded-t-2xl">
+              {/* NFT Image with enhanced container */}
+              <div className="aspect-square w-full overflow-hidden flex items-center justify-center relative nft-image-container rounded-t-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <img
                   src={image}
                   alt={name}
                   loading="lazy"
-                  className="w-full h-full object-cover object-center transition-transform duration-500 will-change-transform md:group-hover:scale-105"
+                  className="w-full h-full object-cover object-center transition-all duration-700 will-change-transform group-hover:scale-110 group-hover:rotate-1"
                 />
+                {/* Image overlay effects */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               
-              {/* NFT Info */}
-              <div className="p-3 space-y-1">
-                <h3 className="font-medium text-base text-foreground line-clamp-1">
-                  {name}
-                </h3>
+              {/* NFT Info with enhanced styling */}
+              <div className="relative p-4 space-y-3 bg-gradient-to-b from-card/90 to-card/95 backdrop-blur-sm">
+                <div className="space-y-2">
+                  <h3 className="font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-300">
+                    {name}
+                  </h3>
+                  
+                  <p className="text-sm text-muted-foreground line-clamp-1 group-hover:text-foreground/80 transition-colors duration-300">
+                    by <span className="font-medium text-accent">{creator}</span>
+                  </p>
+                </div>
                 
-                <p className="text-xs text-muted-foreground line-clamp-1">
-                  by {creator}
-                </p>
-                
-                <div className="flex items-center justify-between pt-2 border-t border-border/50 mt-2">
+                <div className="flex items-center justify-between pt-3 border-t border-border/30 group-hover:border-primary/30 transition-colors duration-300">
                   {isEditingPrice ? (
-                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <Input 
                         type="number" 
                         value={newPrice} 
                         onChange={(e) => setNewPrice(e.target.value)}
-                        className="h-8 w-16 text-xs"
+                        className="h-8 w-20 text-sm border-primary/30 focus:border-primary"
                         min="0.01"
                         step="0.01"
                         onClick={(e) => e.stopPropagation()}
                       />
                       <Button 
                         size="icon" 
-                        className="h-6 w-6"
-                        variant="ghost"
+                        className="h-7 w-7 bg-accent hover:bg-accent/80"
+                        variant="default"
                         onClick={handleSavePrice}
                       >
-                        <Check className="h-3 w-3" />
+                        <Check className="h-3.5 w-3.5" />
                       </Button>
                       <Button 
                         size="icon" 
-                        className="h-6 w-6"
+                        className="h-7 w-7 bg-destructive/20 hover:bg-destructive/30 text-destructive"
                         variant="ghost"
                         onClick={handleCancelEdit}
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-3.5 w-3.5" />
                       </Button>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="price-badge transition-all duration-300 hover:scale-105">
                       <img 
                         src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" 
                         alt="ETH"
-                        className="h-4 w-4"
+                        className="h-5 w-5"
                       />
-                      <span className="text-sm font-medium text-white">
+                      <span className="text-base font-bold text-primary">
                         {price}
                       </span>
                     </div>
@@ -230,56 +241,57 @@ export const NFTCard = ({
                   
                   {/* Action buttons */}
                   {isProfileView && (
-                    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       {isForSale ? (
                         <>
                           {!isEditingPrice && (
                             <Button 
                               onClick={handleEditPrice} 
-                              size="nftAction"
+                              size="sm"
                               variant="secondary"
-                              className="h-6 px-2 py-0 text-xs rounded-md bg-primary/10 text-primary"
+                              className="h-8 px-3 text-xs rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all duration-300 hover:scale-105"
                               title="Edit Price"
                             >
-                              <Edit className="h-3 w-3" />
+                              <Edit className="h-3.5 w-3.5" />
                             </Button>
                           )}
                           <Button 
                             onClick={openCancelDialog} 
-                            size="nftAction"
+                            size="sm"
                             variant="secondary"
-                            className="h-6 px-2 py-0 text-xs rounded-md bg-destructive/10 text-destructive"
+                            className="h-8 px-3 text-xs rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-all duration-300 hover:scale-105"
                             title="Cancel Sale"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-3.5 w-3.5" />
                           </Button>
                         </>
                       ) : (
                         <Button 
                           onClick={handleSellNFT} 
-                          size="nftAction"
-                          variant="nftSell"
-                          className="h-6 px-2 py-0 text-xs"
+                          size="sm"
+                          variant="default"
+                          className="h-8 px-3 text-xs rounded-lg bg-gradient-to-r from-accent to-primary hover:from-accent/80 hover:to-primary/80 transition-all duration-300 hover:scale-105"
                           title="Sell NFT"
                         >
-                          <Tag className="h-3 w-3" />
+                          <Tag className="h-3.5 w-3.5 mr-1" />
+                          Sell
                         </Button>
                       )}
                     </div>
                   )}
                 </div>
                 
-                {/* View Bids button (relocated) */}
+                {/* View Bids button with enhanced styling */}
                 {isProfileView && isForSale && (
-                  <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                  <div className="mt-3" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleViewBids}
-                      className="w-full text-xs justify-between bg-card hover:bg-accent border-border/50 text-foreground"
+                      className="w-full text-sm justify-center bg-gradient-to-r from-card/50 to-card/80 hover:from-primary/10 hover:to-accent/10 border-border/50 hover:border-primary/30 text-foreground hover:text-primary transition-all duration-300 rounded-lg backdrop-blur-sm"
                     >
                       <span>View Bids</span>
-                      <ArrowRight className="h-3 w-3 ml-1" />
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </div>
                 )}
@@ -289,28 +301,32 @@ export const NFTCard = ({
         </Link>
         
         <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-          <AlertDialogContent className="bg-card border border-border/50">
+          <AlertDialogContent className="bg-card/95 backdrop-blur-xl border-2 border-border/50 rounded-2xl shadow-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-xl font-semibold">Cancel NFT Sale</AlertDialogTitle>
-              <AlertDialogDescription className="text-purple-300/80">
-                Are you sure you want to cancel the sale of <span className="text-purple-300 font-medium">"{name}"</span>? This will remove the NFT from all marketplaces.
+              <AlertDialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Cancel NFT Sale
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground leading-relaxed">
+                Are you sure you want to cancel the sale of <span className="text-primary font-medium">"{name}"</span>? 
+                <br />
+                <span className="text-sm">This will remove the NFT from all marketplaces.</span>
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="gap-3">
+            <AlertDialogFooter className="gap-4">
               <AlertDialogCancel 
                 onClick={(e) => e.stopPropagation()}
-                className="border-border/50 bg-card hover:bg-accent"
+                className="border-border/50 bg-card hover:bg-accent/10 hover:border-accent/30 transition-all duration-300 rounded-xl"
               >
-                No, keep it listed
+                Keep Listed
               </AlertDialogCancel>
               <AlertDialogAction 
                 onClick={(e) => {
                   e.stopPropagation();
                   handleCancelSale();
                 }}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground hover:from-destructive/90 hover:to-destructive/70 transition-all duration-300 rounded-xl"
               >
-                Yes, cancel sale
+                Cancel Sale
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
