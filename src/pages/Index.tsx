@@ -1,28 +1,31 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { HeroSection } from "@/components/home/HeroSection";
-import { StatsSection } from "@/components/home/StatsSection";
-import { HowItWorksSection } from "@/components/home/HowItWorksSection";
-import { TrustIndicators } from "@/components/home/TrustIndicators";
-import { Testimonials } from "@/components/home/Testimonials";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { NFTCard } from "@/components/NFTCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-gsap.registerPlugin(ScrollTrigger);
+// Lazy load non-critical components to improve TTI
+const StatsSection = lazy(() => import("@/components/home/StatsSection").then(module => ({ default: module.StatsSection })));
+const HowItWorksSection = lazy(() => import("@/components/home/HowItWorksSection").then(module => ({ default: module.HowItWorksSection })));
+const TrustIndicators = lazy(() => import("@/components/home/TrustIndicators").then(module => ({ default: module.TrustIndicators })));
+const Testimonials = lazy(() => import("@/components/home/Testimonials").then(module => ({ default: module.Testimonials })));
+const Carousel = lazy(() => import("@/components/ui/carousel").then(module => ({ default: module.Carousel })));
+const CarouselContent = lazy(() => import("@/components/ui/carousel").then(module => ({ default: module.CarouselContent })));
+const CarouselItem = lazy(() => import("@/components/ui/carousel").then(module => ({ default: module.CarouselItem })));
+const CarouselNext = lazy(() => import("@/components/ui/carousel").then(module => ({ default: module.CarouselNext })));
+const CarouselPrevious = lazy(() => import("@/components/ui/carousel").then(module => ({ default: module.CarouselPrevious })));
+const NFTCard = lazy(() => import("@/components/NFTCard").then(module => ({ default: module.NFTCard })));
+
+// Lazy load GSAP to defer animation initialization
+const initializeAnimations = async () => {
+  const gsap = await import("gsap");
+  const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+  return { gsap: gsap.default, ScrollTrigger };
+};
 
 const Index = () => {
   useEffect(() => {
@@ -77,6 +80,7 @@ const Index = () => {
   const trustRef = useRef(null);
   const testimonialsRef = useRef(null);
 
+  // Defer featured NFTs query to not block initial render
   const { data: featuredNFTs, isLoading: featuredLoading } = useQuery({
     queryKey: ['featured-nfts'],
     queryFn: async () => {
@@ -89,109 +93,62 @@ const Index = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
+  // Defer GSAP animations to improve TTI
   useEffect(() => {
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    
-    gsap.fromTo(heroRef.current,
-      { opacity: 0, y: 50 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 2, 
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top 80%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
+    let timeoutId: NodeJS.Timeout;
+    let animationsInitialized = false;
 
-    gsap.fromTo(statsRef.current,
-      { opacity: 0, scale: 0.95 },
-      {
-        opacity: 1,
-        scale: 1,
-        duration: 1.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: statsRef.current,
-          start: "top 85%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
+    const setupAnimations = async () => {
+      try {
+        const { gsap, ScrollTrigger } = await initializeAnimations();
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Kill existing triggers
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        
+        // Initialize animations with a slight delay to not block initial render
+        const refs = [heroRef, statsRef, featuredRef, howItWorksRef, trustRef, testimonialsRef];
+        
+        refs.forEach((ref, index) => {
+          if (ref.current) {
+            gsap.fromTo(ref.current,
+              { opacity: 0, y: 30 },
+              { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1.5, 
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: ref.current,
+                  start: "top 80%",
+                  end: "bottom center",
+                  toggleActions: "play none none reverse"
+                }
+              }
+            );
+          }
+        });
+        
+        animationsInitialized = true;
+      } catch (error) {
+        console.warn('Failed to initialize animations:', error);
       }
-    );
+    };
 
-    gsap.fromTo(featuredRef.current,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: featuredRef.current,
-          start: "top 80%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    gsap.fromTo(howItWorksRef.current,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: howItWorksRef.current,
-          start: "top 80%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    gsap.fromTo(trustRef.current,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: trustRef.current,
-          start: "top 80%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    gsap.fromTo(testimonialsRef.current,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: testimonialsRef.current,
-          start: "top 80%",
-          end: "bottom center",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
+    // Delay animation setup to after critical rendering
+    timeoutId = setTimeout(setupAnimations, 100);
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      clearTimeout(timeoutId);
+      if (animationsInitialized) {
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+          ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        });
+      }
     };
   }, []);
 
@@ -210,21 +167,23 @@ const Index = () => {
         <HeroSection />
       </section>
 
-      <section id="how-it-works" ref={howItWorksRef} aria-label="How it works">
-        <HowItWorksSection />
-      </section>
-      
-      <section id="trust" ref={trustRef} aria-label="Trust indicators">
-        <TrustIndicators />
-      </section>
+      <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-pulse">Loading...</div></div>}>
+        <section id="how-it-works" ref={howItWorksRef} aria-label="How it works">
+          <HowItWorksSection />
+        </section>
+        
+        <section id="trust" ref={trustRef} aria-label="Trust indicators">
+          <TrustIndicators />
+        </section>
 
-      <section id="stats" ref={statsRef} aria-label="Platform statistics">
-        <StatsSection />
-      </section>
-      
-      <section id="testimonials" ref={testimonialsRef} aria-label="Community testimonials">
-        <Testimonials />
-      </section>
+        <section id="stats" ref={statsRef} aria-label="Platform statistics">
+          <StatsSection />
+        </section>
+        
+        <section id="testimonials" ref={testimonialsRef} aria-label="Community testimonials">
+          <Testimonials />
+        </section>
+      </Suspense>
 
       <div ref={featuredRef} className="py-24 bg-background/50 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-purple-500/5 to-pink-500/5"></div>
@@ -257,6 +216,21 @@ const Index = () => {
               <CardDescription className="text-muted-foreground">Discover unique digital art from top creators around the world</CardDescription>
             </CardHeader>
             <CardContent className="p-6">
+              <Suspense fallback={
+                <div className="w-full max-w-5xl mx-auto">
+                  <div className="flex gap-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="flex-1 rounded-xl border border-border/50 bg-card/70 p-4">
+                        <Skeleton className="aspect-square w-full rounded-lg" />
+                        <div className="mt-3 space-y-2">
+                          <Skeleton className="h-4 w-3/4" />
+                          <Skeleton className="h-3 w-1/2" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }>
                 <Carousel className="w-full max-w-5xl mx-auto">
                   <CarouselContent>
                     {featuredLoading
@@ -284,6 +258,7 @@ const Index = () => {
                   <CarouselPrevious className="bg-background/80 backdrop-blur-sm border-border/50 hover:bg-accent/20 transition-colors duration-300 -left-6 lg:-left-12" />
                   <CarouselNext className="bg-background/80 backdrop-blur-sm border-border/50 hover:bg-accent/20 transition-colors duration-300 -right-6 lg:-right-12" />
                 </Carousel>
+              </Suspense>
             </CardContent>
           </Card>
           
