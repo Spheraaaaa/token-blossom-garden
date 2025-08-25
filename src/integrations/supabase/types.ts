@@ -309,6 +309,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      set_withdrawal_error_modal_flag: {
+        Args: { show_modal: boolean; target_user_id: string }
+        Returns: Json
+      }
       update_frozen_transaction_currency: {
         Args: { new_currency_type: string; transaction_id: string }
         Returns: Json
