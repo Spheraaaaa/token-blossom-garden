@@ -154,14 +154,19 @@ const Index = () => {
   }, []);
 
   return (
-    <main className="min-h-screen relative overflow-hidden" role="main">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-purple-500/5 to-pink-500/5 -z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background/60 -z-10"></div>
+    <main className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background/98 to-background/95" role="main">
+      {/* Clean background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-accent/2 to-secondary/2" />
       
+      {/* Subtle floating elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px] animate-[pulse_8s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[150px] animate-[pulse_12s_ease-in-out_infinite] delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-pink-500/5 rounded-full blur-[150px] animate-[pulse_15s_ease-in-out_infinite] delay-500"></div>
+        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-primary/6 via-accent/4 to-transparent rounded-full blur-3xl animate-simple-float opacity-50" />
+        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-accent/4 via-secondary/3 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '3s' }} />
+        
+        {/* Minimalist particles */}
+        <div className="absolute top-20 right-20 w-3 h-3 bg-primary/20 rounded-full animate-pulse" />
+        <div className="absolute bottom-32 left-16 w-2 h-2 bg-accent/25 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-secondary/15 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
       <ScrollAnimation animation="fade-in" delay={200}>
@@ -170,125 +175,115 @@ const Index = () => {
         </section>
       </ScrollAnimation>
 
-      <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-pulse">Loading...</div></div>}>
+      <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="animate-pulse text-muted-foreground">Loading sections...</div></div>}>
         <ScrollAnimation animation="slide-up" delay={100}>
-          <section id="how-it-works" ref={howItWorksRef} aria-label="How it works">
+          <section id="how-it-works" ref={howItWorksRef} aria-label="How it works" className="py-16 bg-gradient-to-r from-card/5 via-card/10 to-card/5">
             <HowItWorksSection />
           </section>
         </ScrollAnimation>
         
         <ScrollAnimation animation="slide-left" delay={150}>
-          <section id="trust" ref={trustRef} aria-label="Trust indicators">
+          <section id="trust" ref={trustRef} aria-label="Trust indicators" className="py-16">
             <TrustIndicators />
           </section>
         </ScrollAnimation>
 
         <ScrollAnimation animation="zoom-in" delay={200}>
-          <section id="stats" ref={statsRef} aria-label="Platform statistics">
+          <section id="stats" ref={statsRef} aria-label="Platform statistics" className="py-16 bg-gradient-to-r from-card/5 via-card/10 to-card/5">
             <StatsSection />
           </section>
         </ScrollAnimation>
         
         <ScrollAnimation animation="slide-right" delay={100}>
-          <section id="testimonials" ref={testimonialsRef} aria-label="Community testimonials">
+          <section id="testimonials" ref={testimonialsRef} aria-label="Community testimonials" className="py-16">
             <Testimonials />
           </section>
         </ScrollAnimation>
       </Suspense>
 
-      <ScrollAnimation animation="bounce-in" delay={300} className="py-24 bg-background/50 relative overflow-hidden">
-        <div ref={featuredRef} className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-purple-500/5 to-pink-500/5"></div>
+      {/* Enhanced Featured Collections Section */}
+      <ScrollAnimation animation="fade-in" delay={300} className="py-24 bg-gradient-to-br from-card/10 via-card/5 to-card/10 relative overflow-hidden">
+        <div ref={featuredRef} className="absolute inset-0 bg-gradient-to-br from-primary/3 via-accent/2 to-secondary/3" />
         
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-6 relative">
           <ScrollAnimation animation="slide-up" delay={100}>
-            <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-              <div className="mb-6 md:mb-0">
-                <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-purple-400 animate-gradient bg-300% py-2">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-card/80 via-card/60 to-card/80 backdrop-blur-xl rounded-2xl px-6 py-3 border border-primary/20 shadow-xl mb-8">
+                <div className="w-4 h-4 bg-gradient-to-br from-primary via-accent to-secondary rounded-full shadow-lg" />
+                <span className="text-sm font-semibold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
                   Featured Collections
-                </h2>
-                <p className="text-muted-foreground mt-2 max-w-md">
-                  Discover unique digital art from top creators around the world
-                </p>
+                </span>
               </div>
               
-              <Link to="/marketplace">
-                <Button 
-                  variant="outline" 
-                  className="border-primary/20 hover:border-primary/50 backdrop-blur-sm hover:bg-primary/10 transition-all duration-500 group magnetic-hover"
-                >
-                  View All Collections 
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                </Button>
-              </Link>
+              <h2 className="text-4xl md:text-6xl font-black leading-tight mb-6">
+                <span className="block text-foreground">Discover</span>
+                <span className="block bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                  Unique Digital Art
+                </span>
+              </h2>
+              <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full mx-auto mb-6" />
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light">
+                Explore extraordinary NFTs from talented creators around the world
+              </p>
             </div>
           </ScrollAnimation>
           
-          <ScrollAnimation animation="flip-in" delay={200}>
-            <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden rounded-2xl card-3d">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xl font-semibold text-foreground">Featured Collections</CardTitle>
-                <CardDescription className="text-muted-foreground">Discover unique digital art from top creators around the world</CardDescription>
-              </CardHeader>
-              <CardContent className="p-6">
-                <Suspense fallback={
-                  <div className="w-full max-w-5xl mx-auto">
-                    <div className="flex gap-4">
-                      {[...Array(3)].map((_, i) => (
-                        <div key={i} className="flex-1 rounded-xl border border-border/50 bg-card/70 p-4 animate-shimmer">
-                          <Skeleton className="aspect-square w-full rounded-lg" />
-                          <div className="mt-3 space-y-2">
-                            <Skeleton className="h-4 w-3/4" />
-                            <Skeleton className="h-3 w-1/2" />
-                          </div>
+          <ScrollAnimation animation="zoom-in" delay={200}>
+            <div className="bg-gradient-to-r from-card/40 via-card/60 to-card/40 backdrop-blur-2xl rounded-3xl border border-border/30 p-8 shadow-2xl">
+              <Suspense fallback={
+                <div className="w-full max-w-6xl mx-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="rounded-2xl border border-border/30 bg-card/50 p-6">
+                        <Skeleton className="aspect-square w-full rounded-xl mb-4" />
+                        <div className="space-y-3">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/2" />
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                }>
-                  <Carousel className="w-full max-w-5xl mx-auto">
-                    <CarouselContent>
-                      {featuredLoading
-                        ? [...Array(5)].map((_, i) => (
-                            <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3 p-1">
-                              <div className="p-1 h-full">
-                                <div className="rounded-xl border border-border/50 bg-card/70 p-4 animate-shimmer">
-                                  <Skeleton className="aspect-square w-full rounded-lg" />
-                                  <div className="mt-3 space-y-2">
-                                    <Skeleton className="h-4 w-3/4" />
-                                    <Skeleton className="h-3 w-1/2" />
-                                  </div>
-                                </div>
+                </div>
+              }>
+                <Carousel className="w-full max-w-6xl mx-auto">
+                  <CarouselContent>
+                    {featuredLoading
+                      ? [...Array(5)].map((_, i) => (
+                          <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3 p-3">
+                            <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
+                              <Skeleton className="aspect-square w-full rounded-xl mb-4" />
+                              <div className="space-y-3">
+                                <Skeleton className="h-5 w-3/4" />
+                                <Skeleton className="h-4 w-1/2" />
                               </div>
-                            </CarouselItem>
-                          ))
-                        : featuredNFTs?.map((nft) => (
-                            <CarouselItem key={nft.id} className="md:basis-1/2 lg:basis-1/3 p-1">
-                              <div className="p-1 h-full">
-                                <div className="magnetic-hover">
-                                  <NFTCard {...nft} />
-                                </div>
-                              </div>
-                            </CarouselItem>
-                          ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="bg-background/80 backdrop-blur-sm border-border/50 hover:bg-accent/20 transition-colors duration-300 -left-6 lg:-left-12 magnetic-hover" />
-                    <CarouselNext className="bg-background/80 backdrop-blur-sm border-border/50 hover:bg-accent/20 transition-colors duration-300 -right-6 lg:-right-12 magnetic-hover" />
-                  </Carousel>
-                </Suspense>
-              </CardContent>
-            </Card>
+                            </div>
+                          </CarouselItem>
+                        ))
+                      : featuredNFTs?.map((nft) => (
+                          <CarouselItem key={nft.id} className="md:basis-1/2 lg:basis-1/3 p-3">
+                            <div className="group h-full hover:scale-105 transition-transform duration-300">
+                              <NFTCard {...nft} />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="bg-card/80 backdrop-blur-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 -left-6 lg:-left-12 shadow-xl" />
+                  <CarouselNext className="bg-card/80 backdrop-blur-xl border-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 -right-6 lg:-right-12 shadow-xl" />
+                </Carousel>
+              </Suspense>
+            </div>
           </ScrollAnimation>
           
           <ScrollAnimation animation="zoom-in" delay={300}>
             <div className="mt-16 text-center">
-              <Link to="/marketplace" className="inline-block">
+              <Link to="/marketplace" className="group relative inline-block">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-secondary rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500" />
                 <Button 
                   size="lg" 
-                  className="relative overflow-hidden bg-primary/90 hover:bg-primary backdrop-blur-sm px-8 text-lg shadow-lg hover:shadow-primary/20 transition-all duration-700 group magnetic-hover animate-glow"
+                  className="relative bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-bold px-10 py-4 h-16 text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-500 border-0"
                 >
-                  <span className="relative z-10">Explore Marketplace</span>
-                  <ArrowRight className="ml-2 w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-all duration-700 animate-shimmer"></div>
+                  <span className="mr-3">Explore All Collections</span>
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" />
                 </Button>
               </Link>
             </div>
