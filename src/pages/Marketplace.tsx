@@ -133,9 +133,9 @@ const Marketplace = () => {
         <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '3s' }} />
       </div>
 
-      <div className="relative container mx-auto py-4 px-2 md:px-4 mt-16">
+      <div className="relative container mx-auto py-2 px-1 md:px-4 mt-16">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 gap-4 md:gap-8">
+          <div className="grid grid-cols-1 gap-3 md:gap-8">
             <ScrollAnimation animation="zoom-in" delay={100}>
               <Card className="relative overflow-hidden border border-border/30 bg-card/80 backdrop-blur-xl shadow-2xl transition-all duration-500 rounded-2xl md:rounded-3xl group hover:shadow-primary/10 hover:border-primary/20">
                 {/* Subtle glow effect */}

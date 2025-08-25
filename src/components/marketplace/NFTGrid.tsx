@@ -236,16 +236,16 @@ export const NFTGrid = ({
         ref={scrollAreaRef}
         className={`marketplace-scroll-area ${
           isMobile 
-            ? 'h-[calc(100vh-280px)] max-h-[600px]' 
+            ? 'h-[calc(100vh-240px)] max-h-[700px]' 
             : 'h-[calc(100vh-320px)] max-h-[800px]'
         } rounded-xl md:rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-sm relative`}
       >
-        <div className="p-3 md:p-4 lg:p-6">
+        <div className="p-2 md:p-4 lg:p-6">
           <div 
             ref={gridRef}
-            className={`grid gap-4 marketplace-nft-grid ${
+            className={`grid gap-3 marketplace-nft-grid ${
               isMobile 
-                ? 'grid-cols-1 max-w-sm mx-auto' 
+                ? 'grid-cols-1 justify-items-center' 
                 : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6'
             }`}
           >

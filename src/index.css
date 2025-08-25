@@ -1092,11 +1092,13 @@
   @media (max-width: 640px) {
     .marketplace-nft-grid {
       justify-items: center;
+      padding: 0;
     }
     
     .nft-card-enhanced {
-      max-width: 320px;
+      max-width: calc(100vw - 2rem);
       width: 100%;
+      margin: 0 auto;
     }
     
     .price-badge {
@@ -1117,6 +1119,18 @@
     /* Mobile-friendly scroll area */
     .marketplace-scroll-area {
       -webkit-overflow-scrolling: touch;
+      margin: 0;
+    }
+    
+    /* Ensure full visibility of cards */
+    .marketplace-scroll-area .scrollbar-hide {
+      padding-bottom: 2rem;
+    }
+    
+    /* Fix container margins */
+    .container {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
     }
   }
 }
