@@ -139,18 +139,17 @@ export const NFTCard = ({
     return (
       <>
         <Link to={`/nft/${id}`} className="block group">
-          <div className="relative rounded-2xl overflow-hidden nft-card-enhanced hover-elastic neon-glow">
+          <div className="relative rounded-2xl overflow-hidden nft-card-enhanced hover-elastic hw-accelerated">
             <div className="relative">
-              {/* Enhanced backdrop with multiple layers */}
-              <div className="absolute inset-0 bg-gradient-to-br from-card/95 via-card/80 to-card/95 backdrop-blur-xl" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              {/* Simplified backdrop */}
+              <div className="absolute inset-0 light-blur" />
               
               {/* Marketplace badge */}
               {marketplace && isForSale && (
                 <div className="absolute top-3 left-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="flex items-center gap-1.5 bg-background/90 text-foreground border-border/50 px-3 py-1.5 text-xs rounded-xl backdrop-blur-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    className="flex items-center gap-1.5 bg-background/80 text-foreground border-border/50 px-3 py-1.5 text-xs rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hw-accelerated"
                   >
                     <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
                     {getMarketplaceDisplay()}
@@ -164,7 +163,7 @@ export const NFTCard = ({
                 <div className="absolute top-3 right-3 z-20">
                   <Badge 
                     variant="outline" 
-                    className="flex items-center gap-1.5 bg-gradient-to-r from-primary/20 to-accent/20 text-primary border-primary/30 px-3 py-1.5 text-xs rounded-xl backdrop-blur-lg font-medium shadow-lg animate-pulse"
+                    className="flex items-center gap-1.5 optimized-gradient text-primary border-primary/30 px-3 py-1.5 text-xs rounded-xl font-medium shadow-lg"
                   >
                     <div className="w-2 h-2 bg-accent rounded-full animate-ping" />
                     For Sale
@@ -172,21 +171,18 @@ export const NFTCard = ({
                 </div>
               )}
               
-              {/* NFT Image with enhanced container */}
+              {/* NFT Image with optimized container */}
               <div className="aspect-square w-full overflow-hidden flex items-center justify-center relative nft-image-container rounded-t-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <img
                   src={image}
                   alt={name}
                   loading="lazy"
-                  className="w-full h-full object-cover object-center transition-all duration-700 will-change-transform group-hover:scale-110 group-hover:rotate-1"
+                  className="w-full h-full object-cover object-center transition-transform duration-300 will-change-transform"
                 />
-                {/* Image overlay effects */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               
-              {/* NFT Info with enhanced styling */}
-              <div className="relative p-4 space-y-3 bg-gradient-to-b from-card/90 to-card/95 backdrop-blur-sm">
+              {/* NFT Info with optimized styling */}
+              <div className="relative p-4 space-y-3 light-blur">
                 <div className="space-y-2">
                   <h3 className="font-bold text-lg text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-300">
                     {name}
@@ -227,7 +223,7 @@ export const NFTCard = ({
                       </Button>
                     </div>
                   ) : (
-                    <div className="price-badge transition-all duration-300 hover:scale-105">
+                    <div className="price-badge">
                       <img 
                         src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" 
                         alt="ETH"
@@ -249,7 +245,7 @@ export const NFTCard = ({
                               onClick={handleEditPrice} 
                               size="sm"
                               variant="secondary"
-                              className="h-8 px-3 text-xs rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all duration-300 hover:scale-105"
+                              className="h-8 px-3 text-xs rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition-all duration-200 hover:scale-105 hw-accelerated"
                               title="Edit Price"
                             >
                               <Edit className="h-3.5 w-3.5" />
@@ -259,7 +255,7 @@ export const NFTCard = ({
                             onClick={openCancelDialog} 
                             size="sm"
                             variant="secondary"
-                            className="h-8 px-3 text-xs rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-all duration-300 hover:scale-105"
+                            className="h-8 px-3 text-xs rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-all duration-200 hover:scale-105 hw-accelerated"
                             title="Cancel Sale"
                           >
                             <X className="h-3.5 w-3.5" />
@@ -270,7 +266,7 @@ export const NFTCard = ({
                           onClick={handleSellNFT} 
                           size="sm"
                           variant="default"
-                          className="h-8 px-3 text-xs rounded-lg bg-gradient-to-r from-accent to-primary hover:from-accent/80 hover:to-primary/80 transition-all duration-300 hover:scale-105"
+                          className="h-8 px-3 text-xs rounded-lg optimized-gradient hover:from-accent/80 hover:to-primary/80 transition-all duration-200 hover:scale-105 hw-accelerated"
                           title="Sell NFT"
                         >
                           <Tag className="h-3.5 w-3.5 mr-1" />
@@ -281,17 +277,17 @@ export const NFTCard = ({
                   )}
                 </div>
                 
-                {/* View Bids button with enhanced styling */}
+                {/* View Bids button with optimized styling */}
                 {isProfileView && isForSale && (
                   <div className="mt-3" onClick={(e) => e.stopPropagation()}>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleViewBids}
-                      className="w-full text-sm justify-center bg-gradient-to-r from-card/50 to-card/80 hover:from-primary/10 hover:to-accent/10 border-border/50 hover:border-primary/30 text-foreground hover:text-primary transition-all duration-300 rounded-lg backdrop-blur-sm"
+                      className="w-full text-sm justify-center light-blur hover:bg-primary/10 border-border/50 hover:border-primary/30 text-foreground hover:text-primary transition-all duration-200 rounded-lg hw-accelerated"
                     >
                       <span>View Bids</span>
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
                     </Button>
                   </div>
                 )}
@@ -301,9 +297,9 @@ export const NFTCard = ({
         </Link>
         
         <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-          <AlertDialogContent className="bg-card/95 backdrop-blur-xl border-2 border-border/50 rounded-2xl shadow-2xl">
+          <AlertDialogContent className="light-blur border-2 border-border/50 rounded-2xl shadow-2xl">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <AlertDialogTitle className="text-xl font-bold text-primary">
                 Cancel NFT Sale
               </AlertDialogTitle>
               <AlertDialogDescription className="text-muted-foreground leading-relaxed">
@@ -315,7 +311,7 @@ export const NFTCard = ({
             <AlertDialogFooter className="gap-4">
               <AlertDialogCancel 
                 onClick={(e) => e.stopPropagation()}
-                className="border-border/50 bg-card hover:bg-accent/10 hover:border-accent/30 transition-all duration-300 rounded-xl"
+                className="border-border/50 bg-card hover:bg-accent/10 hover:border-accent/30 transition-all duration-200 rounded-xl hw-accelerated"
               >
                 Keep Listed
               </AlertDialogCancel>
@@ -324,7 +320,7 @@ export const NFTCard = ({
                   e.stopPropagation();
                   handleCancelSale();
                 }}
-                className="bg-gradient-to-r from-destructive to-destructive/80 text-destructive-foreground hover:from-destructive/90 hover:to-destructive/70 transition-all duration-300 rounded-xl"
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-all duration-200 rounded-xl hw-accelerated"
               >
                 Cancel Sale
               </AlertDialogAction>

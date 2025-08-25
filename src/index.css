@@ -497,10 +497,12 @@
   @apply bg-transparent border border-red-500 text-red-400 hover:bg-red-950/30 w-full flex justify-center items-center;
 }
 
-/* Enhanced marketplace specific styles */
+/* OPTIMIZED marketplace specific styles - Performance First */
 .marketplace-hero-card {
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  transform: translateZ(0); /* Hardware acceleration */
 }
 
 .marketplace-hero-card::before {
@@ -513,258 +515,144 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.03),
     transparent
   );
-  transition: left 0.5s;
+  transition: left 0.4s ease-out;
 }
 
 .marketplace-hero-card:hover::before {
   left: 100%;
 }
 
-/* Enhanced search input styles */
+/* Optimized search input styles */
 .search-input {
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .search-input:focus {
-  transform: translateY(-2px);
+  transform: translateY(-1px) translateZ(0);
 }
 
 .sort-trigger {
   position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .sort-trigger:hover {
-  transform: translateY(-1px);
+  transform: translateY(-0.5px) translateZ(0);
 }
 
-/* Enhanced NFT card styles */
+/* HEAVILY OPTIMIZED NFT card styles */
 .nft-card-enhanced {
-  @apply relative overflow-hidden rounded-2xl transition-all duration-700;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.02) 0%,
-    rgba(255, 255, 255, 0.01) 50%,
-    rgba(0, 0, 0, 0.02) 100%
-  );
-  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* Removed heavy backdrop-filter and complex box-shadows */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .nft-card-enhanced:hover {
-  transform: translateY(-12px) scale(1.02) rotateY(2deg);
-  box-shadow: 
-    0 20px 60px rgba(147, 39, 143, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border-color: rgba(147, 39, 143, 0.3);
+  transform: translateY(-6px) translateZ(0); /* Simplified transform */
+  box-shadow: 0 12px 24px rgba(147, 39, 143, 0.12); /* Single shadow */
+  border-color: rgba(147, 39, 143, 0.2);
 }
 
-.nft-card-enhanced::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(147, 39, 143, 0.05) 0%,
-    transparent 50%,
-    rgba(142, 76, 36, 0.05) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-  border-radius: inherit;
-}
+/* Removed complex ::before pseudo elements */
 
-.nft-card-enhanced:hover::before {
-  opacity: 1;
-}
-
-/* Image hover effects */
+/* Optimized image hover effects */
 .nft-image-container {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.nft-image-container img {
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.nft-image-container:hover img {
+  transform: scale(1.05) translateZ(0); /* Simplified scaling */
+}
+
+/* Simplified price badge */
+.price-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease-out;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.price-badge:hover {
+  background: rgba(147, 39, 143, 0.7);
+  border-color: rgba(147, 39, 143, 0.4);
+  transform: scale(1.02) translateZ(0);
+}
+
+/* Simplified shimmer effect */
+@keyframes optimized-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-optimized-shimmer {
   position: relative;
   overflow: hidden;
 }
 
-.nft-image-container::after {
+.animate-optimized-shimmer::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 70%
-  );
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
   transform: translateX(-100%);
-  transition: transform 0.6s ease;
+  animation: optimized-shimmer 2s infinite;
 }
 
-.nft-image-container:hover::after {
-  transform: translateX(100%);
+/* Removed heavy magnetic field and complex animations */
+
+/* Simplified floating animation */
+@keyframes simple-float {
+  0%, 100% { transform: translateY(0px) translateZ(0); }
+  50% { transform: translateY(-5px) translateZ(0); }
 }
 
-/* Price badge enhancement */
-.price-badge {
-  @apply flex items-center gap-2 px-3 py-2 rounded-xl;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.8) 0%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.animate-simple-float {
+  animation: simple-float 4s ease-in-out infinite;
+  will-change: transform;
 }
 
-.price-badge:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(147, 39, 143, 0.8) 0%,
-    rgba(147, 39, 143, 0.6) 100%
-  );
-  border-color: rgba(147, 39, 143, 0.5);
-  transform: scale(1.05);
-}
+/* Removed glitch, prismatic, and other heavy effects */
 
-/* Enhanced shimmer effect */
-@keyframes advanced-shimmer {
-  0% {
-    background-position: -200% center;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    background-position: 200% center;
-    opacity: 0;
-  }
-}
-
-.animate-advanced-shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(147, 39, 143, 0.4) 25%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(142, 76, 36, 0.4) 75%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: advanced-shimmer 3s infinite;
-}
-
-/* Magnetic field effect */
-@keyframes magnetic-field {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.2) rotate(180deg);
-    opacity: 1;
-  }
-}
-
-.magnetic-field {
-  animation: magnetic-field 4s ease-in-out infinite;
-}
-
-/* Enhanced floating animation */
-@keyframes enhanced-float {
-  0%, 100% {
-    transform: translateY(0px) rotateZ(0deg);
-  }
-  33% {
-    transform: translateY(-10px) rotateZ(1deg);
-  }
-  66% {
-    transform: translateY(-5px) rotateZ(-1deg);
-  }
-}
-
-.animate-enhanced-float {
-  animation: enhanced-float 6s ease-in-out infinite;
-}
-
-/* Glitch effect for special elements */
-@keyframes glitch {
-  0%, 100% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-}
-
-.animate-glitch {
-  animation: glitch 0.3s ease-in-out infinite;
-}
-
-/* Prismatic effect */
-@keyframes prismatic {
-  0% {
-    filter: hue-rotate(0deg) saturate(1);
-  }
-  25% {
-    filter: hue-rotate(90deg) saturate(1.2);
-  }
-  50% {
-    filter: hue-rotate(180deg) saturate(1);
-  }
-  75% {
-    filter: hue-rotate(270deg) saturate(1.2);
-  }
-  100% {
-    filter: hue-rotate(360deg) saturate(1);
-  }
-}
-
-.animate-prismatic {
-  animation: prismatic 8s linear infinite;
-}
-
-/* Elastic hover */
-@keyframes elastic-hover {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1.02);
-  }
-}
-
+/* Simplified elastic hover */
 .hover-elastic:hover {
-  animation: elastic-hover 0.6s ease-out;
+  animation: none; /* Removed complex animation */
+  transform: scale(1.02) translateZ(0);
+  transition: transform 0.2s ease-out;
 }
 
-/* Neon glow effect */
+/* Simplified neon glow - much lighter */
 .neon-glow {
   position: relative;
 }
@@ -772,43 +660,45 @@
 .neon-glow::before {
   content: '';
   position: absolute;
-  inset: -2px;
-  background: linear-gradient(
-    45deg,
-    hsl(var(--primary)),
-    hsl(var(--accent)),
-    hsl(var(--secondary)),
-    hsl(var(--primary))
-  );
+  inset: -1px;
+  background: hsl(var(--primary) / 0.3);
   border-radius: inherit;
   opacity: 0;
-  filter: blur(10px);
   z-index: -1;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease;
 }
 
 .neon-glow:hover::before {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
-/* Liquid morphing */
-@keyframes liquid-morph {
-  0%, 100% {
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  }
-  25% {
-    border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
-  }
-  50% {
-    border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
-  }
-  75% {
-    border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
-  }
+/* Removed liquid morphing - too expensive */
+
+/* Hardware acceleration utilities */
+.hw-accelerated {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-.animate-liquid-morph {
-  animation: liquid-morph 8s ease-in-out infinite;
+/* Optimized gradient background */
+.optimized-gradient {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary) / 0.05) 0%, 
+    hsl(var(--accent) / 0.03) 100%
+  );
+}
+
+/* Remove expensive backdrop-blur usage */
+.light-blur {
+  background: rgba(255, 255, 255, 0.05);
+  /* Removed backdrop-filter: blur() */
+}
+
+/* Performance-first card grid */
+.marketplace-nft-grid {
+  contain: layout style paint;
 }
 @media (max-width: 640px) {
   /* General padding adjustments for mobile */

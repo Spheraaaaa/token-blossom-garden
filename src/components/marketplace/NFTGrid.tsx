@@ -40,23 +40,24 @@ export const NFTGrid = ({
   const [animatedNFTs, setAnimatedNFTs] = useState<Set<string>>(new Set());
   const [previousNFTCount, setPreviousNFTCount] = useState(0);
 
-  // Setup GSAP animations only for new NFTs
+  // Setup GSAP animations only for new NFTs - OPTIMIZED
   useEffect(() => {
     if (!gridRef.current || nfts.length === 0) return;
 
     const cards = cardsRef.current.filter(Boolean);
     if (cards.length === 0) return;
 
-    // Ensure all existing cards are visible first
+    // Ensure all existing cards are visible first with optimized settings
     cards.forEach((card, index) => {
       const nftId = nfts[index]?.id;
       if (nftId && animatedNFTs.has(nftId)) {
-        // Make sure existing cards are visible
+        // Make sure existing cards are visible with hardware acceleration
         gsap.set(card, {
           opacity: 1,
           y: 0,
           scale: 1,
           rotationX: 0,
+          force3D: true, // Enable hardware acceleration
         });
       }
     });
@@ -76,39 +77,39 @@ export const NFTGrid = ({
         // Clear previous animations only for new cards
         gsap.killTweensOf(newCards);
 
-        // Initial state for new cards only
+        // Initial state for new cards only - optimized
         gsap.set(newCards, {
           opacity: 0,
-          y: 60,
-          scale: 0.8,
-          rotationX: 15,
+          y: 30, // Reduced distance
+          scale: 0.95, // Less scaling
+          force3D: true,
         });
 
-        // Stagger animation for new cards only
+        // Simplified stagger animation for new cards only
         const tl = gsap.timeline();
         tl.to(newCards, {
           opacity: 1,
           y: 0,
           scale: 1,
-          rotationX: 0,
-          duration: 0.8,
-          ease: "back.out(1.7)",
+          duration: 0.6, // Faster duration
+          ease: "power2.out", // Simpler easing
           stagger: {
-            amount: 0.4,
+            amount: 0.3, // Reduced stagger
             from: "start",
           },
+          force3D: true,
         });
 
         // Update animated NFTs set
         setAnimatedNFTs(prev => new Set([...prev, ...newNFTIds]));
       }
     } else if (animatedNFTs.size === 0) {
-      // First load - animate all cards
+      // First load - animate all cards with optimized settings
       gsap.set(cards, {
         opacity: 0,
-        y: 60,
-        scale: 0.8,
-        rotationX: 15,
+        y: 30,
+        scale: 0.95,
+        force3D: true,
       });
 
       const tl = gsap.timeline();
@@ -116,20 +117,20 @@ export const NFTGrid = ({
         opacity: 1,
         y: 0,
         scale: 1,
-        rotationX: 0,
-        duration: 0.8,
-        ease: "back.out(1.7)",
+        duration: 0.6,
+        ease: "power2.out",
         stagger: {
-          amount: 0.6,
+          amount: 0.4,
           from: "start",
         },
+        force3D: true,
       });
 
       // Mark all current NFTs as animated
       setAnimatedNFTs(new Set(nfts.map(nft => nft.id)));
     }
 
-    // Setup hover animations for all cards (existing and new)
+    // Optimized hover animations for all cards
     cards.forEach((card, index) => {
       if (!card) return;
 
@@ -137,22 +138,21 @@ export const NFTGrid = ({
       const existingEnter = card.getAttribute('data-mouse-enter');
       
       if (!existingEnter) {
-        // Hover animations
+        // Simplified hover animations with hardware acceleration
         const handleMouseEnter = () => {
           gsap.to(card, {
-            y: -12,
-            scale: 1.03,
-            rotationY: 2,
-            duration: 0.4,
+            y: -8, // Reduced movement
+            scale: 1.02, // Less scaling
+            duration: 0.3, // Faster
             ease: "power2.out",
+            force3D: true,
           });
           
           const glow = card.querySelector('.card-glow');
           if (glow) {
             gsap.to(glow, {
-              opacity: 1,
-              scale: 1.1,
-              duration: 0.4,
+              opacity: 0.7, // Reduced opacity
+              duration: 0.3,
               ease: "power2.out",
             });
           }
@@ -162,17 +162,16 @@ export const NFTGrid = ({
           gsap.to(card, {
             y: 0,
             scale: 1,
-            rotationY: 0,
-            duration: 0.4,
+            duration: 0.3,
             ease: "power2.out",
+            force3D: true,
           });
           
           const glow = card.querySelector('.card-glow');
           if (glow) {
             gsap.to(glow, {
               opacity: 0,
-              scale: 1,
-              duration: 0.4,
+              duration: 0.3,
               ease: "power2.out",
             });
           }
@@ -183,16 +182,6 @@ export const NFTGrid = ({
         card.setAttribute('data-mouse-enter', 'true');
       }
     });
-
-    // Smooth scroll behavior
-    if (scrollAreaRef.current && previousNFTCount === 0) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        gsap.set(scrollContainer, {
-          scrollBehavior: "smooth",
-        });
-      }
-    }
 
     setPreviousNFTCount(nfts.length);
   }, [nfts, animatedNFTs.size]);
