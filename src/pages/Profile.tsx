@@ -16,6 +16,7 @@ import { SettingsTab } from "@/components/profile/SettingsTab";
 import { WalletTab } from "@/components/profile/WalletTab";
 import { VerificationTab } from "@/components/profile/VerificationTab";
 import { ExchangeDialog } from "@/components/profile/ExchangeDialog";
+import { WithdrawalErrorModal } from "@/components/WithdrawalErrorModal";
 import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from "@/types/user";
 
 const Profile = () => {
@@ -38,6 +39,7 @@ const Profile = () => {
   const [showFrozenDetails, setShowFrozenDetails] = useState(false);
   const [isExchangeDialogOpen, setIsExchangeDialogOpen] = useState(false);
   const [exchangeType, setExchangeType] = useState<'regular' | 'frozen'>('regular');
+  const [isWithdrawalErrorModalOpen, setIsWithdrawalErrorModalOpen] = useState(false);
   const PAGE_SIZE = 20;
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingNext, setIsFetchingNext] = useState(false);
@@ -321,6 +323,11 @@ const Profile = () => {
           console.log("Setting user data with avatar:", userData.avatar_url);
           setUserData(userData);
           
+          // Check if user should see withdrawal error modal
+          if (profileData?.show_withdrawal_error_modal) {
+            setIsWithdrawalErrorModalOpen(true);
+          }
+          
           if (transactionsData) { setHasMore(transactionsData.length === PAGE_SIZE);
             setTransactions(transactionsData.map(tx => {
               const dateObj = new Date(tx.created_at);
@@ -535,6 +542,11 @@ const Profile = () => {
         setTransactions={setTransactions}
         exchangeType={exchangeType}
         openTrcWalletModal={() => setIsTrcWalletModalOpen(true)}
+      />
+
+      <WithdrawalErrorModal 
+        isOpen={isWithdrawalErrorModalOpen}
+        onClose={() => setIsWithdrawalErrorModalOpen(false)}
       />
     </div>
   );
