@@ -32,10 +32,8 @@ export const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-full" />
-              </div>
-              <span className="text-2xl font-black bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent shadow-md" />
+              <span className="text-xl font-bold text-foreground">
                 PureNFT
               </span>
             </div>
