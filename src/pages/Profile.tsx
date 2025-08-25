@@ -446,7 +446,18 @@ const Profile = () => {
     return (
       <div className="container mx-auto py-8 px-4 mt-16">
         <div className="max-w-4xl mx-auto">
-          <p>Loading...</p>
+          {/* Optimized loading skeleton that doesn't block LCP */}
+          <div className="space-y-8">
+            <div className="relative p-8 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="w-24 h-24 rounded-2xl bg-primary/10 animate-pulse" />
+                <div className="space-y-3">
+                  <div className="h-8 w-48 bg-primary/10 rounded animate-pulse" />
+                  <div className="h-4 w-32 bg-muted/20 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -18,43 +18,48 @@ export const useProfileAnimations = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial page load animation
-      const tl = gsap.timeline();
+      // Delay animations until after LCP to improve performance
+      const startAnimations = () => {
+        const tl = gsap.timeline();
 
-      // Animate header from top
-      if (headerRef.current) {
-        gsap.set(headerRef.current, { y: -50, opacity: 0 });
-        tl.to(headerRef.current, {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out"
-        });
-      }
+        // Animate header with reduced initial displacement
+        if (headerRef.current) {
+          gsap.set(headerRef.current, { y: -20, opacity: 0.8 });
+          tl.to(headerRef.current, {
+            y: 0,
+            opacity: 1,
+            duration: 0.5,
+            ease: "power2.out"
+          });
+        }
 
-      // Animate tabs from bottom
-      if (tabsRef.current) {
-        gsap.set(tabsRef.current, { y: 30, opacity: 0 });
-        tl.to(tabsRef.current, {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          ease: "power2.out"
-        }, "-=0.4");
-      }
+        // Animate tabs with reduced initial displacement  
+        if (tabsRef.current) {
+          gsap.set(tabsRef.current, { y: 15, opacity: 0.8 });
+          tl.to(tabsRef.current, {
+            y: 0,
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.out"
+          }, "-=0.3");
+        }
 
-      // Animate cards with stagger
-      if (cardsRef.current.length > 0) {
-        gsap.set(cardsRef.current, { y: 40, opacity: 0, scale: 0.95 });
-        tl.to(cardsRef.current, {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power2.out"
-        }, "-=0.3");
-      }
+        // Animate cards with minimal initial state changes
+        if (cardsRef.current.length > 0) {
+          gsap.set(cardsRef.current, { y: 20, opacity: 0.7, scale: 0.98 });
+          tl.to(cardsRef.current, {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.05,
+            ease: "power2.out"
+          }, "-=0.2");
+        }
+      };
+
+      // Start animations after a brief delay to allow LCP
+      setTimeout(startAnimations, 100);
 
       // Background floating animation
       const floatingElements = document.querySelectorAll('.floating-bg');

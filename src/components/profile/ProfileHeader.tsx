@@ -24,7 +24,13 @@ export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderPro
           <label htmlFor="avatar-upload" className="cursor-pointer block relative">
             <Avatar className="w-24 h-24 rounded-2xl border-2 border-border/30 shadow-xl transition-all duration-300 group-hover:border-primary/20 group-hover:shadow-primary/10 hover:scale-105">
               {userData?.avatar_url ? (
-                <AvatarImage src={userData.avatar_url} alt={userData.login} className="rounded-2xl" />
+                <AvatarImage 
+                  src={userData.avatar_url} 
+                  alt={userData.login} 
+                  className="rounded-2xl" 
+                  loading="eager"
+                  fetchPriority="high"
+                />
               ) : (
                 <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl">
                   <UserRound className="w-12 h-12 text-primary" />
