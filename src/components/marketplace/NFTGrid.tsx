@@ -3,7 +3,7 @@ import { NFTCard } from "@/components/NFTCard";
 import { Loader2, Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -37,28 +37,44 @@ export const NFTGrid = ({
   const gridRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [animatedNFTs, setAnimatedNFTs] = useState<Set<string>>(new Set());
+  const [previousNFTCount, setPreviousNFTCount] = useState(0);
 
-  // Setup GSAP animations
+  // Setup GSAP animations only for new NFTs
   useEffect(() => {
     if (!gridRef.current || nfts.length === 0) return;
 
     const cards = cardsRef.current.filter(Boolean);
     if (cards.length === 0) return;
 
-    // Clear previous animations
-    gsap.killTweensOf(cards);
+    // Find new NFTs that haven't been animated yet
+    const newNFTs = nfts.filter(nft => !animatedNFTs.has(nft.id));
+    const newNFTIds = new Set(newNFTs.map(nft => nft.id));
 
-    // Initial state - hide all cards
-    gsap.set(cards, {
+    if (newNFTs.length === 0) return;
+
+    // Get only the cards for new NFTs
+    const newCards = cards.filter((card, index) => {
+      const nftId = nfts[index]?.id;
+      return nftId && newNFTIds.has(nftId);
+    });
+
+    if (newCards.length === 0) return;
+
+    // Clear previous animations only for new cards
+    gsap.killTweensOf(newCards);
+
+    // Initial state for new cards only
+    gsap.set(newCards, {
       opacity: 0,
       y: 60,
       scale: 0.8,
       rotationX: 15,
     });
 
-    // Stagger animation for cards appearing
+    // Stagger animation for new cards only
     const tl = gsap.timeline();
-    tl.to(cards, {
+    tl.to(newCards, {
       opacity: 1,
       y: 0,
       scale: 1,
@@ -66,13 +82,73 @@ export const NFTGrid = ({
       duration: 0.8,
       ease: "back.out(1.7)",
       stagger: {
-        amount: 0.6,
+        amount: 0.4,
         from: "start",
       },
     });
 
+    // Update animated NFTs set
+    setAnimatedNFTs(prev => new Set([...prev, ...newNFTIds]));
+
+    // Setup hover animations for all cards (existing and new)
+    cards.forEach((card, index) => {
+      if (!card) return;
+
+      // Remove existing event listeners to avoid duplicates
+      const existingEnter = card.getAttribute('data-mouse-enter');
+      const existingLeave = card.getAttribute('data-mouse-leave');
+      
+      if (!existingEnter) {
+        // Hover animations
+        const handleMouseEnter = () => {
+          gsap.to(card, {
+            y: -12,
+            scale: 1.03,
+            rotationY: 2,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+          
+          const glow = card.querySelector('.card-glow');
+          if (glow) {
+            gsap.to(glow, {
+              opacity: 1,
+              scale: 1.1,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          }
+        };
+
+        const handleMouseLeave = () => {
+          gsap.to(card, {
+            y: 0,
+            scale: 1,
+            rotationY: 0,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+          
+          const glow = card.querySelector('.card-glow');
+          if (glow) {
+            gsap.to(glow, {
+              opacity: 0,
+              scale: 1,
+              duration: 0.4,
+              ease: "power2.out",
+            });
+          }
+        };
+
+        card.addEventListener('mouseenter', handleMouseEnter);
+        card.addEventListener('mouseleave', handleMouseLeave);
+        card.setAttribute('data-mouse-enter', 'true');
+        card.setAttribute('data-mouse-leave', 'true');
+      }
+    });
+
     // Smooth scroll behavior
-    if (scrollAreaRef.current) {
+    if (scrollAreaRef.current && previousNFTCount === 0) {
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollContainer) {
         gsap.set(scrollContainer, {
@@ -81,104 +157,25 @@ export const NFTGrid = ({
       }
     }
 
-    // Add scroll-triggered animations for cards that come into view
-    cards.forEach((card, index) => {
-      if (!card) return;
-
-      ScrollTrigger.create({
-        trigger: card,
-        start: "top bottom-=100",
-        end: "bottom top+=100",
-        scroller: scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]'),
-        onEnter: () => {
-          gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotationX: 0,
-            duration: 0.6,
-            ease: "back.out(1.4)",
-          });
-        },
-        onLeave: () => {
-          gsap.to(card, {
-            opacity: 0.7,
-            scale: 0.95,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        },
-        onEnterBack: () => {
-          gsap.to(card, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        },
-      });
-
-      // Hover animations
-      const handleMouseEnter = () => {
-        gsap.to(card, {
-          y: -12,
-          scale: 1.03,
-          rotationY: 2,
-          duration: 0.4,
-          ease: "power2.out",
-        });
-        
-        const glow = card.querySelector('.card-glow');
-        if (glow) {
-          gsap.to(glow, {
-            opacity: 1,
-            scale: 1.1,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        }
-      };
-
-      const handleMouseLeave = () => {
-        gsap.to(card, {
-          y: 0,
-          scale: 1,
-          rotationY: 0,
-          duration: 0.4,
-          ease: "power2.out",
-        });
-        
-        const glow = card.querySelector('.card-glow');
-        if (glow) {
-          gsap.to(glow, {
-            opacity: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        }
-      };
-
-      card.addEventListener('mouseenter', handleMouseEnter);
-      card.addEventListener('mouseleave', handleMouseLeave);
-
-      // Cleanup event listeners
-      return () => {
-        card.removeEventListener('mouseenter', handleMouseEnter);
-        card.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    });
+    setPreviousNFTCount(nfts.length);
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      gsap.killTweensOf(cards);
+      gsap.killTweensOf(newCards);
     };
-  }, [nfts.length]);
+  }, [nfts, animatedNFTs, previousNFTCount]);
 
-  // Clear refs array when nfts change
+  // Reset animated NFTs when starting fresh (e.g., new search)
+  useEffect(() => {
+    if (nfts.length === 0) {
+      setAnimatedNFTs(new Set());
+      setPreviousNFTCount(0);
+    }
+  }, [nfts.length === 0]);
+
+  // Clear and rebuild refs array when NFTs change
   useEffect(() => {
     cardsRef.current = [];
-  }, [nfts.length]);
+  }, [nfts]);
 
   const addToRefs = (el: HTMLDivElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
