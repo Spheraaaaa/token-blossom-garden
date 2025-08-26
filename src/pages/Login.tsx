@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { KeyRound, Mail } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { notifications } from "@/utils/notifications";
 import { supabase } from "@/lib/supabase";
 import { useNavigate, Link } from "react-router-dom";
 import { useSecureAuth } from "@/hooks/useSecureAuth";
@@ -15,7 +15,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useSecureAuth();
 
@@ -55,22 +54,14 @@ const Login = () => {
     try {
       // Rate limiting check
       if (!rateLimitCheck('login_attempt', 5, 300000)) { // 5 attempts per 5 minutes
-        toast({
-          title: "Error",
-          description: "Too many login attempts. Please try again later.",
-          variant: "destructive",
-        });
+        notifications.error.rateLimitExceeded();
         setIsLoading(false);
         return;
       }
 
       // Input validation
       if (!validateEmail(email)) {
-        toast({
-          title: "Error",
-          description: "Please enter a valid email address.",
-          variant: "destructive",
-        });
+        notifications.error.invalidEmail();
         setIsLoading(false);
         return;
       }
@@ -81,10 +72,7 @@ const Login = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Logged in successfully",
-      });
+      notifications.success.login();
       
       // Check if there's a redirect URL stored in localStorage
       const redirectPath = localStorage.getItem('redirectAfterLogin');
@@ -95,11 +83,7 @@ const Login = () => {
       // Navigate to the stored path or fallback to profile page
       navigate(redirectPath || "/profile");
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      notifications.error.loginFailed(error.message);
     } finally {
       setIsLoading(false);
     }

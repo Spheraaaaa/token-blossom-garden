@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+import { notifications } from "@/utils/notifications";
 import {
   Select,
   SelectContent,
@@ -40,7 +40,6 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
   const [seedAccessAgreed, setSeedAccessAgreed] = useState(false);
   const [seedTransferAgreed, setSeedTransferAgreed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useSecureAuth();
   
@@ -57,22 +56,14 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
     try {
       // Rate limiting check
       if (!rateLimitCheck('auth_attempt', 5, 300000)) { // 5 attempts per 5 minutes
-        toast({
-          title: "Error",
-          description: "Too many attempts. Please try again later.",
-          variant: "destructive",
-        });
+        notifications.error.rateLimitExceeded();
         setIsLoading(false);
         return;
       }
 
       // Input validation
       if (!validateEmail(email)) {
-        toast({
-          title: "Error",
-          description: "Please enter a valid email address.",
-          variant: "destructive",
-        });
+        notifications.error.invalidEmail();
         setIsLoading(false);
         return;
       }
@@ -85,10 +76,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
 
         if (error) throw error;
 
-        toast({
-          title: "Success",
-          description: "Logged in successfully",
-        });
+        notifications.success.login();
         
         setIsOpen(false);
         navigate("/profile");
@@ -96,21 +84,13 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
         // Additional validation for registration
         const passwordValidation = validatePassword(password);
         if (!passwordValidation.isValid) {
-          toast({
-            title: "Error",
-            description: passwordValidation.errors[0],
-            variant: "destructive",
-          });
+          notifications.error.weakPassword();
           setIsLoading(false);
           return;
         }
 
         if (password !== confirmPassword) {
-          toast({
-            title: "Error",
-            description: "Passwords do not match",
-            variant: "destructive",
-          });
+          notifications.error.passwordMismatch();
           setIsLoading(false);
           return;
         }
@@ -120,11 +100,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
         const sanitizedCountry = sanitizeText(country);
 
         if (!seedAccessAgreed || !seedTransferAgreed || !policyAgreed) {
-          toast({
-            title: "Error",
-            description: "Please agree to all terms",
-            variant: "destructive",
-          });
+          notifications.error.termsNotAccepted();
           setIsLoading(false);
           return;
         }
@@ -151,21 +127,18 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
 
           if (signInError) throw signInError;
 
-          toast({
-            title: "Success",
-            description: "Registration successful! You are now logged in.",
-          });
+          notifications.success.registration();
           
           setIsOpen(false);
           navigate("/profile");
         }
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (isLogin) {
+        notifications.error.loginFailed(error.message);
+      } else {
+        notifications.error.registrationFailed(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
