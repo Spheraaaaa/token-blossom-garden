@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { notifications } from "@/utils/notifications";
 import { CheckCircle, Clock, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -49,7 +49,6 @@ const ActiveBids = ({
   onBidAccepted,
   onBidDeclined,
 }: ActiveBidsProps = {}) => {
-  const { toast } = useToast();
   const { user } = useSecureAuth();
   const [bids, setBids] = useState<Bid[]>(initialBids || []);
   const [isLoading, setIsLoading] = useState(true);
@@ -124,18 +123,14 @@ const [loadingStage, setLoadingStage] = useState(0);
         }
       } catch (error) {
         console.error("Error fetching bids:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load bids",
-          variant: "destructive"
-        });
+        notifications.error.networkError();
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUserBids();
-  }, [initialBids, nftId, user?.id, toast]);
+  }, [initialBids, nftId, user?.id]);
   
   const isOwner = currentUserId === ownerId || (user?.id && !ownerId);
   const hasBids = bids.length > 0;
@@ -190,28 +185,15 @@ const [loadingStage, setLoadingStage] = useState(0);
         
         if (error) {
           console.error("Error accepting bid:", error);
-          toast({
-            title: "Error",
-            description: error.message || "Failed to accept bid",
-            variant: "destructive",
-          });
+          notifications.error.transactionFailed();
         } else if (data && typeof data === 'object' && 'success' in data) {
-          toast({
-            title: "Success",
-            description: `The bid has been accepted. ${receivedAmount.toFixed(2)} ETH will be available in your wallet after a 15-day security period.`,
-          });
+          notifications.success.bidAccepted();
           
           if (onBidAccepted) onBidAccepted();
           
           setBids(bids.filter(bid => bid.id !== bidId));
         } else {
-          toast({
-            title: "Error",
-            description: (data && typeof data === 'object' && 'message' in data) 
-              ? String(data.message) 
-              : "Failed to accept bid",
-            variant: "destructive",
-          });
+          notifications.error.transactionFailed();
         }
         
         setTimeout(() => {
@@ -224,11 +206,7 @@ const [loadingStage, setLoadingStage] = useState(0);
       
     } catch (error: any) {
       console.error("Error accepting bid:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to accept bid",
-        variant: "destructive",
-      });
+      notifications.error.transactionFailed();
       setProcessingBidId(null);
       setIsTransactionLoading(false);
       setProcessingDetails(null);
@@ -253,19 +231,12 @@ const [loadingStage, setLoadingStage] = useState(0);
       
       setBids(prevBids => prevBids.filter(bid => bid.id !== bidId));
       
-      toast({
-        title: "Success",
-        description: "Bid declined successfully",
-      });
+      notifications.success.bidDeclined();
       
       if (onBidDeclined) onBidDeclined();
     } catch (error: any) {
       console.error("Error declining bid:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to decline bid",
-        variant: "destructive",
-      });
+      notifications.error.transactionFailed();
     } finally {
       setProcessingBidId(null);
     }

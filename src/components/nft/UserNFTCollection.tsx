@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ShoppingBag, ImageIcon, Info, Wallet, Grid3X3, GridIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { NFTCard } from "@/components/NFTCard";
 import { EmptyNFTState } from "@/components/EmptyNFTState";
-import { useToast } from "@/hooks/use-toast";
+import { notifications } from "@/utils/notifications";
 import { Button } from "@/components/ui/button";
 import type { NFT } from "@/types/nft";
 import { 
@@ -25,7 +25,6 @@ export const UserNFTCollection = () => {
   const [selectedNft, setSelectedNft] = useState<string | null>(null);
   const [showBids, setShowBids] = useState(false);
   const { user } = useSecureAuth();
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserNFTs = async () => {
@@ -46,18 +45,14 @@ export const UserNFTCollection = () => {
         setNfts(data || []);
       } catch (error) {
         console.error("Error fetching user NFTs:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load your NFT collection",
-          variant: "destructive"
-        });
+        notifications.error.networkError();
       } finally {
         setIsLoading(false);
       }
     };
     
     fetchUserNFTs();
-  }, [user, toast]);
+  }, [user]);
 
   const handleCancelSale = async (id: string) => {
     if (!user?.id) return;
@@ -83,17 +78,10 @@ export const UserNFTCollection = () => {
         )
       );
       
-      toast({
-        title: "Sale cancelled",
-        description: "Your NFT is no longer for sale.",
-      });
+      notifications.success.nftCreated();
     } catch (error) {
       console.error("Error cancelling sale:", error);
-      toast({
-        title: "Error",
-        description: "Failed to cancel the sale",
-        variant: "destructive"
-      });
+      notifications.error.transactionFailed();
     }
   };
 
@@ -115,17 +103,10 @@ export const UserNFTCollection = () => {
         )
       );
       
-      toast({
-        title: "Price updated",
-        description: "Your NFT's price has been updated successfully.",
-      });
+      notifications.success.profileUpdated();
     } catch (error) {
       console.error("Error updating price:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update the price",
-        variant: "destructive"
-      });
+      notifications.error.profileUpdateFailed();
     }
   };
   
@@ -134,20 +115,12 @@ export const UserNFTCollection = () => {
     const nft = nfts.find(n => n.id === nftId);
     
     if (!nft) {
-      toast({
-        title: "Error",
-        description: "NFT not found",
-        variant: "destructive"
-      });
+      notifications.error.networkError();
       return;
     }
     
     if (!nft.for_sale) {
-      toast({
-        title: "Information",
-        description: "Bids are only available for NFTs that are listed for sale.",
-        variant: "default"
-      });
+      notifications.info.featureComingSoon();
       return;
     }
     
@@ -161,11 +134,7 @@ export const UserNFTCollection = () => {
       if (error) throw error;
       
       if (!data || data.length === 0) {
-        toast({
-          title: "Information",
-          description: "There are no bids for this NFT yet.",
-          variant: "default"
-        });
+        notifications.info.featureComingSoon();
         return;
       }
       
@@ -175,11 +144,7 @@ export const UserNFTCollection = () => {
       
     } catch (error) {
       console.error("Error checking bids:", error);
-      toast({
-        title: "Error",
-        description: "Failed to check bids for this NFT",
-        variant: "destructive"
-      });
+      notifications.error.networkError();
     }
   };
   
@@ -206,20 +171,14 @@ export const UserNFTCollection = () => {
     setShowBids(false);
     setSelectedNft(null);
     
-    toast({
-      title: "Bid accepted",
-      description: "The sale has been completed successfully.",
-    });
+    notifications.success.bidAccepted();
   };
   
   const handleBidDeclined = () => {
     setShowBids(false);
     setSelectedNft(null);
     
-    toast({
-      title: "Bid declined",
-      description: "The bid has been declined.",
-    });
+    notifications.success.bidDeclined();
   };
 
   // Filter NFTs by listing status

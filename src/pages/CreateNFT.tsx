@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { notifications } from "@/utils/notifications";
 import { Loader2, Upload, Plus, Wand2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,7 +16,6 @@ interface Property {
 
 const CreateNFT = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [canCreate, setCanCreate] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
@@ -73,14 +72,10 @@ const CreateNFT = () => {
 
   useEffect(() => {
     if (!isChecking && !canCreate) {
-      toast({
-        title: "Access Restricted",
-        description: "To create NFTs, you need to either make a purchase, deposit funds first, or have at least 1 ETH in your balance.",
-        variant: "destructive"
-      });
+      notifications.error.verificationRequired();
       navigate('/profile');
     }
-  }, [canCreate, isChecking, navigate, toast]);
+  }, [canCreate, isChecking, navigate]);
 
   if (isChecking) {
     return (
@@ -125,11 +120,7 @@ const CreateNFT = () => {
       // Input validation
       const price = parseFloat(formData.price);
       if (!validateNFTPrice(price)) {
-        toast({
-          title: "Error",
-          description: "Please enter a valid price between 0 and 1,000,000 ETH.",
-          variant: "destructive",
-        });
+        notifications.error.transactionFailed();
         setIsLoading(false);
         return;
       }
@@ -140,11 +131,7 @@ const CreateNFT = () => {
       const sanitizedDescription = sanitizeText(formData.description);
 
       if (!sanitizedName || !sanitizedCreator) {
-        toast({
-          title: "Error",
-          description: "Name and creator are required fields.",
-          variant: "destructive",
-        });
+        notifications.error.networkError();
         setIsLoading(false);
         return;
       }
@@ -164,19 +151,12 @@ const CreateNFT = () => {
 
       if (error) throw error;
       
-      toast({
-        title: "Success!",
-        description: "Your NFT has been created.",
-      });
+      notifications.success.nftCreated();
       
       navigate("/marketplace");
     } catch (error) {
       console.error('Error creating NFT:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create NFT. Please try again.",
-        variant: "destructive",
-      });
+      notifications.error.networkError();
     } finally {
       setIsLoading(false);
     }
@@ -188,11 +168,7 @@ const CreateNFT = () => {
       // Validate image file
       const validation = validateImageFile(file);
       if (!validation.isValid) {
-        toast({
-          title: "Error",
-          description: validation.error,
-          variant: "destructive",
-        });
+        notifications.error.fileUploadFailed();
         return;
       }
 

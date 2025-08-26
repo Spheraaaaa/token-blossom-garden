@@ -76,8 +76,6 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
 
         if (error) throw error;
 
-        notifications.success.login();
-        
         setIsOpen(false);
         navigate("/profile");
       } else {

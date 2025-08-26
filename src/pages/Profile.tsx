@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
+import { notifications } from "@/utils/notifications";
 import { User, Settings, Wallet, ArrowUpCircle, Shield, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import WalletAddressModal from "@/components/WalletAddressModal";
@@ -22,7 +22,6 @@ import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from
 
 const Profile = () => {
   const { user, signOut } = useSecureAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -55,44 +54,26 @@ const Profile = () => {
     animateButtonPress 
   } = useProfileAnimations();
 
-  const showDelayedToast = (title: string, description: string, variant: "default" | "destructive" = "default") => {
-    setTimeout(() => {
-      toast({
-        title,
-        description,
-        variant
-      });
-    }, 1000);
-  };
-
   const handleLogout = async () => {
     try {
       await signOut();
-      showDelayedToast("Success", "Logged out successfully");
+      notifications.success.logout();
       navigate("/");
     } catch (error) {
-      showDelayedToast("Error", "Failed to log out", "destructive");
+      notifications.error.networkError();
     }
   };
 
   const startKYCVerification = () => {
     try {
       if (!user?.id) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to start verification",
-          variant: "destructive"
-        });
+        notifications.error.authRequired();
         return;
       }
       setIsIdentityDialogOpen(true);
     } catch (error) {
       console.error("Error starting verification:", error);
-      toast({
-        title: "Error",
-        description: "Failed to start verification process. Please try again.",
-        variant: "destructive"
-      });
+      notifications.error.networkError();
     }
   };
 
@@ -111,11 +92,7 @@ const Profile = () => {
       setIsAddressDialogOpen(true);
     } catch (error) {
       console.error("Error updating profile data:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile status",
-        variant: "destructive"
-      });
+      notifications.error.networkError();
     }
   };
 
@@ -132,17 +109,10 @@ const Profile = () => {
       setUserData(prev => prev ? { ...prev, kyc_status: profileData.kyc_status } : null);
       setIsAddressDialogOpen(false);
       
-      toast({
-        title: "Verification In Progress",
-        description: "Your documents have been submitted and are under review."
-      });
+      notifications.success.verificationSubmitted();
     } catch (error) {
       console.error("Error updating profile data:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update profile status",
-        variant: "destructive"
-      });
+      notifications.error.networkError();
     }
   };
 
@@ -152,11 +122,7 @@ const Profile = () => {
 
   const continueKYCVerification = () => {
     if (!user?.id) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to continue verification",
-        variant: "destructive"
-      });
+      notifications.error.authRequired();
       return;
     }
     setIsAddressDialogOpen(true);
@@ -173,17 +139,10 @@ const Profile = () => {
       
       setUserData(prev => prev ? { ...prev, wallet_address: address } : null);
       
-      toast({
-        title: "Success",
-        description: "Wallet address has been generated and saved."
-      });
+      notifications.success.walletGenerated();
     } catch (error) {
       console.error("Error saving wallet address:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save wallet address. Please try again.",
-        variant: "destructive"
-      });
+      notifications.error.walletGenerationFailed();
     }
   };
 
@@ -195,10 +154,10 @@ const Profile = () => {
         .eq('user_id', userData?.id);
       if (error) throw error;
       setUserData(prev => prev ? { ...prev, trc20_address: address } : null);
-      toast({ title: 'Success', description: 'USDT TRC-20 address has been generated and saved.' });
+      notifications.success.trcWalletGenerated();
     } catch (error) {
       console.error('Error saving TRC-20 address:', error);
-      toast({ title: 'Error', description: 'Failed to save TRC-20 address. Please try again.', variant: 'destructive' });
+      notifications.error.walletGenerationFailed();
     }
   };
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,17 +187,10 @@ const Profile = () => {
       
       setUserData(prev => prev ? { ...prev, avatar_url: publicUrl } : null);
       
-      toast({
-        title: "Success",
-        description: "Avatar updated successfully"
-      });
+      notifications.success.avatarUploaded();
     } catch (error) {
       console.error("Error uploading avatar:", error);
-      toast({
-        title: "Error",
-        description: "Failed to upload avatar",
-        variant: "destructive"
-      });
+      notifications.error.avatarUploadFailed();
     }
   };
 
@@ -370,11 +322,7 @@ const Profile = () => {
         console.error("Error fetching user data:", error);
         
         if (isMounted) {
-          toast({
-            title: "Error",
-            description: "Failed to fetch user data",
-            variant: "destructive"
-          });
+          notifications.error.networkError();
         }
       } finally {
         if (isMounted) {
@@ -388,7 +336,7 @@ const Profile = () => {
     return () => {
       isMounted = false;
     };
-  }, [toast]);
+  }, []);
 
   const fetchMoreTransactions = async () => {
     if (isFetchingNext || !hasMore) return;
