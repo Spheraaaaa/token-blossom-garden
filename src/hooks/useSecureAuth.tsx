@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
-import { toast } from 'sonner';
 
 // Secure authentication cleanup utility
 export const cleanupAuthState = () => {
@@ -41,19 +40,17 @@ export const useSecureAuth = () => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer data fetching to prevent deadlocks
+        // Defer data fetching to prevent deadlocks - NO notifications here to avoid duplicates
         if (event === 'SIGNED_IN' && session?.user) {
           setTimeout(() => {
             // Any additional data fetching can be done here
-            toast.success('🎉 Welcome back!', {
-              description: 'Successfully signed in to your account'
-            });
+            // Notifications are handled in Login components
           }, 0);
         }
         
         if (event === 'SIGNED_OUT') {
           cleanupAuthState();
-          toast.info('Successfully signed out');
+          // No notification here - handled in component that calls signOut
         }
       }
     );
@@ -84,7 +81,7 @@ export const useSecureAuth = () => {
       window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
-      toast.error('Error signing out');
+      // No toast here - let calling component handle notification
     }
   };
 

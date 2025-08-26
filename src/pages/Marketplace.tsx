@@ -128,12 +128,20 @@ const Marketplace = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-center mb-2">NFT Marketplace</h1>
-            <p className="text-muted-foreground text-center text-sm">Discover amazing digital art</p>
+          {/* Beautiful mobile header without heavy animations */}
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center gap-3 mb-4 p-4 rounded-2xl bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/10">
+              <Store className="w-8 h-8 text-primary" />
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                  NFT Marketplace
+                </h1>
+                <p className="text-muted-foreground text-sm mt-1">Discover amazing digital art</p>
+              </div>
+            </div>
           </div>
           
-          <div className="mb-4">
+          <div className="mb-6">
             <MarketplaceSearch
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
