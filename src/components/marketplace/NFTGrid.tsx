@@ -40,151 +40,91 @@ export const NFTGrid = ({
   const [animatedNFTs, setAnimatedNFTs] = useState<Set<string>>(new Set());
   const [previousNFTCount, setPreviousNFTCount] = useState(0);
 
-  // Setup GSAP animations only for new NFTs - OPTIMIZED
+  // Setup animations - mobile optimized
   useEffect(() => {
     if (!gridRef.current || nfts.length === 0) return;
 
     const cards = cardsRef.current.filter(Boolean);
     if (cards.length === 0) return;
 
-    // Ensure all existing cards are visible first with optimized settings
-    cards.forEach((card, index) => {
-      const nftId = nfts[index]?.id;
-      if (nftId && animatedNFTs.has(nftId)) {
-        // Make sure existing cards are visible with hardware acceleration
-        gsap.set(card, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotationX: 0,
-          force3D: true, // Enable hardware acceleration
-        });
-      }
-    });
+    // Skip heavy animations on mobile for performance
+    if (isMobile) {
+      // Simple fade-in for mobile
+      cards.forEach((card, index) => {
+        const nftId = nfts[index]?.id;
+        if (nftId && !animatedNFTs.has(nftId)) {
+          gsap.set(card, { opacity: 0 });
+          gsap.to(card, {
+            opacity: 1,
+            duration: 0.3,
+            delay: index * 0.1,
+            ease: "power1.out"
+          });
+        }
+      });
+      setAnimatedNFTs(new Set(nfts.map(nft => nft.id)));
+      return;
+    }
 
-    // Find new NFTs that haven't been animated yet
+    // Desktop animations
     const newNFTs = nfts.filter(nft => !animatedNFTs.has(nft.id));
     const newNFTIds = new Set(newNFTs.map(nft => nft.id));
 
     if (newNFTs.length > 0) {
-      // Get only the cards for new NFTs
       const newCards = cards.filter((card, index) => {
         const nftId = nfts[index]?.id;
         return nftId && newNFTIds.has(nftId);
       });
 
       if (newCards.length > 0) {
-        // Clear previous animations only for new cards
-        gsap.killTweensOf(newCards);
-
-        // Initial state for new cards only - optimized
         gsap.set(newCards, {
           opacity: 0,
-          y: 30, // Reduced distance
-          scale: 0.95, // Less scaling
-          force3D: true,
+          y: 20,
+          scale: 0.98
         });
 
-        // Simplified stagger animation for new cards only
-        const tl = gsap.timeline();
-        tl.to(newCards, {
+        gsap.to(newCards, {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.6, // Faster duration
-          ease: "power2.out", // Simpler easing
-          stagger: {
-            amount: 0.3, // Reduced stagger
-            from: "start",
-          },
-          force3D: true,
+          duration: 0.4,
+          ease: "power2.out",
+          stagger: 0.1
         });
 
-        // Update animated NFTs set
         setAnimatedNFTs(prev => new Set([...prev, ...newNFTIds]));
       }
-    } else if (animatedNFTs.size === 0) {
-      // First load - animate all cards with optimized settings
-      gsap.set(cards, {
-        opacity: 0,
-        y: 30,
-        scale: 0.95,
-        force3D: true,
-      });
-
-      const tl = gsap.timeline();
-      tl.to(cards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: {
-          amount: 0.4,
-          from: "start",
-        },
-        force3D: true,
-      });
-
-      // Mark all current NFTs as animated
-      setAnimatedNFTs(new Set(nfts.map(nft => nft.id)));
     }
 
-    // Optimized hover animations for all cards
-    cards.forEach((card, index) => {
-      if (!card) return;
+    // Hover effects only on desktop
+    if (!isMobile) {
+      cards.forEach((card) => {
+        if (!card || card.getAttribute('data-hover-setup')) return;
 
-      // Remove existing event listeners to avoid duplicates
-      const existingEnter = card.getAttribute('data-mouse-enter');
-      
-      if (!existingEnter) {
-        // Simplified hover animations with hardware acceleration
         const handleMouseEnter = () => {
           gsap.to(card, {
-            y: -8, // Reduced movement
-            scale: 1.02, // Less scaling
-            duration: 0.3, // Faster
-            ease: "power2.out",
-            force3D: true,
+            y: -5,
+            scale: 1.02,
+            duration: 0.2,
+            ease: "power2.out"
           });
-          
-          const glow = card.querySelector('.card-glow');
-          if (glow) {
-            gsap.to(glow, {
-              opacity: 0.7, // Reduced opacity
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          }
         };
 
         const handleMouseLeave = () => {
           gsap.to(card, {
             y: 0,
             scale: 1,
-            duration: 0.3,
-            ease: "power2.out",
-            force3D: true,
+            duration: 0.2,
+            ease: "power2.out"
           });
-          
-          const glow = card.querySelector('.card-glow');
-          if (glow) {
-            gsap.to(glow, {
-              opacity: 0,
-              duration: 0.3,
-              ease: "power2.out",
-            });
-          }
         };
 
         card.addEventListener('mouseenter', handleMouseEnter);
         card.addEventListener('mouseleave', handleMouseLeave);
-        card.setAttribute('data-mouse-enter', 'true');
-      }
-    });
-
-    setPreviousNFTCount(nfts.length);
-  }, [nfts, animatedNFTs.size]);
+        card.setAttribute('data-hover-setup', 'true');
+      });
+    }
+  }, [nfts, isMobile, animatedNFTs.size]);
 
   // Reset animated NFTs when starting fresh (e.g., new search)
   useEffect(() => {
@@ -254,18 +194,21 @@ export const NFTGrid = ({
                 key={nft.id}
                 ref={addToRefs}
                 className="gsap-card"
-                style={{
-                  perspective: "1000px",
+                style={!isMobile ? {
+                  perspective: "1000px", 
                   transformStyle: "preserve-3d"
-                }}
+                } : {}}
               >
                 <div className="relative h-full">
-                  <div 
-                    className="card-glow absolute -inset-2 bg-gradient-to-r from-primary/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-lg opacity-0"
-                    style={{
-                      background: "linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2), hsl(var(--secondary) / 0.2))"
-                    }}
-                  />
+                  {/* Disable glow effects on mobile for performance */}
+                  {!isMobile && (
+                    <div 
+                      className="card-glow absolute -inset-2 bg-gradient-to-r from-primary/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-lg opacity-0"
+                      style={{
+                        background: "linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2), hsl(var(--secondary) / 0.2))"
+                      }}
+                    />
+                  )}
                   <NFTCard {...nft} for_sale={nft.for_sale} />
                 </div>
               </div>

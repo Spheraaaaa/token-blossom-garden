@@ -9,10 +9,22 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Store, Sparkles } from "lucide-react";
 import { ScrollAnimation } from "@/components/ScrollAnimation";
 
-// Lazy load NFTGrid for better performance
-const NFTGrid = lazy(() => import("@/components/marketplace/NFTGrid").then(module => ({
-  default: module.NFTGrid
-})));
+// Lazy load NFTGrid for better performance - with error boundary
+const NFTGrid = lazy(() => 
+  import("@/components/marketplace/NFTGrid")
+    .then(module => ({ default: module.NFTGrid }))
+    .catch(error => {
+      console.error('Failed to load NFTGrid:', error);
+      // Return a fallback component
+      return {
+        default: () => (
+          <div className="text-center py-8">
+            <p className="text-destructive">Failed to load NFT grid. Please refresh the page.</p>
+          </div>
+        )
+      };
+    })
+);
 
 interface NFT {
   id: string;
@@ -127,10 +139,10 @@ const Marketplace = () => {
       {/* Clean background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
       
-      {/* Elegant floating elements */}
+      {/* Simplified background for mobile */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl animate-simple-float opacity-50" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '3s' }} />
+        <div className="hidden md:block absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl animate-simple-float opacity-50" />
+        <div className="hidden md:block absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '3s' }} />
       </div>
 
       <div className="relative container mx-auto py-2 px-1 md:px-4 mt-16">
@@ -184,18 +196,21 @@ const Marketplace = () => {
                   
                   <ScrollAnimation animation="fade-in" delay={400}>
                     <Suspense fallback={
-                      <div className="flex items-center justify-center p-12">
+                      <div className="flex items-center justify-center p-8 md:p-12">
                         <div className="relative">
-                          <div className="relative animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary hw-accelerated"></div>
+                          <div className="relative animate-spin rounded-full h-8 w-8 md:h-12 md:w-12 border-4 border-primary/20 border-t-primary"></div>
                         </div>
+                        <span className="ml-3 text-sm md:text-base text-muted-foreground">Loading NFTs...</span>
                       </div>
                     }>
-                      <NFTGrid
-                        nfts={allNFTs}
-                        isLoading={isLoading}
-                        isFetchingNextPage={isFetchingNextPage}
-                        lastElementRef={ref}
-                      />
+                      <div className="min-h-[300px]">
+                        <NFTGrid
+                          nfts={allNFTs}
+                          isLoading={isLoading}
+                          isFetchingNextPage={isFetchingNextPage}
+                          lastElementRef={ref}
+                        />
+                      </div>
                     </Suspense>
                   </ScrollAnimation>
                 </CardContent>
