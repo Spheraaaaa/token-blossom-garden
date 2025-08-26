@@ -45,7 +45,9 @@ export const useSecureAuth = () => {
         if (event === 'SIGNED_IN' && session?.user) {
           setTimeout(() => {
             // Any additional data fetching can be done here
-            toast.success('Successfully signed in');
+            toast.success('🎉 Welcome back!', {
+              description: 'Successfully signed in to your account'
+            });
           }, 0);
         }
         

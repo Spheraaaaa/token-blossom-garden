@@ -125,8 +125,6 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
 
           if (signInError) throw signInError;
 
-          notifications.success.registration();
-          
           setIsOpen(false);
           navigate("/profile");
         }

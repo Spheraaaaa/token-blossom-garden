@@ -72,8 +72,6 @@ const Login = () => {
 
       if (error) throw error;
 
-      notifications.success.login();
-      
       // Check if there's a redirect URL stored in localStorage
       const redirectPath = localStorage.getItem('redirectAfterLogin');
       
