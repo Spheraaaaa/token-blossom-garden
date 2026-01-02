@@ -22,7 +22,7 @@ const BlockedPage = ({ reason }: BlockedPageProps) => {
             Account Blocked
           </CardTitle>
           <CardDescription className="text-base">
-            Your account has been temporarily suspended
+            Your account has been permanently suspended
           </CardDescription>
         </CardHeader>
         
