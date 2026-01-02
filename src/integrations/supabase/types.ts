@@ -290,22 +290,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      accept_bid: {
-        Args: { bid_id: string }
-        Returns: Json
-      }
-      decline_bid: {
-        Args: { bid_id: string }
-        Returns: Json
-      }
-      exchange_to_usdt: {
-        Args: { amount: number } | { amount: number; is_frozen?: boolean }
-        Returns: Json
-      }
-      get_marketplace_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      accept_bid: { Args: { bid_id: string }; Returns: Json }
+      decline_bid: { Args: { bid_id: string }; Returns: Json }
+      exchange_to_usdt:
+        | { Args: { amount: number }; Returns: Json }
+        | { Args: { amount: number; is_frozen?: boolean }; Returns: Json }
+      get_marketplace_stats: { Args: never; Returns: Json }
       get_user_frozen_balances: {
         Args: { user_uuid: string }
         Returns: {
@@ -321,20 +311,11 @@ export type Database = {
           total_withdrawals: number
         }[]
       }
-      process_expired_frozen_transactions: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      process_frozen_balances: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      purchase_nft: {
-        Args: { nft_id: string }
-        Returns: Json
-      }
+      process_expired_frozen_transactions: { Args: never; Returns: number }
+      process_frozen_balances: { Args: never; Returns: undefined }
+      purchase_nft: { Args: { nft_id: string }; Returns: Json }
       scheduled_process_expired_frozen_transactions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: undefined
       }
       set_withdrawal_error_modal_flag: {
@@ -345,10 +326,7 @@ export type Database = {
         Args: { new_currency_type: string; transaction_id: string }
         Returns: Json
       }
-      update_marketplace_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      update_marketplace_stats: { Args: never; Returns: Json }
     }
     Enums: {
       kyc_status_type:
