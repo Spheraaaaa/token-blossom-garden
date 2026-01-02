@@ -1,7 +1,6 @@
-import { ShieldX, Mail } from 'lucide-react';
+import { ShieldX, Mail, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
 interface BlockedPageProps {
   reason?: string | null;
 }
@@ -44,14 +43,25 @@ const BlockedPage = ({ reason }: BlockedPageProps) => {
             </p>
           </div>
           
-          <Button 
-            variant="outline" 
-            className="w-full gap-2"
-            onClick={() => window.location.href = 'mailto:support@example.com'}
-          >
-            <Mail className="w-4 h-4" />
-            Contact Support
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button 
+              variant="outline" 
+              className="w-full gap-2"
+              onClick={() => window.open('https://t.me/purenftsupport', '_blank')}
+            >
+              <MessageCircle className="w-4 h-4" />
+              Telegram: @purenftsupport
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="w-full gap-2"
+              onClick={() => window.location.href = 'mailto:support@purenft.io'}
+            >
+              <Mail className="w-4 h-4" />
+              Email: support@purenft.io
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
