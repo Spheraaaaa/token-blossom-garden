@@ -146,11 +146,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           balance: number | null
+          blocked_at: string | null
+          blocked_reason: string | null
           country: string | null
           created_at: string
           frozen_balance: number | null
           frozen_usdt_balance: number | null
           id: string
+          is_blocked: boolean | null
           kyc_address_doc: string | null
           kyc_identity_doc: string | null
           kyc_rejection_reason: string | null
@@ -166,11 +169,14 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           balance?: number | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           country?: string | null
           created_at?: string
           frozen_balance?: number | null
           frozen_usdt_balance?: number | null
           id?: string
+          is_blocked?: boolean | null
           kyc_address_doc?: string | null
           kyc_identity_doc?: string | null
           kyc_rejection_reason?: string | null
@@ -186,11 +192,14 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           balance?: number | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           country?: string | null
           created_at?: string
           frozen_balance?: number | null
           frozen_usdt_balance?: number | null
           id?: string
+          is_blocked?: boolean | null
           kyc_address_doc?: string | null
           kyc_identity_doc?: string | null
           kyc_rejection_reason?: string | null

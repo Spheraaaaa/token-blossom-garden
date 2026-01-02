@@ -18,10 +18,13 @@ import { VerificationTab } from "@/components/profile/VerificationTab";
 import { ExchangeDialog } from "@/components/profile/ExchangeDialog";
 import { WithdrawalErrorModal } from "@/components/WithdrawalErrorModal";
 import { useProfileAnimations } from "@/hooks/useProfileAnimations";
+import { useBlockedStatus } from "@/hooks/useBlockedStatus";
+import BlockedPage from "@/pages/BlockedPage";
 import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from "@/types/user";
 
 const Profile = () => {
   const { user, signOut } = useSecureAuth();
+  const { isBlocked, blockedReason, isLoading: isBlockedLoading } = useBlockedStatus();
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -390,7 +393,7 @@ const Profile = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isBlockedLoading) {
     return (
       <div className="container mx-auto py-8 px-4 mt-16">
         <div className="max-w-4xl mx-auto">
@@ -409,6 +412,11 @@ const Profile = () => {
         </div>
       </div>
     );
+  }
+
+  // Show blocked page if user is blocked
+  if (isBlocked) {
+    return <BlockedPage reason={blockedReason} />;
   }
   
   return (
