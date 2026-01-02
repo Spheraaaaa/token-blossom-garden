@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ShoppingCart, ShieldCheck, Lock, Info } from "lucide-react";
+import { Loader2, ShoppingCart, ShieldCheck, Lock, Info, ShieldX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useBlockedStatus } from "@/hooks/useBlockedStatus";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,8 +31,10 @@ export const PurchaseButton = ({ isLoggedIn, onPurchase, nftId, price, name, ima
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [open, setOpen] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [blockedDialogOpen, setBlockedDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isBlocked, blockedReason } = useBlockedStatus();
 
   const priceNum = useMemo(() => (price ? Number(price) : 0), [price]);
   const networkFee = 0.0007;
@@ -93,28 +96,61 @@ export const PurchaseButton = ({ isLoggedIn, onPurchase, nftId, price, name, ima
     navigate('/login');
   };
 
+  const handlePurchaseClick = () => {
+    if (isBlocked) {
+      setBlockedDialogOpen(true);
+      return;
+    }
+    setOpen(true);
+  };
+
   return isLoggedIn ? (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <Button 
-        onClick={() => setOpen(true)} 
-        variant="default"
-        className="flex-1"
-        size="lg"
-        disabled={isPurchasing}
-      >
-        {isPurchasing ? (
-          <>
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          <>
-            <ShoppingCart className="h-5 w-5" />
-            Purchase Now
-          </>
-        )}
-      </Button>
-      <AlertDialogContent className="border-border/50 bg-card/90 sm:max-w-lg">
+    <>
+      {/* Blocked user dialog */}
+      <AlertDialog open={blockedDialogOpen} onOpenChange={setBlockedDialogOpen}>
+        <AlertDialogContent className="border-destructive/30 bg-card/90">
+          <AlertDialogHeader>
+            <div className="mx-auto w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+              <ShieldX className="w-8 h-8 text-destructive" />
+            </div>
+            <AlertDialogTitle className="text-center text-destructive">Account Blocked</AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              Your account has been suspended and you cannot make purchases.
+              {blockedReason && (
+                <span className="block mt-2 p-2 rounded bg-destructive/5 text-sm">
+                  Reason: {blockedReason}
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="justify-center">
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Purchase dialog */}
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <Button 
+          onClick={handlePurchaseClick} 
+          variant="default"
+          className="flex-1"
+          size="lg"
+          disabled={isPurchasing}
+        >
+          {isPurchasing ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-5 w-5" />
+              Purchase Now
+            </>
+          )}
+        </Button>
+        <AlertDialogContent className="border-border/50 bg-card/90 sm:max-w-lg">
         <AlertDialogHeader>
           <AlertDialogTitle>Confirm your purchase</AlertDialogTitle>
           <AlertDialogDescription>
@@ -196,6 +232,7 @@ export const PurchaseButton = ({ isLoggedIn, onPurchase, nftId, price, name, ima
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+    </>
   ) : (
     <Button 
       onClick={handleLoginRedirect}
