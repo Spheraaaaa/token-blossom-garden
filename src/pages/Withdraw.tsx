@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowUpCircle, Loader2, AlertCircle, Shield } from "lucide-react";
+import { ArrowLeft, ArrowUpCircle, Loader2, AlertCircle, Shield, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useSecureAuth } from "@/hooks/useSecureAuth";
+
+type CurrencyType = 'eth' | 'usdt';
 
 const Withdraw = () => {
   const navigate = useNavigate();
@@ -16,8 +18,10 @@ const Withdraw = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawWalletAddress, setWithdrawWalletAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState<{balance: string} | null>(null);
+  const [userData, setUserData] = useState<{balance: string; usdt_balance: string} | null>(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>('eth');
+  const [showBalanceSelector, setShowBalanceSelector] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,14 +31,15 @@ const Withdraw = () => {
         setIsLoadingBalance(true);
         const { data: profileData, error } = await supabase
           .from('profiles')
-          .select('balance')
+          .select('balance, usdt_balance')
           .eq('user_id', user.id)
           .single();
         
         if (error) throw error;
         
         setUserData({
-          balance: profileData?.balance?.toString() || "0.0"
+          balance: profileData?.balance?.toString() || "0.0",
+          usdt_balance: profileData?.usdt_balance?.toString() || "0.0"
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -51,10 +56,13 @@ const Withdraw = () => {
     fetchUserData();
   }, [user, toast]);
 
+  const currentBalance = selectedCurrency === 'eth' ? userData?.balance : userData?.usdt_balance;
+  const currencyLabel = selectedCurrency === 'eth' ? 'ETH' : 'USDT';
+
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
     const withdrawAmountNum = parseFloat(withdrawAmount);
-    const balanceNum = parseFloat(userData?.balance || "0");
+    const balanceNum = parseFloat(currentBalance || "0");
     
     if (withdrawAmountNum <= 0) {
       toast({
@@ -68,7 +76,7 @@ const Withdraw = () => {
     if (withdrawAmountNum > balanceNum) {
       toast({
         title: "Insufficient funds",
-        description: `Your balance (${balanceNum} ETH) is less than the requested withdrawal amount`,
+        description: `Your balance (${balanceNum} ${currencyLabel}) is less than the requested withdrawal amount`,
         variant: "destructive"
       });
       return;
@@ -83,21 +91,29 @@ const Withdraw = () => {
       return;
     }
     
-    // Basic Ethereum address validation
-    if (!withdrawWalletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
-      toast({
-        title: "Invalid wallet address",
-        description: "Please enter a valid Ethereum wallet address",
-        variant: "destructive"
-      });
-      return;
+    if (selectedCurrency === 'eth') {
+      if (!withdrawWalletAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+        toast({
+          title: "Invalid wallet address",
+          description: "Please enter a valid Ethereum wallet address",
+          variant: "destructive"
+        });
+        return;
+      }
+    } else {
+      if (!withdrawWalletAddress.match(/^T[a-zA-Z0-9]{33}$/)) {
+        toast({
+          title: "Invalid wallet address",
+          description: "Please enter a valid USDT (TRC-20) wallet address",
+          variant: "destructive"
+        });
+        return;
+      }
     }
     
     setIsLoading(true);
     
     try {
-      // Create a withdrawal transaction in Supabase
-      // Store wallet address in 'item' field since there's no dedicated 'wallet_address' column
       const { data, error } = await supabase
         .from('transactions')
         .insert([{
@@ -105,18 +121,18 @@ const Withdraw = () => {
           type: 'withdraw',
           amount: withdrawAmountNum,
           status: 'pending',
-          item: withdrawWalletAddress // Store wallet address in the 'item' field
+          item: withdrawWalletAddress,
+          currency_type: selectedCurrency
         }]);
       
       if (error) throw error;
       
       toast({
         title: "Withdrawal Requested",
-        description: `Your withdrawal request for ${withdrawAmount} ETH has been submitted`,
+        description: `Your withdrawal request for ${withdrawAmount} ${currencyLabel} has been submitted`,
         variant: "default"
       });
       
-      // Navigate back to profile page after successful submission
       navigate('/profile');
     } catch (error) {
       console.error("Error submitting withdrawal:", error);
@@ -132,13 +148,20 @@ const Withdraw = () => {
 
   const calculateFee = (amount: string) => {
     const amountNum = parseFloat(amount) || 0;
-    return (amountNum * 0.02).toFixed(4); // 2% fee
+    return (amountNum * 0.02).toFixed(4);
   };
 
   const calculateReceiveAmount = (amount: string) => {
     const amountNum = parseFloat(amount) || 0;
     const feeAmount = amountNum * 0.02;
     return (amountNum - feeAmount).toFixed(4);
+  };
+
+  const handleSelectCurrency = (currency: CurrencyType) => {
+    setSelectedCurrency(currency);
+    setShowBalanceSelector(false);
+    setWithdrawAmount("");
+    setWithdrawWalletAddress("");
   };
 
   return (
@@ -154,7 +177,6 @@ const Withdraw = () => {
         </Button>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Main flow */}
           <div className="md:col-span-2">
             <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden rounded-2xl">
               <CardHeader className="relative pb-2">
@@ -178,9 +200,50 @@ const Withdraw = () => {
                       <span>Loading balance...</span>
                     </div>
                   ) : userData ? (
-                    <div className="p-3 border border-border/50 rounded-lg bg-muted/20 flex justify-between">
-                      <span className="text-muted-foreground">Available Balance:</span>
-                      <span className="font-medium text-foreground">{userData.balance} ETH</span>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowBalanceSelector(!showBalanceSelector)}
+                        className="w-full p-3 border border-border/50 rounded-lg bg-muted/20 flex justify-between items-center cursor-pointer hover:bg-muted/30 transition-colors"
+                      >
+                        <span className="text-muted-foreground">
+                          {selectedCurrency === 'eth' ? 'Available Balance:' : 'USDT Balance:'}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-foreground">
+                            {currentBalance} {currencyLabel}
+                          </span>
+                          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showBalanceSelector ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+                      
+                      {showBalanceSelector && (
+                        <div className="absolute z-10 w-full mt-1 border border-border/50 rounded-lg bg-card shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                          <button
+                            type="button"
+                            onClick={() => handleSelectCurrency('eth')}
+                            className={`w-full p-3 flex justify-between items-center hover:bg-muted/30 transition-colors ${selectedCurrency === 'eth' ? 'bg-muted/20' : ''}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <img src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" alt="ETH" className="h-5 w-5" />
+                              <span className="text-muted-foreground">ETH Balance</span>
+                            </div>
+                            <span className="font-medium text-foreground">{userData.balance} ETH</span>
+                          </button>
+                          <div className="h-px bg-border/50" />
+                          <button
+                            type="button"
+                            onClick={() => handleSelectCurrency('usdt')}
+                            className={`w-full p-3 flex justify-between items-center hover:bg-muted/30 transition-colors ${selectedCurrency === 'usdt' ? 'bg-muted/20' : ''}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="h-5 w-5 flex items-center justify-center bg-[hsl(var(--usdt,160_60%_45%))] rounded-full text-white font-bold text-xs">$</div>
+                              <span className="text-muted-foreground">USDT Balance</span>
+                            </div>
+                            <span className="font-medium text-foreground">{userData.usdt_balance} USDT</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="p-3 border border-border/50 rounded-lg bg-muted/20 flex items-center">
@@ -193,13 +256,13 @@ const Withdraw = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-muted-foreground">
-                          Amount (ETH)
+                          Amount
                         </label>
                         <Button 
                           type="button" 
                           variant="ghost" 
                           className="h-auto py-0 px-1 text-xs text-muted-foreground hover:text-foreground"
-                          onClick={() => userData && setWithdrawAmount(userData.balance)}
+                          onClick={() => userData && setWithdrawAmount(currentBalance || "0")}
                         >
                           Max
                         </Button>
@@ -215,7 +278,7 @@ const Withdraw = () => {
                           className="bg-background/60 border border-border/50 focus-visible:ring-2 focus-visible:ring-ring pr-16" 
                         />
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-foreground/80 bg-muted/30 px-2 py-0.5 rounded">
-                          ETH
+                          {currencyLabel}
                         </span>
                       </div>
                     </div>
@@ -224,16 +287,16 @@ const Withdraw = () => {
                       <div className="space-y-2 p-3 border border-border/50 rounded-lg bg-muted/20 animate-in fade-in">
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Withdrawal Amount:</span>
-                          <span className="font-medium text-foreground">{withdrawAmount} ETH</span>
+                          <span className="font-medium text-foreground">{withdrawAmount} {currencyLabel}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-muted-foreground">Fee (2%):</span>
-                          <span className="font-medium text-foreground">{calculateFee(withdrawAmount)} ETH</span>
+                          <span className="font-medium text-foreground">{calculateFee(withdrawAmount)} {currencyLabel}</span>
                         </div>
                         <div className="h-px bg-border my-1"></div>
                         <div className="flex justify-between text-sm font-medium">
                           <span className="text-muted-foreground">You will receive:</span>
-                          <span className="text-foreground">{calculateReceiveAmount(withdrawAmount)} ETH</span>
+                          <span className="text-foreground">{calculateReceiveAmount(withdrawAmount)} {currencyLabel}</span>
                         </div>
                       </div>
                     )}
@@ -247,7 +310,7 @@ const Withdraw = () => {
                         type="text" 
                         value={withdrawWalletAddress} 
                         onChange={e => setWithdrawWalletAddress(e.target.value)} 
-                        placeholder="Enter your ETH wallet address" 
+                        placeholder={selectedCurrency === 'eth' ? "Enter your ETH wallet address" : "Enter your USDT wallet address"} 
                         className="font-mono text-sm bg-background/60 border border-border/50 focus-visible:ring-2 focus-visible:ring-ring" 
                       />
                       <div className="text-xs text-muted-foreground flex items-start gap-1.5">
@@ -282,7 +345,6 @@ const Withdraw = () => {
             </Card>
           </div>
 
-          {/* Info aside */}
           <div>
             <Card className="border-border/50 bg-card/80 backdrop-blur-xl rounded-2xl">
               <CardHeader className="pb-2">
@@ -292,15 +354,15 @@ const Withdraw = () => {
               </CardHeader>
               <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <div className="space-y-2">
-                  <div className="flex items-start gap-2"><span className="mt-0.5">1.</span><p>Enter amount and destination wallet address.</p></div>
-                  <div className="flex items-start gap-2"><span className="mt-0.5">2.</span><p>Review fees and available balance.</p></div>
-                  <div className="flex items-start gap-2"><span className="mt-0.5">3.</span><p>Submit your request for processing.</p></div>
+                  <div className="flex items-start gap-2"><span className="mt-0.5">1.</span><p>Select currency (ETH or USDT) and enter amount.</p></div>
+                  <div className="flex items-start gap-2"><span className="mt-0.5">2.</span><p>Enter destination wallet address.</p></div>
+                  <div className="flex items-start gap-2"><span className="mt-0.5">3.</span><p>Review fees and submit your request.</p></div>
                 </div>
                 <div className="h-px bg-border" />
                 <div className="space-y-2">
-                  
                   <div className="flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Fee: 2% of amount</div>
-                  <div className="flex items-center gap-2"><AlertCircle className="h-4 w-4" /> Network: ERC‑20 only</div>
+                  <div className="flex items-center gap-2"><AlertCircle className="h-4 w-4" /> ETH: ERC‑20 network</div>
+                  <div className="flex items-center gap-2"><AlertCircle className="h-4 w-4" /> USDT: TRC‑20 network</div>
                 </div>
               </CardContent>
             </Card>
