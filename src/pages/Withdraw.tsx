@@ -213,7 +213,7 @@ const Withdraw = () => {
                           <span className="font-medium text-foreground">
                             {currentBalance} {currencyLabel}
                           </span>
-                          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showBalanceSelector ? 'rotate-180' : ''}`} />
+                          
                         </div>
                       </button>
                       
