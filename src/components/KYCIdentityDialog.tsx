@@ -43,14 +43,10 @@ const KYCIdentityDialog = ({ isOpen, onClose, onSuccess, userId }: KYCIdentityDi
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('kyc_documents')
-        .getPublicUrl(filePath);
-
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
-          kyc_identity_doc: publicUrl,
+          kyc_identity_doc: filePath,
           kyc_status: 'identity_submitted'
         })
         .eq('user_id', userId);
