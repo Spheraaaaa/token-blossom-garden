@@ -56,6 +56,12 @@ const getStatusDetails = (status: string, isFrozen: boolean, isFrozenExchange: b
         className: "border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-400",
         text: "Pending"
       };
+    case "processing":
+      return {
+        variant: "outline" as const,
+        className: "border-yellow-500/30 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-400",
+        text: "Processing"
+      };
     case "cancelled":
     case "failed":
       return {

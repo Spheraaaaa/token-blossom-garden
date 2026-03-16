@@ -36,7 +36,7 @@ export interface Transaction {
   amount: string;
   created_at: string;
   raw_created_at?: string; // Added for storing original timestamp
-  status: 'pending' | 'completed' | 'failed';
+  status: 'pending' | 'completed' | 'failed' | 'processing';
   item?: string;
   frozen_until?: string | null;
   is_frozen?: boolean;

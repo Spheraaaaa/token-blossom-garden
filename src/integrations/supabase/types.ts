@@ -345,7 +345,7 @@ export type Database = {
         | "under_review"
         | "verified"
         | "rejected"
-      transaction_status: "pending" | "completed" | "failed"
+      transaction_status: "pending" | "completed" | "failed" | "processing"
       transaction_type:
         | "deposit"
         | "withdraw"
@@ -487,7 +487,7 @@ export const Constants = {
         "verified",
         "rejected",
       ],
-      transaction_status: ["pending", "completed", "failed"],
+      transaction_status: ["pending", "completed", "failed", "processing"],
       transaction_type: ["deposit", "withdraw", "purchase", "sale", "exchange"],
     },
   },
