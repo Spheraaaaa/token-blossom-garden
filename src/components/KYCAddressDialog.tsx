@@ -43,14 +43,10 @@ const KYCAddressDialog = ({ isOpen, onClose, onSuccess, userId }: KYCAddressDial
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('kyc_documents')
-        .getPublicUrl(filePath);
-
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
-          kyc_address_doc: publicUrl,
+          kyc_address_doc: filePath,
           kyc_status: 'under_review'
         })
         .eq('user_id', userId);
