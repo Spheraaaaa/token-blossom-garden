@@ -134,7 +134,7 @@ export const UserNFTCollection = () => {
       if (error) throw error;
       
       if (!data || data.length === 0) {
-        notifications.error.custom("No bids yet", "There are no active bids for this NFT at the moment.");
+        notifications.info.noBidsYet();
         return;
       }
       
