@@ -281,7 +281,7 @@ const Profile = () => {
             wallet_address: profileData?.wallet_address || '',
             erc20_address: profileData?.erc20_address || undefined,
             trc20_address: profileData?.trc20_address || '',
-            created_at: currentUser.created_at,
+            created_at: profileData?.created_at || currentUser.created_at,
             verified: profileData?.verified || false,
             kyc_status: profileData?.kyc_status || 'not_started'
           };

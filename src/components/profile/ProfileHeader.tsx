@@ -50,7 +50,7 @@ export const ProfileHeader = ({ userData, handleAvatarUpload }: ProfileHeaderPro
             </span>
           </h1>
           <p className="text-muted-foreground">
-            Member since {new Date(userData?.created_at || '').toLocaleDateString()}
+            Member since {userData?.created_at ? new Date(userData.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
           </p>
         </div>
       </div>
