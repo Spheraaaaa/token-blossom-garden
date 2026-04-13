@@ -120,7 +120,7 @@ export const UserNFTCollection = () => {
     }
     
     if (!nft.for_sale) {
-      notifications.info.featureComingSoon();
+      notifications.info.noBidsYet();
       return;
     }
     
