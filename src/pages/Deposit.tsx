@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,8 +23,29 @@ const Deposit = () => {
   const [transactionHash, setTransactionHash] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [isLoadingWallet, setIsLoadingWallet] = useState(true);
   const { toast } = useToast();
-  const walletAddress = "0xc68c825191546453e36aaa005ebf10b5219ce175";
+
+  useEffect(() => {
+    const fetchWalletAddress = async () => {
+      if (!user?.id) return;
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('wallet_address')
+          .eq('user_id', user.id)
+          .single();
+        if (error) throw error;
+        setWalletAddress(data?.wallet_address || null);
+      } catch (error) {
+        console.error('Error fetching wallet address:', error);
+      } finally {
+        setIsLoadingWallet(false);
+      }
+    };
+    fetchWalletAddress();
+  }, [user?.id]);
 
   const validateHash = (hash: string) => {
     if (hash.length < 10) {
@@ -81,6 +102,15 @@ const Deposit = () => {
   };
 
   const handleNextStep = () => {
+    if (!walletAddress) {
+      toast({
+        variant: "destructive",
+        title: "Wallet not generated",
+        description: "Please generate a wallet address in your profile before making a deposit."
+      });
+      return;
+    }
+
     const amount = parseFloat(depositAmount);
     if (!depositAmount || amount <= 0) {
       toast({
@@ -105,6 +135,7 @@ const Deposit = () => {
   };
 
   const copyToClipboard = () => {
+    if (!walletAddress) return;
     navigator.clipboard.writeText(walletAddress);
     setCopied(true);
     toast({
@@ -146,6 +177,13 @@ const Deposit = () => {
               <CardContent className="relative space-y-6 pt-4">
                 {step === 'amount' ? (
                   <div className="space-y-4">
+                    {!isLoadingWallet && !walletAddress && (
+                      <div className="p-3 border border-destructive/30 rounded-lg bg-destructive/10 text-sm text-destructive flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                        <p>You need to generate a wallet address in your <button onClick={() => navigate('/profile')} className="underline font-medium hover:text-destructive/80">profile</button> before making a deposit.</p>
+                      </div>
+                    )}
+
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-muted-foreground">
@@ -188,6 +226,7 @@ const Deposit = () => {
                     <Button 
                       className="w-full" 
                       onClick={handleNextStep}
+                      disabled={isLoadingWallet}
                     >
                       Continue
                     </Button>
