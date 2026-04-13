@@ -101,7 +101,6 @@ export const ProfileInfo = ({
             <div className="bg-muted/40 border border-border/30 rounded-xl h-12 flex items-center pl-10">
               {userData?.verified ? (
                 <div className="flex items-center gap-2 text-green-500 font-medium">
-                  <CheckCircle2 className="w-4 h-4" />
                   <span>Verified Account</span>
                 </div>
               ) : (
