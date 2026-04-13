@@ -286,6 +286,13 @@ export const notifications = {
       duration: 4000,
     }),
     
+    noBidsYet: () => toast({
+      title: "No bids yet",
+      description: "There are no active bids for this NFT at the moment",
+      variant: "info",
+      duration: 4000,
+    }),
+    
     newFeatureAnnouncement: (feature: string) => toast({
       title: "✨ New feature",
       description: `Now available: ${feature}`,

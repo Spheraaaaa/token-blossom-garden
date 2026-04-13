@@ -91,7 +91,7 @@ const [loadingStage, setLoadingStage] = useState(0);
           
           if (bidError) throw bidError;
           
-          setBids(bidData || []);
+          setBids((bidData || []).sort((a, b) => a.bid_amount - b.bid_amount));
           setIsLoading(false);
           return;
         }
@@ -119,7 +119,7 @@ const [loadingStage, setLoadingStage] = useState(0);
           
           if (bidError) throw bidError;
           
-          setBids(bidData || []);
+          setBids((bidData || []).sort((a, b) => a.bid_amount - b.bid_amount));
         }
       } catch (error) {
         console.error("Error fetching bids:", error);
