@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
+import { Panel } from "./Panel";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ArrowUpRight, ArrowDownLeft, RotateCw, ShoppingCart, Tag, Calendar } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, RotateCw, ShoppingCart, Tag } from "lucide-react";
 import type { Transaction } from "@/types/user";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -103,7 +104,7 @@ const getTypeDetails = (type: string) => {
       return {
         icon: <ShoppingCart className="h-4 w-4" />,
         label: "Purchase",
-        className: "text-purple-400 bg-purple-500/10"
+        className: "text-primary bg-primary/10"
       };
     case "sale":
       return {
@@ -169,114 +170,103 @@ export const TransactionHistory = ({
 
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="mt-6 text-center p-8 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl">
-        <p className="text-muted-foreground">No transactions found</p>
-      </div>
+      <Panel title="Transaction History">
+        <div className="py-8 text-center">
+          <p className="font-medium text-foreground">No transactions found</p>
+          <p className="mt-1 text-sm text-muted-foreground">Deposits, withdrawals, purchases and sales will appear here.</p>
+        </div>
+      </Panel>
     );
   }
 
+  const cellX = "first:pl-5 last:pr-5 md:first:pl-7 md:last:pr-7";
+
   return (
-    <div className="mt-4 md:mt-6">
-      <div className="flex items-center justify-between mb-4 md:mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
-            <RotateCw className="h-4 w-4 text-primary" />
-          </div>
-          <h3 className="text-base md:text-lg font-bold text-foreground">Transaction History</h3>
-        </div>
-        
-        {transactions.length > 0 && (
-          <span className="text-xs md:text-sm text-muted-foreground bg-muted/40 px-2 md:px-3 py-1 rounded-xl border border-border/30">
-            {transactions.length} transactions
-          </span>
-        )}
-      </div>
-      
-      <div className="overflow-hidden rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-b border-border/30 hover:bg-transparent">
-                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Date</TableHead>
-                {!isMobile && <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Type</TableHead>}
-                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground text-right">Amount</TableHead>
-                <TableHead className="text-xs uppercase tracking-wider font-semibold text-muted-foreground text-right">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map(transaction => {
-                const typeDetails = getTypeDetails(transaction.type);
-                const statusDetails = getStatusDetails(transaction.status, transaction.is_frozen || false, transaction.is_frozen_exchange || false, transaction.type);
-                const currencyBadge = getCurrencyBadge(transaction.currency_type || 'eth');
-                
-                return (
-                  <TableRow key={transaction.id} className="transaction-row border-b border-border/20 hover:bg-muted/10">
-                    <TableCell className="py-3 text-sm text-foreground">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3 text-muted-foreground" />
-                        <span>{transaction.created_at}</span>
-                      </div>
-                    </TableCell>
-                    
-                    {!isMobile && (
-                      <TableCell className="py-3">
-                        <div className="flex items-center gap-2">
-                          <div className={`p-1.5 rounded-full ${typeDetails.className}`}>
-                            {typeDetails.icon}
-                          </div>
-                          <span className="text-sm font-medium text-foreground">
-                            {typeDetails.label}
-                          </span>
-                        </div>
-                      </TableCell>
-                    )}
-                    
-                    <TableCell className="py-3 text-right">
-                      <div className="flex items-center gap-2 justify-end">
-                        {isMobile && (
-                          <div className={`p-1 rounded-full ${typeDetails.className}`}>
-                            {typeDetails.icon}
-                          </div>
-                        )}
-                        <span className={`text-sm font-medium ${
-                          transaction.type === 'deposit' || transaction.type === 'sale' ? 'text-green-500' : 
-                          transaction.type === 'withdraw' || transaction.type === 'purchase' ? 'text-red-500' : 
-                          'text-foreground'
-                        }`}>
-                          {transaction.type === 'deposit' || transaction.type === 'sale' ? '+' : 
-                           transaction.type === 'withdraw' || transaction.type === 'purchase' ? '-' : ''}
-                          {parseFloat(transaction.amount).toFixed(transaction.currency_type === 'eth' ? 3 : 2)}
+    <Panel
+      title="Transaction History"
+      actions={
+        <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium tabular-nums text-muted-foreground">
+          {transactions.length} transactions
+        </span>
+      }
+      bodyClassName="p-0 md:p-0"
+    >
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border hover:bg-transparent">
+              <TableHead className={`h-11 text-xs font-medium text-muted-foreground ${cellX}`}>Date</TableHead>
+              {!isMobile && <TableHead className={`h-11 text-xs font-medium text-muted-foreground ${cellX}`}>Type</TableHead>}
+              <TableHead className={`h-11 text-right text-xs font-medium text-muted-foreground ${cellX}`}>Amount</TableHead>
+              <TableHead className={`h-11 text-right text-xs font-medium text-muted-foreground ${cellX}`}>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {transactions.map(transaction => {
+              const typeDetails = getTypeDetails(transaction.type);
+              const statusDetails = getStatusDetails(transaction.status, transaction.is_frozen || false, transaction.is_frozen_exchange || false, transaction.type);
+              const isCredit = transaction.type === 'deposit' || transaction.type === 'sale';
+              const isDebit = transaction.type === 'withdraw' || transaction.type === 'purchase';
+
+              return (
+                <TableRow key={transaction.id} className="border-b border-border/60 transition-colors hover:bg-muted/40">
+                  <TableCell className={`py-3.5 text-sm tabular-nums text-muted-foreground ${cellX}`}>
+                    {transaction.created_at}
+                  </TableCell>
+
+                  {!isMobile && (
+                    <TableCell className={`py-3.5 ${cellX}`}>
+                      <div className="flex items-center gap-2.5">
+                        <span className={`flex h-7 w-7 items-center justify-center rounded-full ${typeDetails.className}`}>
+                          {typeDetails.icon}
                         </span>
+                        <span className="text-sm font-medium text-foreground">{typeDetails.label}</span>
                       </div>
                     </TableCell>
-                    
-                    <TableCell className="py-3 text-right">
-                      <Badge variant={statusDetails.variant} className={`text-xs px-2 py-1 ${statusDetails.className}`}>
-                        {statusDetails.text}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
-        
-        <div ref={sentinelRef} className="h-4" />
-        
-        {isFetchingNext && (
-          <div className="py-4 flex items-center justify-center gap-2 text-sm text-muted-foreground border-t border-border/30">
-            <Spinner className="h-4 w-4" />
-            <span>Loading...</span>
-          </div>
-        )}
-        
-        {!hasMore && transactions.length > 0 && (
-          <div className="py-4 text-center text-sm text-muted-foreground border-t border-border/30">
-            End of history
-          </div>
-        )}
+                  )}
+
+                  <TableCell className={`py-3.5 text-right ${cellX}`}>
+                    <div className="flex items-center justify-end gap-2">
+                      {isMobile && (
+                        <span className={`flex h-6 w-6 items-center justify-center rounded-full ${typeDetails.className}`}>
+                          {typeDetails.icon}
+                        </span>
+                      )}
+                      <span
+                        className={`text-sm font-semibold tabular-nums ${
+                          isCredit ? 'text-accent' : isDebit ? 'text-red-400' : 'text-foreground'
+                        }`}
+                      >
+                        {isCredit ? '+' : isDebit ? '-' : ''}
+                        {parseFloat(transaction.amount).toFixed(transaction.currency_type === 'eth' ? 3 : 2)}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className={`py-3.5 text-right ${cellX}`}>
+                    <Badge variant={statusDetails.variant} className={`rounded-full px-2.5 py-0.5 text-xs ${statusDetails.className}`}>
+                      {statusDetails.text}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
-    </div>
+
+      <div ref={sentinelRef} className="h-px" />
+
+      {isFetchingNext && (
+        <div className="flex items-center justify-center gap-2 py-4 text-sm text-muted-foreground">
+          <Spinner className="h-4 w-4" />
+          <span>Loading...</span>
+        </div>
+      )}
+
+      {!hasMore && transactions.length > 0 && (
+        <div className="py-4 text-center text-sm text-muted-foreground">End of history</div>
+      )}
+    </Panel>
   );
 };

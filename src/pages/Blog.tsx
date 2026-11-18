@@ -109,7 +109,7 @@ const Blog = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent p-10"
+            className="text-4xl md:text-5xl font-bold mb-6 p-10 text-primary"
           >
             Blog
           </motion.h1>
@@ -132,7 +132,7 @@ const Blog = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="group relative"
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-primary/20 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
               <div className="relative flex flex-col h-full rounded-2xl p-6 bg-card/60 backdrop-blur-sm border border-primary/10 hover:border-primary/20 transition-all duration-700">
                 <div className="relative h-48 mb-6 overflow-hidden rounded-xl">
                   <img 

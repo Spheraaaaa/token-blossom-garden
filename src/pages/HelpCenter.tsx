@@ -7,8 +7,8 @@ const HelpCenter = () => {
   const faqs = [
     {
       icon: <Wallet className="w-5 h-5" />,
-      question: "How do I generate my wallet?",
-      answer: "To generate your wallet, click the 'Generate Wallet' button in your profile. After that, you will have your own account to deposit/withdraw funds."
+      question: "Where do I send my deposit?",
+      answer: "Your profile shows the PureNFT deposit addresses for ETH (ERC-20) and USDT (TRC-20). These are shared platform addresses, not personal wallets. After sending funds, submit the transaction hash on the Deposit page and your balance will be credited after verification."
     },
     {
       icon: <ShieldCheck className="w-5 h-5" />,
@@ -37,7 +37,7 @@ const HelpCenter = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400">
+            <h1 className="text-4xl font-bold text-primary">
               How can we help?
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto">

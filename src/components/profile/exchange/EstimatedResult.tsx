@@ -20,7 +20,7 @@ export const EstimatedResult = ({
   };
 
   const getTextColor = () => {
-    return accentColor === 'amber' ? 'text-amber-200' : 'text-indigo-200';
+    return accentColor === 'amber' ? 'text-amber-200' : 'text-primary';
   };
 
   // Add stronger glow effect for improved visibility
@@ -33,7 +33,7 @@ export const EstimatedResult = ({
   const getBackgroundGradient = () => {
     return accentColor === 'amber'
       ? 'bg-gradient-to-br from-black/80 to-amber-950/80'
-      : 'bg-gradient-to-br from-black/80 to-purple-950/80';
+      : 'bg-gradient-to-br from-black/80 to-background/80';
   };
 
   return (

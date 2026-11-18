@@ -146,9 +146,9 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
         {trigger}
       </DialogTrigger>
       {!user && (
-        <DialogContent className="sm:max-w-[425px] max-h-[80vh] md:max-h-[90vh] overflow-y-auto bg-gradient-to-br from-purple-900/50 to-purple-800/30 backdrop-blur-xl border border-white/10 relative">
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] md:max-h-[90vh] overflow-y-auto bg-popover border border-border relative">
           <DialogHeader className="mb-4">
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold text-foreground">
               {isLogin ? "Welcome Back" : "Create Account"}
             </DialogTitle>
             <DialogDescription className="text-gray-400">
@@ -200,7 +200,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
                     <SelectTrigger id="country" className="bg-white/5 border-white/10 focus:border-primary/50 text-white">
                       <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
-                    <SelectContent className="bg-purple-900/90 border-white/10 text-white">
+                    <SelectContent className="bg-background/90 border-white/10 text-white">
                       <SelectItem value="United Kingdom">United Kingdom</SelectItem>
                       <SelectItem value="United States">United States</SelectItem>
                       <SelectItem value="Canada">Canada</SelectItem>
@@ -310,7 +310,7 @@ export const AuthModal = ({ trigger }: AuthModalProps) => {
               <Button 
                 type="submit" 
                 disabled={isLoading}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 h-11 font-medium"
+                className="btn-brand rounded-full h-11 font-semibold"
               >
                 {isLogin ? "Sign In" : "Create Account"}
               </Button>

@@ -159,7 +159,6 @@ export type Database = {
           kyc_rejection_reason: string | null
           kyc_status: Database["public"]["Enums"]["kyc_status_type"] | null
           login: string
-          show_withdrawal_error_modal: boolean | null
           trc20_address: string | null
           usdt_balance: number | null
           user_id: string
@@ -182,7 +181,6 @@ export type Database = {
           kyc_rejection_reason?: string | null
           kyc_status?: Database["public"]["Enums"]["kyc_status_type"] | null
           login: string
-          show_withdrawal_error_modal?: boolean | null
           trc20_address?: string | null
           usdt_balance?: number | null
           user_id: string
@@ -205,7 +203,6 @@ export type Database = {
           kyc_rejection_reason?: string | null
           kyc_status?: Database["public"]["Enums"]["kyc_status_type"] | null
           login?: string
-          show_withdrawal_error_modal?: boolean | null
           trc20_address?: string | null
           usdt_balance?: number | null
           user_id?: string
@@ -326,10 +323,6 @@ export type Database = {
       scheduled_process_expired_frozen_transactions: {
         Args: never
         Returns: undefined
-      }
-      set_withdrawal_error_modal_flag: {
-        Args: { show_modal: boolean; target_user_id: string }
-        Returns: Json
       }
       update_frozen_transaction_currency: {
         Args: { new_currency_type: string; transaction_id: string }

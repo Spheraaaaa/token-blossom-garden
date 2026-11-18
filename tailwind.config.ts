@@ -27,6 +27,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['"Manrope Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				display: ['"Sora Variable"', '"Manrope Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+			},
 			fontSize: {
 				'2xs': '0.625rem', // 10px
 			},

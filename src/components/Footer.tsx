@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Footer = () => {
   const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,12 +32,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand Section */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent shadow-md" />
-              <span className="text-xl font-bold text-foreground">
-                PureNFT
-              </span>
-            </div>
+            <BrandLogo className="gap-3" markClassName="w-9 h-9" textClassName="text-xl" />
             
             <p className="text-muted-foreground leading-relaxed">
               Discover, collect, and sell extraordinary NFTs on the world's premier digital marketplace
@@ -56,7 +52,7 @@ export const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-primary/20"
+                  className="btn-brand w-full rounded-full px-6 py-3 font-semibold"
                 >
                   Subscribe
                 </button>
@@ -129,7 +125,7 @@ export const Footer = () => {
         <div className="mt-12 pt-8 border-t border-border/30">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 PureNFT. All rights reserved.
+              © {new Date().getFullYear()} PureNFT. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300">

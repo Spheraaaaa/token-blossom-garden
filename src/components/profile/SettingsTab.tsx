@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { Panel } from "./Panel";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,16 @@ import { Separator } from "@/components/ui/separator";
 interface SettingsTabProps {
   handleLogout: () => void;
 }
+
+const Section = ({ title, description, children }: { title: string; description: string; children: React.ReactNode }) => (
+  <div className="grid gap-5 py-7 first:pt-1 last:pb-1 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+    <div>
+      <h3 className="font-semibold text-foreground">{title}</h3>
+      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+    </div>
+    <div className="max-w-md">{children}</div>
+  </div>
+);
 
 export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
   const { toast } = useToast();
@@ -167,158 +178,107 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
     setPasswordStrength({ strength, text, color });
   }, [newPassword]);
 
+  const inputClass =
+    "h-11 rounded-xl border-border bg-background/60 pl-10 transition-colors hover:border-primary/30 focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-0";
+  const passwordsMismatch = Boolean(newPassword && confirmNewPassword && newPassword !== confirmNewPassword);
+
+
   return (
-    <Card className="bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl">
-      <CardHeader className="pb-6">
-        <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
-            <Settings className="w-5 h-5 text-primary" />
-          </div>
-          Account Settings
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="space-y-8">
-        {/* Account Security Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">
-              <Shield className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-foreground">Account Security</h3>
-              <p className="text-sm text-muted-foreground">Manage your account email and password settings</p>
-            </div>
-          </div>
-        </div>
-        
-        <Separator className="bg-border/30" />
-        
-        {/* Email Change Form */}
-        <form onSubmit={handleEmailChange} className="space-y-4">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-primary" />
-              <h4 className="font-medium text-foreground">Update Email Address</h4>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              A verification link will be sent to your new email address
-            </p>
-          </div>
-          
-          <div className="relative">
-            <Input 
-              type="email" 
-              value={newEmail} 
-              onChange={e => setNewEmail(e.target.value)} 
-              placeholder="Enter new email address" 
-              required 
-              className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl"
-            />
-            <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            
-            {emailSent && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                <CheckCircle2 className="w-4 h-4" />
+    <Panel title="Account Settings" description="Manage your account email and password settings">
+      <div className="divide-y divide-border">
+        <Section title="Update Email Address" description="A verification link will be sent to your new email address">
+          <form onSubmit={handleEmailChange} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="settings-new-email" className="text-sm font-medium text-foreground">New email</label>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input
+                  id="settings-new-email"
+                  type="email"
+                  value={newEmail}
+                  onChange={e => setNewEmail(e.target.value)}
+                  placeholder="Enter new email address"
+                  required
+                  className={inputClass}
+                />
               </div>
+            </div>
+
+            {emailSent && (
+              <p className="flex items-center gap-2 text-sm text-accent" role="status">
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                Verification email sent!
+              </p>
             )}
-          </div>
-          
-          {emailSent && (
-            <div className="text-sm text-green-500 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              Verification email sent!
-            </div>
-          )}
-          
-          <Button 
-            type="submit" 
-            disabled={isEmailLoading}
-            className="bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12 px-6"
-          >
-            {isEmailLoading ? "Processing..." : "Update Email"}
-          </Button>
-        </form>
-        
-        <Separator className="bg-border/30" />
-        
-        {/* Password Change Form */}
-        <form onSubmit={handlePasswordChange} className="space-y-6">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Key className="w-4 h-4 text-primary" />
-              <h4 className="font-medium text-foreground">Change Password</h4>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Please make sure your new password is at least 8 characters long
-            </p>
-          </div>
-          
-          <div className="space-y-4">
-            {/* Current Password */}
+
+            <Button type="submit" disabled={isEmailLoading} className="btn-brand h-11 rounded-full px-6 font-semibold">
+              {isEmailLoading ? "Processing..." : "Update Email"}
+            </Button>
+          </form>
+        </Section>
+
+        <Section title="Change Password" description="Please make sure your new password is at least 8 characters long">
+          <form onSubmit={handlePasswordChange} className="space-y-5">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-foreground">Current Password</label>
-                <button 
+                <label htmlFor="settings-current-password" className="text-sm font-medium text-foreground">Current Password</label>
+                <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="text-primary hover:text-primary/80 transition-colors text-sm flex items-center gap-1"
+                  className="flex items-center gap-1 rounded text-sm text-primary transition-colors hover:text-primary/80"
+                  aria-pressed={showPassword}
                 >
-                  {showPassword ? (
-                    <>
-                      <EyeOff className="w-3 h-3" />
-                      <span>Hide</span>
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-3 h-3" />
-                      <span>Show</span>
-                    </>
-                  )}
+                  {showPassword ? <EyeOff className="h-3.5 w-3.5" aria-hidden="true" /> : <Eye className="h-3.5 w-3.5" aria-hidden="true" />}
+                  <span>{showPassword ? "Hide" : "Show"}</span>
                 </button>
               </div>
               <div className="relative">
-                <Input 
+                <Key className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input
+                  id="settings-current-password"
                   type={showPassword ? "text" : "password"}
-                  value={currentPassword} 
-                  onChange={e => setCurrentPassword(e.target.value)} 
-                  required 
-                  className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl" 
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className={inputClass}
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
-            
-            {/* New Password */}
+
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">New Password</label>
+              <label htmlFor="settings-new-password" className="text-sm font-medium text-foreground">New Password</label>
               <div className="relative">
-                <Input 
+                <Key className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input
+                  id="settings-new-password"
                   type={showPassword ? "text" : "password"}
-                  value={newPassword} 
-                  onChange={e => setNewPassword(e.target.value)} 
-                  required 
-                  className="bg-muted/40 border-border/30 pl-10 h-12 rounded-xl" 
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  className={inputClass}
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
-              
+
               {newPassword && (
-                <div className="space-y-2">
+                <div className="space-y-1.5 pt-1">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Password strength:</span>
-                    <span className={`font-medium ${
-                      passwordStrength.text === "Weak" || passwordStrength.text === "Fair" 
-                        ? "text-orange-500" 
-                        : passwordStrength.text === "Good" 
-                          ? "text-yellow-500" 
-                          : "text-green-500"
-                    }`}>
+                    <span
+                      className={`font-medium ${
+                        passwordStrength.text === "Weak" || passwordStrength.text === "Fair"
+                          ? "text-orange-400"
+                          : passwordStrength.text === "Good"
+                            ? "text-yellow-400"
+                            : "text-accent"
+                      }`}
+                    >
                       {passwordStrength.text}
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden">
-                    <div 
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <div
                       className={`h-full ${passwordStrength.color} transition-all duration-300`}
                       style={{ width: `${(passwordStrength.strength / 4) * 100}%` }}
                     />
@@ -326,71 +286,68 @@ export const SettingsTab = ({ handleLogout }: SettingsTabProps) => {
                 </div>
               )}
             </div>
-            
-            {/* Confirm New Password */}
+
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Confirm New Password</label>
+              <label htmlFor="settings-confirm-password" className="text-sm font-medium text-foreground">Confirm New Password</label>
               <div className="relative">
-                <Input 
+                <Key className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input
+                  id="settings-confirm-password"
                   type={showPassword ? "text" : "password"}
-                  value={confirmNewPassword} 
-                  onChange={e => setConfirmNewPassword(e.target.value)} 
-                  required 
-                  className={`bg-muted/40 border-border/30 pl-10 pr-10 h-12 rounded-xl ${
-                    newPassword && confirmNewPassword && newPassword !== confirmNewPassword
-                      ? "border-red-500 focus:border-red-500"
-                      : ""
-                  }`} 
+                  value={confirmNewPassword}
+                  onChange={e => setConfirmNewPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  aria-invalid={passwordsMismatch}
+                  className={`${inputClass} pr-10 ${passwordsMismatch ? "border-red-500/70 focus-visible:border-red-500" : ""}`}
                 />
-                <Key className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                
                 {newPassword && confirmNewPassword && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    {newPassword === confirmNewPassword ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                    {passwordsMismatch ? (
+                      <X className="h-4 w-4 text-red-400" aria-hidden="true" />
                     ) : (
-                      <X className="w-4 h-4 text-red-500" />
+                      <CheckCircle2 className="h-4 w-4 text-accent" aria-hidden="true" />
                     )}
-                  </div>
+                  </span>
                 )}
               </div>
-              
-              {newPassword && confirmNewPassword && newPassword !== confirmNewPassword && (
-                <p className="text-sm text-red-500 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3" />
+
+              {passwordsMismatch && (
+                <p className="flex items-center gap-1.5 text-sm text-red-400" role="alert">
+                  <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
                   Passwords don't match
                 </p>
               )}
             </div>
-          </div>
-          
-          {passwordChanged && (
-            <div className="text-sm text-green-500 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              Password updated successfully!
-            </div>
-          )}
-          
-          <Button 
-            type="submit"
-            disabled={isLoading || (newPassword && confirmNewPassword && newPassword !== confirmNewPassword)} 
-            className="bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12 px-6"
+
+            {passwordChanged && (
+              <p className="flex items-center gap-2 text-sm text-accent" role="status">
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                Password updated successfully!
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isLoading || passwordsMismatch}
+              className="btn-brand h-11 rounded-full px-6 font-semibold"
+            >
+              {isLoading ? "Updating..." : "Update Password"}
+            </Button>
+          </form>
+        </Section>
+
+        <Section title="Logout" description="Sign out of your account on this device">
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="h-11 gap-2 rounded-full border-red-500/40 px-6 text-red-400 hover:bg-red-500/10 hover:text-red-300"
           >
-            {isLoading ? "Updating..." : "Update Password"}
+            <LogOut className="h-4 w-4" aria-hidden="true" />
+            <span>Logout</span>
           </Button>
-        </form>
-      </CardContent>
-      
-      <CardFooter className="pt-0 border-t border-border/30 mt-6">
-        <Button 
-          variant="destructive" 
-          onClick={handleLogout}
-          className="flex items-center gap-2"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Logout</span>
-        </Button>
-      </CardFooter>
-    </Card>
+        </Section>
+      </div>
+    </Panel>
   );
 };

@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Panel } from "@/components/profile/Panel";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ShoppingBag, ImageIcon, Info, Wallet, Grid3X3, GridIcon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -187,215 +188,150 @@ export const UserNFTCollection = () => {
   const hasListedNFTs = listedNFTs.length > 0;
   const hasUnlistedNFTs = unlistedNFTs.length > 0;
 
+  const gridClass =
+    viewMode === 'grid'
+      ? "grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3"
+      : "flex flex-col gap-4";
+
+  const renderCards = (items: typeof nfts) =>
+    items.map(nft => (
+      <NFTCard
+        key={nft.id}
+        id={nft.id}
+        name={nft.name}
+        image={nft.image}
+        price={nft.price}
+        creator={nft.creator}
+        owner_id={nft.owner_id}
+        for_sale={nft.for_sale}
+        marketplace={nft.marketplace}
+        isProfileView={true}
+        onCancelSale={handleCancelSale}
+        onUpdatePrice={handleUpdatePrice}
+        viewMode={viewMode}
+        onViewBids={() => handleViewBids(nft.id)}
+      />
+    ));
+
+  const toggleClass = (active: boolean) =>
+    `h-8 w-8 rounded-md ${active ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground'}`;
+
   return (
-    <div className="space-y-6 animate-in fade-in">
-      {/* Header with actions */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-2">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-primary/20 border border-primary/30">
-            <ShoppingBag className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-              My NFT Collection
-            </h2>
-            <p className="text-sm text-white/70 mt-0.5">
-              {nfts.length} {nfts.length === 1 ? 'item' : 'items'} in your collection
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* View mode toggle */}
-          <div className="flex items-center p-1 bg-[#2E2243]/80 rounded-lg border border-[#65539E]/30">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 rounded-md ${viewMode === 'grid' ? 'bg-[#65539E]/50 text-white' : 'text-purple-300/70'}`}
-              onClick={() => setViewMode('grid')}
-            >
-              <GridIcon className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 rounded-md ${viewMode === 'list' ? 'bg-[#65539E]/50 text-white' : 'text-purple-300/70'}`}
-              onClick={() => setViewMode('list')}
-            >
-              <Grid3X3 className="h-4 w-4" />
-            </Button>
-          </div>
-          
-          {/* Help tooltip */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="h-9 w-9 rounded-full border-[#65539E]/30 bg-[#65539E]/20 hover:bg-[#65539E]/30">
-                  <Info className="h-4 w-4 text-purple-300" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="left" className="max-w-[280px] p-4 bg-[#2E2243] border border-[#65539E]/30">
-                <div className="space-y-2">
-                  <p className="font-medium text-white">Managing Your NFTs:</p>
-                  <ul className="list-disc pl-4 text-sm space-y-1 text-purple-300/80">
-                    <li>Click <span className="text-purple-300 font-semibold">Edit</span> to edit the price of a listed NFT</li>
-                    <li>Click <span className="text-purple-300 font-semibold">Cancel</span> to cancel a listing</li>
-                    <li>Click <span className="text-purple-300 font-semibold">View Bids</span> to see offers on your NFTs</li>
-                    <li>Click on any NFT to view its details</li>
-                  </ul>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
-      
-      {/* Active bids popup */}
+    <div className="space-y-6">
       {showBids && selectedNft && (
-        <Card className="border-[#65539E]/20 bg-[#23193A] overflow-hidden relative rounded-xl animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600/50 via-primary/40 to-purple-600/50"></div>
-          <CardHeader className="flex flex-row items-center justify-between border-b border-[#65539E]/20 pb-4 relative z-10">
-            <div>
-              <CardTitle className="text-xl font-medium text-white">Active Bids</CardTitle>
-              <CardDescription className="text-purple-300/70">Review and accept bids for your NFT</CardDescription>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+        <Panel
+          title="Active Bids"
+          description="Review and accept bids for your NFT"
+          actions={
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowBids(false)}
-              className="text-purple-300/70 hover:text-white"
+              className="rounded-full text-muted-foreground hover:text-foreground"
             >
               Close
             </Button>
-          </CardHeader>
-          
-          <CardContent className="p-6 relative z-10">
-            <ActiveBids 
-              nftId={selectedNft}
-              ownerId={user?.id}
-              currentUserId={user?.id}
-              onBidAccepted={handleBidAccepted}
-              onBidDeclined={handleBidDeclined}
-            />
-          </CardContent>
-        </Card>
+          }
+          className="animate-in fade-in slide-in-from-top-2 duration-300"
+        >
+          <ActiveBids
+            nftId={selectedNft}
+            ownerId={user?.id}
+            currentUserId={user?.id}
+            onBidAccepted={handleBidAccepted}
+            onBidDeclined={handleBidDeclined}
+          />
+        </Panel>
       )}
-      
-      {/* Main content area */}
-      <div className="relative">
-        {isLoading ? (
-          <div className="bg-card/90 min-h-[300px] rounded-2xl border border-border/50 p-6 animate-fade-in">
-            <div className="flex items-center gap-3 mb-6">
-              <Skeleton className="h-10 w-10 rounded-md" />
-              <div className="space-y-2 w-1/3">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
+
+      <Panel
+        title="My NFT Collection"
+        description={`${nfts.length} ${nfts.length === 1 ? 'item' : 'items'} in your collection`}
+        actions={
+          <>
+            <div className="flex items-center rounded-lg border border-border bg-background/60 p-1" role="group" aria-label="View mode">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={toggleClass(viewMode === 'grid')}
+                onClick={() => setViewMode('grid')}
+                aria-label="Grid view"
+                aria-pressed={viewMode === 'grid'}
+              >
+                <GridIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={toggleClass(viewMode === 'list')}
+                onClick={() => setViewMode('list')}
+                aria-label="List view"
+                aria-pressed={viewMode === 'list'}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="space-y-3">
-                  <Skeleton className="h-40 w-full rounded-xl" />
-                  <Skeleton className="h-4 w-2/3" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-8 w-16 rounded-md" />
-                    <Skeleton className="h-8 w-16 rounded-md" />
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-10 w-10 rounded-full border-border bg-transparent hover:border-primary/40 hover:bg-primary/10"
+                    aria-label="How to manage your NFTs"
+                  >
+                    <Info className="h-4 w-4 text-primary" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-[280px] border border-border bg-popover p-4">
+                  <div className="space-y-2">
+                    <p className="font-medium text-foreground">Managing Your NFTs:</p>
+                    <ul className="list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+                      <li>Click <span className="font-semibold text-primary">Edit</span> to edit the price of a listed NFT</li>
+                      <li>Click <span className="font-semibold text-primary">Cancel</span> to cancel a listing</li>
+                      <li>Click <span className="font-semibold text-primary">View Bids</span> to see offers on your NFTs</li>
+                      <li>Click on any NFT to view its details</li>
+                    </ul>
                   </div>
-                </div>
-              ))}
-            </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </>
+        }
+      >
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3" aria-busy="true">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="space-y-3">
+                <Skeleton className="aspect-square w-full rounded-2xl" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-8 w-24 rounded-full" />
+              </div>
+            ))}
           </div>
         ) : nfts.length > 0 ? (
-          <div className="space-y-8">
-            {/* Listed NFTs section */}
+          <div className="divide-y divide-border">
             {hasListedNFTs && (
-              <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden rounded-2xl">
-                <CardHeader className="relative pb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-md bg-muted/30 border border-border/50">
-                      <Wallet className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                    <CardTitle className="text-xl font-semibold text-foreground">Currently Listed</CardTitle>
-                  </div>
-                  <CardDescription className="text-muted-foreground">NFTs you've put up for sale in the marketplace</CardDescription>
-                </CardHeader>
-                
-                <CardContent className="p-6">
-                  <div className={viewMode === 'grid' 
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5"
-                    : "flex flex-col gap-4 md:gap-5"
-                  }>
-                    {listedNFTs.map(nft => (
-                      <NFTCard
-                        key={nft.id}
-                        id={nft.id}
-                        name={nft.name}
-                        image={nft.image}
-                        price={nft.price}
-                        creator={nft.creator}
-                        owner_id={nft.owner_id}
-                        for_sale={nft.for_sale}
-                        marketplace={nft.marketplace}
-                        isProfileView={true}
-                        onCancelSale={handleCancelSale}
-                        onUpdatePrice={handleUpdatePrice}
-                        viewMode={viewMode}
-                        onViewBids={() => handleViewBids(nft.id)}
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <section className="pb-8 last:pb-0">
+                <h3 className="font-semibold text-foreground">Currently Listed</h3>
+                <p className="mt-1 text-sm text-muted-foreground">NFTs you've put up for sale in the marketplace</p>
+                <div className={`mt-5 ${gridClass}`}>{renderCards(listedNFTs)}</div>
+              </section>
             )}
-            
-            {/* Unlisted NFTs section */}
+
             {hasUnlistedNFTs && (
-              <Card className="border-border/50 shadow-xl transition-all duration-300 backdrop-blur-xl bg-card/90 overflow-hidden rounded-2xl">
-                <CardHeader className="relative pb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-md bg-muted/30 border border-border/50">
-                      <ImageIcon className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                    <CardTitle className="text-xl font-semibold text-foreground">Your Collection</CardTitle>
-                  </div>
-                  <CardDescription className="text-muted-foreground">NFTs you own that aren't currently listed for sale</CardDescription>
-                </CardHeader>
-                
-                <CardContent className="p-6">
-                  <div className={viewMode === 'grid' 
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5"
-                    : "flex flex-col gap-4 md:gap-5"
-                  }>
-                    {unlistedNFTs.map(nft => (
-                      <NFTCard
-                        key={nft.id}
-                        id={nft.id}
-                        name={nft.name}
-                        image={nft.image}
-                        price={nft.price}
-                        creator={nft.creator}
-                        owner_id={nft.owner_id}
-                        for_sale={nft.for_sale}
-                        marketplace={nft.marketplace}
-                        isProfileView={true}
-                        onCancelSale={handleCancelSale}
-                        onUpdatePrice={handleUpdatePrice}
-                        viewMode={viewMode}
-                        onViewBids={() => handleViewBids(nft.id)}
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <section className="pt-8 first:pt-0">
+                <h3 className="font-semibold text-foreground">Your Collection</h3>
+                <p className="mt-1 text-sm text-muted-foreground">NFTs you own that aren't currently listed for sale</p>
+                <div className={`mt-5 ${gridClass}`}>{renderCards(unlistedNFTs)}</div>
+              </section>
             )}
           </div>
         ) : (
-          <Card className="border-[#65539E]/20 bg-[#23193A] overflow-hidden relative p-6 rounded-xl">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600/50 via-primary/40 to-purple-600/50"></div>
-            <EmptyNFTState />
-          </Card>
+          <EmptyNFTState />
         )}
-      </div>
+      </Panel>
     </div>
   );
 };

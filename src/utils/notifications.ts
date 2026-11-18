@@ -39,20 +39,6 @@ export const notifications = {
       duration: 3000,
     }),
     
-    walletGenerated: () => toast({
-      title: "💰 Wallet created",
-      description: "Your wallet address has been generated and saved",
-      variant: "success",
-      duration: 4000,
-    }),
-    
-    trcWalletGenerated: () => toast({
-      title: "💎 USDT wallet ready",
-      description: "Your TRC-20 address for USDT has been created",
-      variant: "success",
-      duration: 4000,
-    }),
-    
     verificationSubmitted: () => toast({
       title: "📋 Documents submitted",
       description: "Your documents have been sent for verification. Expect results within 24 hours",

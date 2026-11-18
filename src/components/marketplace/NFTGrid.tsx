@@ -149,7 +149,7 @@ export const NFTGrid = ({
     return (
       <div className="flex flex-col items-center justify-center min-h-[200px] space-y-4">
         <div className="relative">
-          <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-md animate-pulse" />
+          <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/20 rounded-full blur-md animate-pulse" />
           <Loader2 className="h-8 w-8 animate-[spin_2s_linear_infinite] text-primary relative" />
         </div>
         <p className="text-muted-foreground animate-pulse">Loading NFTs...</p>
@@ -161,7 +161,7 @@ export const NFTGrid = ({
     return (
       <div className="text-center py-16 space-y-4 animate-fade-in">
         <div className="relative inline-block">
-          <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-md" />
+          <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/20 rounded-full blur-md" />
           <Search className="w-12 h-12 text-muted-foreground" />
         </div>
         <p className="text-2xl font-semibold text-muted-foreground">No NFTs found</p>
@@ -171,16 +171,16 @@ export const NFTGrid = ({
   }
 
   return (
-    <div className="relative px-1 md:px-2">
+    <div className="relative -mx-2">
       <ScrollArea 
         ref={scrollAreaRef}
         className={`marketplace-scroll-area ${
           isMobile 
             ? 'h-[calc(100vh-240px)] max-h-[700px]' 
             : 'h-[calc(100vh-320px)] max-h-[800px]'
-        } rounded-xl md:rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm shadow-sm relative`}
+        } relative`}
       >
-        <div className="p-2 md:p-4 lg:p-6">
+        <div className="p-2">
           <div 
             ref={gridRef}
             className={`grid gap-3 marketplace-nft-grid ${
@@ -203,7 +203,7 @@ export const NFTGrid = ({
                   {/* Disable glow effects on mobile for performance */}
                   {!isMobile && (
                     <div 
-                      className="card-glow absolute -inset-2 bg-gradient-to-r from-primary/20 via-purple-500/20 to-cyan-500/20 rounded-xl blur-lg opacity-0"
+                      className="card-glow absolute -inset-2 bg-gradient-to-r from-primary/20 via-primary/20 to-cyan-500/20 rounded-xl blur-lg opacity-0"
                       style={{
                         background: "linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2), hsl(var(--secondary) / 0.2))"
                       }}
@@ -218,7 +218,7 @@ export const NFTGrid = ({
           {isFetchingNextPage && (
             <div className="flex justify-center py-12">
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-md animate-pulse" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/20 rounded-full blur-md animate-pulse" />
                 <Loader2 className="h-8 w-8 animate-[spin_2s_linear_infinite] text-primary relative" />
               </div>
             </div>

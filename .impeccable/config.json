@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "src/components/BrandLogo.tsx"
+        ],
+        "createdAt": "2026-11-18T10:30:33.465Z",
+        "reason": "user confirmed: asked for the PureNFT wordmark with a green-violet gradient like their reference logo"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "*",
+        "files": [
+          "src/index.css"
+        ],
+        "createdAt": "2026-11-18T10:30:33.551Z",
+        "reason": "bounceIn keyframe was rewritten to a plain 16px rise with ease-out-expo; name kept for the ScrollAnimation prop API, no bounce remains"
+      }
+    ]
+  }
+}

@@ -381,7 +381,7 @@ export const NFTCard = ({
                     {name}
                   </h3>
                   
-                  <p className="text-xs text-purple-300/80">
+                  <p className="text-xs text-primary/80">
                     by {creator}
                   </p>
                   
@@ -492,8 +492,8 @@ export const NFTCard = ({
         <AlertDialogContent className="bg-card border border-border/50">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xl font-semibold">Cancel NFT Sale</AlertDialogTitle>
-            <AlertDialogDescription className="text-purple-300/80">
-              Are you sure you want to cancel the sale of <span className="text-purple-300 font-medium">"{name}"</span>? This will remove the NFT from all marketplaces.
+            <AlertDialogDescription className="text-primary/80">
+              Are you sure you want to cancel the sale of <span className="text-primary font-medium">"{name}"</span>? This will remove the NFT from all marketplaces.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">

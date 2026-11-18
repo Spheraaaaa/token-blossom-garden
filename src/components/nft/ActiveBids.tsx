@@ -311,7 +311,7 @@ const [loadingStage, setLoadingStage] = useState(0);
             
             <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-primary to-purple-400 transition-all duration-300"
+                className="h-full bg-gradient-to-r from-primary to-primary transition-all duration-300"
                 style={{ width: `${loadingProgress}%` }}
               />
             </div>

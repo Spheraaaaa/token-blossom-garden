@@ -20,9 +20,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         exchange: "bg-blue-500/20 text-blue-500 hover:bg-blue-500/30",
-        circular: "rounded-full bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white shadow-md shadow-purple-600/20 border border-purple-500/50 transition-transform",
-        circularSmall: "rounded-full bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white shadow-md shadow-purple-600/20 border border-purple-500/50 transition-transform hover:rotate-180",
-        gradient: "bg-gradient-to-r from-purple-600/20 to-primary/20 border border-primary/10 text-primary hover:from-purple-600/30 hover:to-primary/30 transition-colors relative overflow-hidden group",
+        circular: "btn-brand rounded-full border border-primary/30",
+        circularSmall: "rounded-full bg-gradient-to-r from-primary to-primary hover:from-primary hover:to-primary text-white shadow-md shadow-primary/20 border border-primary/50 transition-transform hover:rotate-180",
+        gradient: "btn-brand rounded-full font-semibold relative overflow-hidden group",
         gradientDestructive: "bg-gradient-to-r from-destructive/20 to-red-500/20 border border-destructive/10 text-destructive hover:from-destructive/30 hover:to-red-500/30 transition-colors relative overflow-hidden group",
         // Transaction button styles
         glassDeposit: "bg-gradient-to-br from-emerald-600/90 to-green-700/90 text-white border border-green-500/20 hover:from-emerald-500/90 hover:to-green-600/90 shadow-lg shadow-green-900/20 hover:shadow-green-900/30 transition-all duration-300 backdrop-blur-sm rounded-xl overflow-hidden relative",
@@ -30,7 +30,7 @@ const buttonVariants = cva(
         depositButton: "bg-gradient-to-br from-green-600 to-emerald-700 text-white border border-green-500/30 shadow-lg shadow-green-800/20 hover:shadow-green-800/30 hover:from-green-700 hover:to-emerald-800 transition-all duration-300",
         withdrawButton: "bg-gradient-to-br from-orange-600 to-red-700 text-white border border-red-500/30 shadow-lg shadow-red-800/20 hover:shadow-red-800/30 hover:from-orange-700 hover:to-red-800 transition-all duration-300",
         // NFT action buttons
-        nftAction: "bg-[#65539E]/30 border border-[#65539E]/30 text-white hover:bg-[#65539E]/50 transition-all duration-300 shadow",
+        nftAction: "bg-primary/30 border border-primary/30 text-white hover:bg-primary/50 transition-all duration-300 shadow",
         nftSell: "bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/20 text-emerald-400 hover:from-emerald-500/30 hover:to-green-500/30 transition-all duration-300 shadow hover:shadow-emerald-500/20",
         nftCancel: "bg-gradient-to-r from-red-500/20 to-destructive/20 border border-red-500/20 text-red-400 hover:from-red-500/30 hover:to-destructive/30 transition-all duration-300 shadow hover:shadow-red-500/20",
       },

@@ -17,7 +17,6 @@ interface ExchangeDialogProps {
   userId: string | undefined;
   setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
   exchangeType?: 'regular' | 'frozen';
-  openTrcWalletModal?: () => void;
 }
 
 export const ExchangeDialog = ({ 
@@ -26,8 +25,7 @@ export const ExchangeDialog = ({
   userData, 
   userId,
   setTransactions,
-  exchangeType = 'regular',
-  openTrcWalletModal
+  exchangeType = 'regular'
 }: ExchangeDialogProps) => {
   const { 
     exchangeAmount,
@@ -57,17 +55,6 @@ export const ExchangeDialog = ({
 
   const onExchangeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Require TRC-20 address when exchanging ETH → USDT (for both available and frozen balances)
-    if (exchangeDirection === 'eth_to_usdt' && !userData?.trc20_address) {
-      toast({
-        title: 'USDT TRC-20 wallet required',
-        description: 'Please generate a USDT TRC-20 address to proceed with the exchange.',
-        variant: 'destructive'
-      });
-      setIsOpen(false);
-      openTrcWalletModal?.();
-      return;
-    }
     const success = await handleExchange(e);
     if (success) {
       setIsOpen(false);
@@ -87,12 +74,12 @@ export const ExchangeDialog = ({
       };
     }
     return {
-      gradient: 'from-[#261E57]/95 via-[#201347]/95 to-[#1E1245]/95',
-      headerGradient: 'from-purple-300 to-indigo-300',
+      gradient: 'from-card/95 via-card/95 to-background/95',
+      headerGradient: 'from-primary to-accent',
       accentColor: 'purple',
-      buttonGradient: 'from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600',
-      glow: 'shadow-[0_0_35px_rgba(147,51,234,0.25)]',
-      topBorder: 'from-purple-600/70 via-purple-500/50 to-purple-600/70'
+      buttonGradient: 'from-primary to-accent hover:from-primary/90 hover:to-accent/90',
+      glow: 'shadow-lg',
+      topBorder: 'from-primary/70 via-accent/50 to-primary/70'
     };
   };
 

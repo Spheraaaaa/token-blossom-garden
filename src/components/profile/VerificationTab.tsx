@@ -1,9 +1,8 @@
-
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, User, Home, BadgeCheck, CheckCircle2, HelpCircle } from "lucide-react";
+import { User, Home, BadgeCheck, CheckCircle2, HelpCircle, Check } from "lucide-react";
 import type { UserData } from "@/types/user";
+import { Panel } from "./Panel";
 
 interface VerificationTabProps {
   userData: UserData | null;
@@ -11,130 +10,131 @@ interface VerificationTabProps {
   continueKYCVerification: () => void;
 }
 
+type StepState = "done" | "current" | "upcoming";
+
+const Step = ({
+  icon: Icon,
+  title,
+  state,
+  isLast,
+  children,
+}: {
+  icon: React.ElementType;
+  title: string;
+  state: StepState;
+  isLast?: boolean;
+  children?: React.ReactNode;
+}) => (
+  <li className="relative flex gap-4 pb-8 last:pb-0">
+    {!isLast && (
+      <span
+        aria-hidden="true"
+        className={`absolute left-5 top-11 h-[calc(100%-2.75rem)] w-px ${state === "done" ? "bg-accent/50" : "bg-border"}`}
+      />
+    )}
+    <span
+      className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full ring-1 ring-inset ${
+        state === "done"
+          ? "bg-accent/15 text-accent ring-accent/30"
+          : state === "current"
+            ? "bg-primary/15 text-primary ring-primary/40"
+            : "bg-muted text-muted-foreground ring-border"
+      }`}
+    >
+      {state === "done" ? <Check className="h-5 w-5" aria-hidden="true" /> : <Icon className="h-5 w-5" aria-hidden="true" />}
+    </span>
+    <div className="min-w-0 flex-1 pt-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className={`font-semibold ${state === "upcoming" ? "text-muted-foreground" : "text-foreground"}`}>{title}</h3>
+        {state === "current" && (
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">Current step</span>
+        )}
+      </div>
+      {children && <div className="mt-3">{children}</div>}
+    </div>
+  </li>
+);
+
 export const VerificationTab = ({ userData, startKYCVerification, continueKYCVerification }: VerificationTabProps) => {
+  const status = userData?.kyc_status;
+  const verified = Boolean(userData?.verified);
+
+  const statusText = verified
+    ? "Verified"
+    : status === "not_started"
+      ? "Not Started"
+      : status === "identity_submitted"
+        ? "Identity Submitted"
+        : status === "under_review"
+          ? "Under Review"
+          : "Not Verified";
+
+  const identityState: StepState = status === "not_started" ? "current" : "done";
+  const addressState: StepState =
+    status === "identity_submitted" ? "current" : status === "under_review" || verified ? "done" : "upcoming";
+  const completeState: StepState = verified ? "done" : "upcoming";
+
   return (
-    <Card className="bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg rounded-2xl">
-      <CardHeader className="pb-6">
-        <CardTitle className="text-2xl font-bold text-foreground flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
-            <Shield className="w-5 h-5 text-primary" />
-          </div>
-          KYC Verification
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="space-y-8">
-        {/* Status Overview */}
-        <div className="p-6 rounded-2xl bg-muted/20 border border-border/20">
-          <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-xl ${userData?.verified ? 'bg-green-500/10 border border-green-500/20' : 'bg-orange-500/10 border border-orange-500/20'}`}>
-              {userData?.verified ? <CheckCircle2 className="w-8 h-8 text-green-500" /> : <HelpCircle className="w-8 h-8 text-orange-500" />}
-            </div>
-            <div className="space-y-2 flex-1">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold">
-                  KYC Status:{' '}
-                  <span className={`${userData?.verified ? 'text-green-500' : 'text-orange-500'}`}>
-                    {userData?.verified ? 'Verified' : 
-                     userData?.kyc_status === 'not_started' ? 'Not Started' : 
-                     userData?.kyc_status === 'identity_submitted' ? 'Identity Submitted' : 
-                     userData?.kyc_status === 'under_review' ? 'Under Review' : 'Not Verified'}
-                  </span>
-                </h3>
-                {userData?.kyc_status === 'under_review' && (
-                  <span className="text-sm text-orange-500 font-medium">80%</span>
-                )}
-              </div>
-              <p className="text-muted-foreground">
-                {userData?.verified ? 'Your account is fully verified and has access to all features' : 
-                 userData?.kyc_status === 'under_review' ? 'Final verification check in progress' : 
-                 'Complete verification to unlock all features'}
-              </p>
-              
-              {userData?.kyc_status === 'under_review' && (
-                <div className="mt-4 w-full bg-orange-500/20 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-orange-500 to-orange-400 transition-all duration-1000" 
-                    style={{ width: '80%' }} 
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Verification Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Identity Step */}
-          <div className={`p-6 rounded-2xl border transition-all duration-300 ${
-            userData?.kyc_status === 'not_started' ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border/20'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-2 rounded-xl ${
-                userData?.kyc_status === 'not_started' ? 'bg-primary/20' : 'bg-green-500/20'
-              }`}>
-                <User className={`w-5 h-5 ${
-                  userData?.kyc_status === 'not_started' ? 'text-primary' : 'text-green-500'
-                }`} />
-              </div>
-              <h3 className="font-bold text-foreground">Identity</h3>
-            </div>
-            
-            {userData?.kyc_status === 'not_started' && (
-              <Button 
-                onClick={startKYCVerification} 
-                className="w-full bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12"
-              >
-                Start Verification
-              </Button>
+    <Panel title="KYC Verification">
+      <div className="flex items-start gap-4">
+        <span
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ring-1 ring-inset ${
+            verified ? "bg-accent/10 ring-accent/25" : "bg-orange-500/10 ring-orange-500/25"
+          }`}
+        >
+          {verified ? (
+            <CheckCircle2 className="h-6 w-6 text-accent" aria-hidden="true" />
+          ) : (
+            <HelpCircle className="h-6 w-6 text-orange-400" aria-hidden="true" />
+          )}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-lg font-semibold text-foreground">
+              KYC Status: <span className={verified ? "text-accent" : "text-orange-400"}>{statusText}</span>
+            </p>
+            {status === "under_review" && (
+              <span className="text-sm font-medium tabular-nums text-orange-400">80%</span>
             )}
           </div>
-
-          {/* Address Step */}
-          <div className={`p-6 rounded-2xl border transition-all duration-300 ${
-            userData?.kyc_status === 'identity_submitted' ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border/20'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-2 rounded-xl ${
-                userData?.kyc_status === 'identity_submitted' ? 'bg-primary/20' : 
-                userData?.kyc_status === 'under_review' || userData?.verified ? 'bg-green-500/20' : 'bg-muted/20'
-              }`}>
-                <Home className={`w-5 h-5 ${
-                  userData?.kyc_status === 'identity_submitted' ? 'text-primary' : 
-                  userData?.kyc_status === 'under_review' || userData?.verified ? 'text-green-500' : 'text-muted-foreground'
-                }`} />
-              </div>
-              <h3 className="font-bold text-foreground">Address</h3>
+          <p className="mt-1 text-muted-foreground">
+            {verified
+              ? "Your account is fully verified and has access to all features"
+              : status === "under_review"
+                ? "Final verification check in progress"
+                : "Complete verification to unlock all features"}
+          </p>
+          {status === "under_review" && (
+            <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-orange-500/15">
+              <div className="h-full rounded-full bg-orange-400 transition-all duration-1000" style={{ width: "80%" }} />
             </div>
-            
-            {(userData?.kyc_status === 'identity_submitted' || userData?.kyc_status === 'not_started') && (
-              <Button 
-                onClick={continueKYCVerification} 
-                className="w-full bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/90 hover:via-accent/90 hover:to-secondary/90 text-white font-medium rounded-xl h-12" 
-                disabled={userData?.kyc_status === 'not_started'}
-              >
-                Submit Address Documents
-              </Button>
-            )}
-          </div>
-
-          {/* Verification Complete Step */}
-          <div className={`p-6 rounded-2xl border transition-all duration-300 ${
-            userData?.verified ? 'bg-green-500/5 border-green-500/20' : 'bg-muted/10 border-border/20'
-          }`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-2 rounded-xl ${
-                userData?.verified ? 'bg-green-500/20' : 'bg-muted/20'
-              }`}>
-                <BadgeCheck className={`w-5 h-5 ${
-                  userData?.verified ? 'text-green-500' : 'text-muted-foreground'
-                }`} />
-              </div>
-              <h3 className="font-bold text-foreground">Verification</h3>
-            </div>
-          </div>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      <ol className="mt-8 border-t border-border pt-8">
+        <Step icon={User} title="Identity" state={identityState}>
+          {status === "not_started" && (
+            <Button onClick={startKYCVerification} className="btn-brand h-11 rounded-full px-6 font-semibold">
+              Start Verification
+            </Button>
+          )}
+        </Step>
+
+        <Step icon={Home} title="Address" state={addressState}>
+          {(status === "identity_submitted" || status === "not_started") && (
+            <Button
+              onClick={continueKYCVerification}
+              className="btn-brand h-11 rounded-full px-6 font-semibold disabled:opacity-40"
+              disabled={status === "not_started"}
+            >
+              Submit Address Documents
+            </Button>
+          )}
+        </Step>
+
+        <Step icon={BadgeCheck} title="Verification" state={completeState} isLast />
+      </ol>
+    </Panel>
   );
 };

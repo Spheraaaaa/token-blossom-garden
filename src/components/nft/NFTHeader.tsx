@@ -11,7 +11,7 @@ export const NFTHeader = ({ name, creator }: NFTHeaderProps) => {
   return (
     <div className="space-y-6">
       <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
-        <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+        <span className="text-foreground">
           {name}
         </span>
       </h1>

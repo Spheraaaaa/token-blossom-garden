@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { BrandMark } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { useNavigate, Link } from "react-router-dom";
-import { KeyRound, Mail, User, Shield } from "lucide-react";
+import { KeyRound, Mail, User } from "lucide-react";
 import { useSecureAuth } from "@/hooks/useSecureAuth";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -130,22 +131,18 @@ const Register = () => {
   if (user) return null;
 
   return (
-    <main className="min-h-screen relative flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background/98 to-background/95">
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background/98 to-background/95">
       {/* Clean background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 to-accent/1" />
       
       {/* Elegant floating elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/8 via-accent/5 to-transparent rounded-full blur-3xl animate-simple-float opacity-60" />
-        <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/6 via-secondary/4 to-transparent rounded-full blur-2xl animate-simple-float opacity-40" style={{ animationDelay: '2s' }} />
       </div>
 
       <Card className="relative z-10 w-full sm:max-w-md border border-border/30 bg-card/80 backdrop-blur-xl shadow-2xl hover:shadow-primary/10 transition-all duration-500 rounded-2xl max-h-[90vh] overflow-y-auto">
         <CardHeader className="text-center space-y-4 pb-8">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center mb-4">
-            <Shield className="w-8 h-8 text-primary" />
-          </div>
-          <CardTitle className="text-3xl font-black tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <BrandMark className="mx-auto mb-2 h-14 w-14 drop-shadow-[0_8px_20px_rgba(139,92,246,0.35)]" />
+          <CardTitle className="text-3xl font-black tracking-tight text-foreground">
             Create Account
           </CardTitle>
           <CardDescription className="text-base text-muted-foreground/80">
@@ -292,7 +289,7 @@ const Register = () => {
         </CardContent>
         <CardFooter />
       </Card>
-    </main>
+    </div>
   );
 
 };

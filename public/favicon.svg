@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 3 35 45">
+  <defs>
+    <linearGradient id="g" x1="14" y1="6" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#34E5A0"/>
+      <stop offset="0.55" stop-color="#3FB8C9"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <linearGradient id="f" x1="14" y1="31" x2="22" y2="45" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6D28D9" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="s" x1="28" y1="6" x2="28" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path fill-rule="evenodd" fill="url(#g)" d="M18 6 H29 C37 6 42 12 42 19 C42 26 37 31 29 31 H22 V37 C22 41 19 44 14 45 V10 C14 7.8 15.8 6 18 6 Z M22 13 H29 C32 13 34.5 15.5 34.5 18.5 C34.5 21.5 32 24 29 24 H22 Z"/>
+  <path fill="url(#f)" d="M14 31 H22 V37 C22 41 19 44 14 45 Z"/>
+  <path fill="url(#s)" d="M18 6 H29 C35 6 39.5 9.5 41.2 14 H14.4 V10 C14 7.8 15.8 6 18 6 Z"/>
+</svg>

@@ -149,7 +149,7 @@ const NFTDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative">
       {/* Clean background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 to-accent/1" />
       
       {/* Elegant floating elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
@@ -211,7 +211,7 @@ const NFTDetail = () => {
                         alt="ETH"
                         className="h-6 w-6"
                       />
-                      <span className="text-3xl font-black bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                      <span className="text-3xl font-black text-primary">
                         {nft.price} ETH
                       </span>
                     </div>
@@ -241,7 +241,7 @@ const NFTDetail = () => {
             <motion.div variants={itemVariants} className="flex gap-4">
               {isOwned ? (
                 <div className="w-full py-5 px-8 text-center bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 rounded-2xl backdrop-blur-xl shadow-lg">
-                  <p className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                  <p className="text-xl font-bold text-primary">
                     You own this NFT
                   </p>
                 </div>

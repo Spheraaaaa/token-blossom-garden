@@ -13,6 +13,37 @@ interface WalletBalanceProps {
   setExchangeType: (type: 'regular' | 'frozen') => void;
 }
 
+const AssetRow = ({
+  icon,
+  name,
+  symbol,
+  amount,
+  tone = "default",
+}: {
+  icon: React.ReactNode;
+  name: string;
+  symbol: string;
+  amount: string;
+  tone?: "default" | "hold";
+}) => (
+  <div className="flex items-center justify-between gap-4 py-4">
+    <div className="flex items-center gap-3">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">{icon}</span>
+      <div>
+        <p className="font-medium text-foreground">{symbol}</p>
+        <p className="text-sm text-muted-foreground">{name}</p>
+      </div>
+    </div>
+    <p
+      className={`font-display text-xl font-semibold tabular-nums ${
+        tone === "hold" ? "text-orange-400" : "text-foreground"
+      }`}
+    >
+      {amount}
+    </p>
+  </div>
+);
+
 export const WalletBalance = ({ 
   userData, 
   frozenBalanceDetails, 
@@ -66,172 +97,115 @@ export const WalletBalance = ({
     return decTrim ? `${int}.${decTrim}` : int;
   };
 
+  const hasHold = Number(userData?.frozen_balance || 0) > 0;
+
+
+  const usdtIcon = (
+    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-usdt text-xs font-bold text-white">$</span>
+  );
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+    <div className={`grid gap-8 ${hasHold ? "md:grid-cols-2 md:gap-0 md:divide-x md:divide-border" : ""}`}>
       {/* Available Balance */}
-      <div className="balance-card rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
-        <div className="p-4 md:p-6">
-          <div className="flex items-center gap-3 mb-4 md:mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl flex items-center justify-center">
-              <Wallet className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-foreground">Available Balance</h3>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {/* ETH Balance */}
-            <div className="p-4 rounded-xl bg-muted/20 border border-border/20 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10">
-                  <img src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" alt="ETH" className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Ethereum</p>
-                  <p className="font-medium text-foreground">ETH</p>
-                </div>
-              </div>
-              <p className="text-lg font-bold text-foreground">
-                {formatEth(userData?.balance)}
-              </p>
-            </div>
-
-            {/* Exchange Button */}
-            <div className="flex justify-center">
-              <Button 
-                variant="outline"
-                size="icon"
-                className="h-10 w-10 rounded-full border-border/30 hover:border-primary/20 hover:bg-primary/5" 
-                onClick={handleRegularExchange}
-                aria-label="Exchange currencies"
-              >
-                <ArrowRightLeft className="h-4 w-4" />
-              </Button>
-            </div>
-
-            {/* USDT Balance */}
-            <div className="p-4 rounded-xl bg-muted/20 border border-border/20 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-500/10">
-                  <div className="h-6 w-6 flex items-center justify-center bg-green-500 rounded-full text-white font-bold text-sm">
-                    $
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tether</p>
-                  <p className="font-medium text-foreground">USDT</p>
-                </div>
-              </div>
-              <p className="text-lg font-bold text-foreground">
-                {Number(userData?.usdt_balance || 0).toFixed(2)}
-              </p>
-            </div>
-          </div>
+      <div className={hasHold ? "md:pr-7" : ""}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <Wallet className="h-4 w-4 text-primary" aria-hidden="true" />
+            Available Balance
+          </h3>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-1.5 rounded-full px-3 text-primary hover:bg-primary/10 hover:text-primary"
+            onClick={handleRegularExchange}
+            aria-label="Exchange currencies"
+          >
+            <ArrowRightLeft className="h-3.5 w-3.5" />
+            Exchange
+          </Button>
+        </div>
+        <div className="mt-2 divide-y divide-border">
+          <AssetRow
+            icon={<img src="/lovable-uploads/7dcd0dff-e904-44df-813e-caf5a6160621.png" alt="" className="h-6 w-6" />}
+            name="Ethereum"
+            symbol="ETH"
+            amount={formatEth(userData?.balance)}
+          />
+          <AssetRow
+            icon={usdtIcon}
+            name="Tether"
+            symbol="USDT"
+            amount={Number(userData?.usdt_balance || 0).toFixed(2)}
+          />
         </div>
       </div>
 
-      {/* Frozen Balance */}
-      {Number(userData?.frozen_balance || 0) > 0 && (
-        <div className="balance-card rounded-2xl border border-border/30 bg-card/60 backdrop-blur-xl shadow-lg">
-          <div className="p-4 md:p-6">
-            <div className="flex items-center justify-between mb-4 md:mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center">
-                  <LockIcon className="h-5 w-5 text-orange-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-foreground">Hold Balance</h3>
-                </div>
-              </div>
-              <Button 
-                variant="outline" 
+      {/* Hold Balance */}
+      {hasHold && (
+        <div className="md:pl-7">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <LockIcon className="h-4 w-4 text-orange-400" aria-hidden="true" />
+              Hold Balance
+            </h3>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
                 size="sm"
-                className="border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400" 
+                className="h-8 gap-1.5 rounded-full px-3 text-orange-400 hover:bg-orange-500/10 hover:text-orange-300"
+                onClick={handleFrozenExchange}
+                aria-label="Exchange frozen currencies"
+              >
+                <ArrowRightLeft className="h-3.5 w-3.5" />
+                Exchange
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 rounded-full px-3 text-muted-foreground hover:bg-muted hover:text-foreground"
                 onClick={() => setShowFrozenDetails(!showFrozenDetails)}
+                aria-expanded={showFrozenDetails}
               >
                 {showFrozenDetails ? "Hide" : "Show"} Details
               </Button>
             </div>
-
-            <div className="space-y-4">
-              {/* Frozen ETH */}
-              <div className="p-4 rounded-xl bg-muted/20 border border-border/20 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-orange-500/10">
-                    <img alt="ETH" className="h-6 w-6" src="/lovable-uploads/7d7924fa-23c2-468e-b4e6-439e242022e9.png" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Ethereum</p>
-                    <p className="font-medium text-foreground">ETH</p>
-                  </div>
-                </div>
-                <p className="text-lg font-bold text-orange-400">
-                  {formatEth(userData?.frozen_balance)}
-                </p>
-              </div>
-
-              {/* Exchange Button */}
-              <div className="flex justify-center">
-                <Button 
-                  variant="outline"
-                  size="icon"
-                  className="h-10 w-10 rounded-full border-orange-500/30 hover:border-orange-500/40 hover:bg-orange-500/10" 
-                  onClick={handleFrozenExchange}
-                  aria-label="Exchange frozen currencies"
-                >
-                  <ArrowRightLeft className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Frozen USDT */}
-              <div className="p-4 rounded-xl bg-muted/20 border border-border/20 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-green-500/10">
-                    <div className="h-6 w-6 flex items-center justify-center bg-green-500 rounded-full text-white font-bold text-sm">
-                      $
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Tether</p>
-                    <p className="font-medium text-foreground">USDT</p>
-                  </div>
-                </div>
-                <p className="text-lg font-bold text-orange-400">
-                  {Number(userData?.frozen_usdt_balance || 0).toFixed(2)}
-                </p>
-              </div>
-
-              {/* Frozen Details */}
-              {showFrozenDetails && frozenBalanceDetails.length > 0 && (
-                <div className="mt-6 pt-6 space-y-3 border-t border-border/30">
-                  <p className="text-orange-400 font-medium text-sm">Upcoming Releases:</p>
-                  <div className="max-h-[150px] overflow-y-auto space-y-2">
-                    {frozenBalanceDetails.map(item => (
-                      <div key={item.transaction_id} className="p-3 rounded-xl bg-muted/20 border border-orange-500/20">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <LockIcon className="h-4 w-4 text-orange-400" />
-                            <span className="text-sm text-orange-300 font-medium">
-                              {item.days_left} days remaining
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-orange-400 font-bold">
-                              {item.amount.toFixed(2)}
-                            </span>
-                            <span className="text-xs text-orange-400/70">
-                              {item.unfreeze_date}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
+          <div className="mt-2 divide-y divide-border">
+            <AssetRow
+              icon={<img alt="" className="h-6 w-6" src="/lovable-uploads/7d7924fa-23c2-468e-b4e6-439e242022e9.png" />}
+              name="Ethereum"
+              symbol="ETH"
+              amount={formatEth(userData?.frozen_balance)}
+              tone="hold"
+            />
+            <AssetRow
+              icon={usdtIcon}
+              name="Tether"
+              symbol="USDT"
+              amount={Number(userData?.frozen_usdt_balance || 0).toFixed(2)}
+              tone="hold"
+            />
+          </div>
+
+          {showFrozenDetails && frozenBalanceDetails.length > 0 && (
+            <div className="mt-4 rounded-xl bg-orange-500/5 p-4 ring-1 ring-inset ring-orange-500/15">
+              <p className="text-sm font-medium text-orange-400">Upcoming Releases:</p>
+              <ul className="mt-3 max-h-[150px] space-y-2 overflow-y-auto">
+                {frozenBalanceDetails.map((item) => (
+                  <li key={item.transaction_id} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="flex items-center gap-2 text-orange-300">
+                      <LockIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                      {item.days_left} days remaining
+                    </span>
+                    <span className="flex items-center gap-3">
+                      <span className="font-semibold tabular-nums text-orange-400">{item.amount.toFixed(2)}</span>
+                      <span className="text-xs text-orange-400/70">{item.unfreeze_date}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

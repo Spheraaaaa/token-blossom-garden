@@ -114,7 +114,7 @@ const KYCIdentityDialog = ({ isOpen, onClose, onSuccess, userId }: KYCIdentityDi
               disabled={isUploading}
               onClick={handleUploadClick}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md" />
               <Upload className="w-4 h-4 mr-2 relative z-10" />
               <span className="relative z-10">{isUploading ? "Uploading..." : "Upload Document"}</span>
             </Button>

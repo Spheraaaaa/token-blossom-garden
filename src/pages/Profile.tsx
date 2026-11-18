@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { notifications } from "@/utils/notifications";
-import { User, Settings, Wallet, ArrowUpCircle, Shield, ShoppingBag } from "lucide-react";
+import { User, Settings, Wallet, Shield, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import WalletAddressModal from "@/components/WalletAddressModal";
 import { supabase } from "@/lib/supabase";
 import { useSecureAuth } from "@/hooks/useSecureAuth";
 import FraudWarningDialog from "@/components/FraudWarningDialog";
@@ -16,8 +15,6 @@ import { SettingsTab } from "@/components/profile/SettingsTab";
 import { WalletTab } from "@/components/profile/WalletTab";
 import { VerificationTab } from "@/components/profile/VerificationTab";
 import { ExchangeDialog } from "@/components/profile/ExchangeDialog";
-import { WithdrawalErrorModal } from "@/components/WithdrawalErrorModal";
-import { useProfileAnimations } from "@/hooks/useProfileAnimations";
 import { useBlockedStatus } from "@/hooks/useBlockedStatus";
 import BlockedPage from "@/pages/BlockedPage";
 import type { UserData, Transaction, TransactionTotals, FrozenBalanceInfo } from "@/types/user";
@@ -29,8 +26,6 @@ const Profile = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const [isTrcWalletModalOpen, setIsTrcWalletModalOpen] = useState(false);
   const [isFraudWarningOpen, setIsFraudWarningOpen] = useState(false);
   const [transactionTotals, setTransactionTotals] = useState<TransactionTotals>({
     total_deposits: 0,
@@ -42,20 +37,15 @@ const Profile = () => {
   const [showFrozenDetails, setShowFrozenDetails] = useState(false);
   const [isExchangeDialogOpen, setIsExchangeDialogOpen] = useState(false);
   const [exchangeType, setExchangeType] = useState<'regular' | 'frozen'>('regular');
-  const [isWithdrawalErrorModalOpen, setIsWithdrawalErrorModalOpen] = useState(false);
   const PAGE_SIZE = 20;
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingNext, setIsFetchingNext] = useState(false);
 
-  const { 
-    profileRef, 
-    headerRef, 
-    tabsRef, 
-    addToCardsRef, 
-    animateTabChange, 
-    animateCardHover, 
-    animateButtonPress 
-  } = useProfileAnimations();
+  useEffect(() => {
+    const prev = document.title;
+    document.title = "Profile — PureNFT";
+    return () => { document.title = prev; };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -131,38 +121,6 @@ const Profile = () => {
     setIsAddressDialogOpen(true);
   };
 
-  const handleGenerateWalletAddress = async (address: string) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ wallet_address: address })
-        .eq('user_id', userData?.id);
-      
-      if (error) throw error;
-      
-      setUserData(prev => prev ? { ...prev, wallet_address: address } : null);
-      
-      notifications.success.walletGenerated();
-    } catch (error) {
-      console.error("Error saving wallet address:", error);
-      notifications.error.walletGenerationFailed();
-    }
-  };
-
-  const handleGenerateTrcWalletAddress = async (address: string) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ trc20_address: address })
-        .eq('user_id', userData?.id);
-      if (error) throw error;
-      setUserData(prev => prev ? { ...prev, trc20_address: address } : null);
-      notifications.success.trcWalletGenerated();
-    } catch (error) {
-      console.error('Error saving TRC-20 address:', error);
-      notifications.error.walletGenerationFailed();
-    }
-  };
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !userData?.id) return;
@@ -289,11 +247,6 @@ const Profile = () => {
           console.log("Setting user data with avatar:", userData.avatar_url);
           setUserData(userData);
           
-          // Check if user should see withdrawal error modal
-          if (profileData?.show_withdrawal_error_modal) {
-            setIsWithdrawalErrorModalOpen(true);
-          }
-          
           if (transactionsData) { setHasMore(transactionsData.length === PAGE_SIZE);
             setTransactions(transactionsData.map(tx => {
               const dateObj = new Date(tx.created_at);
@@ -395,20 +348,16 @@ const Profile = () => {
 
   if (isLoading || isBlockedLoading) {
     return (
-      <div className="container mx-auto py-8 px-4 mt-16">
-        <div className="max-w-4xl mx-auto">
-          {/* Optimized loading skeleton that doesn't block LCP */}
-          <div className="space-y-8">
-            <div className="relative p-8 rounded-2xl bg-card/60 backdrop-blur-xl border border-border/30 shadow-lg">
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <div className="w-24 h-24 rounded-2xl bg-primary/10 animate-pulse" />
-                <div className="space-y-3">
-                  <div className="h-8 w-48 bg-primary/10 rounded animate-pulse" />
-                  <div className="h-4 w-32 bg-muted/20 rounded animate-pulse" />
-                </div>
-              </div>
+      <div className="container mx-auto px-4 sm:px-6 pt-8 pb-16 md:pt-12" aria-busy="true">
+        <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10">
+          <div className="flex items-center gap-4 lg:flex-col lg:items-start">
+            <div className="h-16 w-16 rounded-2xl bg-muted animate-pulse lg:h-20 lg:w-20" />
+            <div className="space-y-2">
+              <div className="h-6 w-36 rounded-md bg-muted animate-pulse" />
+              <div className="h-4 w-28 rounded-md bg-muted/70 animate-pulse" />
             </div>
           </div>
+          <div className="h-[420px] rounded-2xl border border-border bg-card animate-pulse" />
         </div>
       </div>
     );
@@ -418,144 +367,113 @@ const Profile = () => {
   if (isBlocked) {
     return <BlockedPage reason={blockedReason} />;
   }
-  
-  return (
-    <div 
-      ref={profileRef} 
-      className="container mx-auto py-8 px-4 mt-16 min-h-screen bg-gradient-to-br from-background via-background/98 to-background/95 relative"
-    >
-      {/* Clean background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/2 via-accent/1 to-secondary/1" />
-      
-      {/* Elegant floating elements with GSAP classes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="floating-bg absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-gradient-to-br from-primary/4 via-accent/3 to-transparent rounded-full blur-3xl opacity-30" />
-        <div className="floating-bg absolute bottom-1/4 right-1/4 w-[200px] h-[200px] bg-gradient-to-br from-accent/3 via-secondary/2 to-transparent rounded-full blur-2xl opacity-25" />
-      </div>
-      
-      <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        <div ref={headerRef}>
-          <ProfileHeader userData={userData} handleAvatarUpload={handleAvatarUpload} />
-        </div>
 
-        <div ref={tabsRef}>
-          <Tabs defaultValue="profile" className="w-full">
-            <TabsList className="w-full responsive-tabs-list p-1.5 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/30 shadow-lg mb-6">
-              {["profile", "settings", "wallet", "verification", "nft"].map(tab => (
-                <TabsTrigger 
-                  key={tab} 
-                  value={tab} 
-                  className="responsive-tab-trigger flex items-center justify-center gap-1 transition-all duration-300 data-[state=active]:bg-primary/20 data-[state=active]:text-primary relative overflow-hidden group py-2"
-                  onClick={(e) => {
-                    const tabContent = document.querySelector(`[data-state="active"][data-orientation="horizontal"]`);
-                    if (tabContent) animateTabChange(tabContent as HTMLElement);
-                  }}
+  const tabs = [
+    { value: "profile", label: "Profile", icon: User },
+    { value: "settings", label: "Settings", icon: Settings },
+    { value: "wallet", label: "Wallet", icon: Wallet },
+    { value: "verification", label: "Verification", icon: Shield },
+    { value: "nft", label: "NFTs", icon: ShoppingBag },
+  ];
+
+  const tabContentClass =
+    "mt-0 focus-visible:outline-none data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-bottom-1 data-[state=active]:duration-300";
+
+  return (
+    <div className="relative min-h-screen">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[360px]"
+        style={{ background: "radial-gradient(50% 100% at 20% 0%, hsl(263 84% 74% / 0.10), transparent 70%)" }}
+      />
+
+      <div className="container relative mx-auto px-4 sm:px-6 pt-8 pb-16 md:pt-12">
+        <Tabs defaultValue="profile" className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10">
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <ProfileHeader userData={userData} handleAvatarUpload={handleAvatarUpload} />
+
+            <TabsList
+              aria-label="Account sections"
+              className="mt-6 flex h-auto w-full flex-nowrap justify-start gap-1 overflow-x-auto rounded-xl border border-border bg-card p-1 lg:flex-col lg:items-stretch lg:overflow-visible lg:border-0 lg:bg-transparent lg:p-0"
+            >
+              {tabs.map(({ value, label, icon: Icon }) => (
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="shrink-0 justify-start gap-2.5 rounded-lg px-3.5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none lg:w-full"
                 >
-                  {tab === "profile" && <User className="w-4 h-4" />}
-                  {tab === "settings" && <Settings className="w-4 h-4" />}
-                  {tab === "wallet" && <Wallet className="w-4 h-4" />}
-                  {tab === "verification" && <Shield className="w-4 h-4" />}
-                  {tab === "nft" && <ShoppingBag className="w-4 h-4" />}
-                  <span className="relative z-10 capitalize hidden sm:inline">{tab}</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  {label}
                 </TabsTrigger>
               ))}
             </TabsList>
+          </aside>
 
-            <TabsContent value="profile">
-              <div ref={addToCardsRef}>
-                <ProfileInfo userData={userData} setIsWalletModalOpen={setIsWalletModalOpen} setIsTrcWalletModalOpen={setIsTrcWalletModalOpen} />
-              </div>
+          <div className="min-w-0">
+            <TabsContent value="profile" className={tabContentClass}>
+              <ProfileInfo userData={userData} />
             </TabsContent>
 
-            <TabsContent value="settings">
-              <div ref={addToCardsRef}>
-                <SettingsTab handleLogout={handleLogout} />
-              </div>
+            <TabsContent value="settings" className={tabContentClass}>
+              <SettingsTab handleLogout={handleLogout} />
             </TabsContent>
 
-            <TabsContent value="wallet">
-              <div ref={addToCardsRef}>
-                <WalletTab 
-                  userData={userData}
-                  frozenBalanceDetails={frozenBalanceDetails}
-                  showFrozenDetails={showFrozenDetails}
-                  setShowFrozenDetails={setShowFrozenDetails}
-                  setIsExchangeDialogOpen={setIsExchangeDialogOpen}
-                  transactions={transactions}
-                  setExchangeType={setExchangeType}
-                  onLoadMore={fetchMoreTransactions}
-                  isFetchingNext={isFetchingNext}
-                  hasMore={hasMore}
-                />
-              </div>
+            <TabsContent value="wallet" className={tabContentClass}>
+              <WalletTab
+                userData={userData}
+                frozenBalanceDetails={frozenBalanceDetails}
+                showFrozenDetails={showFrozenDetails}
+                setShowFrozenDetails={setShowFrozenDetails}
+                setIsExchangeDialogOpen={setIsExchangeDialogOpen}
+                transactions={transactions}
+                setExchangeType={setExchangeType}
+                onLoadMore={fetchMoreTransactions}
+                isFetchingNext={isFetchingNext}
+                hasMore={hasMore}
+              />
             </TabsContent>
 
-            <TabsContent value="verification">
-              <div ref={addToCardsRef}>
-                <VerificationTab 
-                  userData={userData}
-                  startKYCVerification={startKYCVerification}
-                  continueKYCVerification={continueKYCVerification}
-                />
-              </div>
+            <TabsContent value="verification" className={tabContentClass}>
+              <VerificationTab
+                userData={userData}
+                startKYCVerification={startKYCVerification}
+                continueKYCVerification={continueKYCVerification}
+              />
             </TabsContent>
 
-            <TabsContent value="nft">
-              <div ref={addToCardsRef}>
-                <UserNFTCollection />
-              </div>
+            <TabsContent value="nft" className={tabContentClass}>
+              <UserNFTCollection />
             </TabsContent>
-          </Tabs>
-        </div>
+          </div>
+        </Tabs>
       </div>
 
-      <WalletAddressModal 
-        isOpen={isWalletModalOpen} 
-        onClose={() => setIsWalletModalOpen(false)} 
-        onGenerated={handleGenerateWalletAddress} 
+      <FraudWarningDialog
+        isOpen={isFraudWarningOpen}
+        onClose={() => setIsFraudWarningOpen(false)}
       />
 
-      <WalletAddressModal 
-        isOpen={isTrcWalletModalOpen} 
-        onClose={() => setIsTrcWalletModalOpen(false)} 
-        onGenerated={handleGenerateTrcWalletAddress}
-        network="trc20"
+      <KYCIdentityDialog
+        isOpen={isIdentityDialogOpen}
+        onClose={() => setIsIdentityDialogOpen(false)}
+        onSuccess={handleIdentitySuccess}
+        userId={user?.id || ''}
       />
 
-      <FraudWarningDialog 
-        isOpen={isFraudWarningOpen} 
-        onClose={() => setIsFraudWarningOpen(false)} 
+      <KYCAddressDialog
+        isOpen={isAddressDialogOpen}
+        onClose={handleAddressClose}
+        onSuccess={handleAddressSuccess}
+        userId={user?.id || ''}
       />
 
-      <KYCIdentityDialog 
-        isOpen={isIdentityDialogOpen} 
-        onClose={() => setIsIdentityDialogOpen(false)} 
-        onSuccess={handleIdentitySuccess} 
-        userId={user?.id || ''} 
-      />
-
-      <KYCAddressDialog 
-        isOpen={isAddressDialogOpen} 
-        onClose={handleAddressClose} 
-        onSuccess={handleAddressSuccess} 
-        userId={user?.id || ''} 
-      />
-
-      <ExchangeDialog 
+      <ExchangeDialog
         isOpen={isExchangeDialogOpen}
         setIsOpen={setIsExchangeDialogOpen}
         userData={userData}
         userId={user?.id}
         setTransactions={setTransactions}
         exchangeType={exchangeType}
-        openTrcWalletModal={() => setIsTrcWalletModalOpen(true)}
-      />
-
-      <WithdrawalErrorModal 
-        isOpen={isWithdrawalErrorModalOpen}
-        onClose={() => setIsWithdrawalErrorModalOpen(false)}
-        userLogin={userData?.login}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useUserBalances } from "@/hooks/useBalances";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { fetchExchangeRate } from "@/utils/exchangeRate";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,11 +76,8 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-12 md:h-14">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-to-br from-primary to-accent shadow-md transition-all duration-200 group-hover:scale-105" />
-            <span className="text-lg md:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-200">
-              PureNFT
-            </span>
+          <Link to="/" className="flex items-center group" aria-label="PureNFT home">
+            <BrandLogo />
           </Link>
 
           {/* Desktop Navigation */}
@@ -129,7 +127,7 @@ export const Header = () => {
             {/* Profile/Login Button */}
             {user ? (
               <Link to="/profile">
-                <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                <Button className="btn-brand font-medium px-4 py-2 rounded-xl transition-all duration-200">
                   <User className="w-4 h-4 mr-2" />
                   {user.user_metadata.login || 'ADMIN'}
                 </Button>
@@ -219,7 +217,7 @@ export const Header = () => {
             {/* Mobile Profile/Login Button */}
             {user ? (
               <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium py-3 rounded-xl shadow-md">
+                <Button className="btn-brand w-full font-medium py-3 rounded-xl">
                   <User className="w-4 h-4 mr-2" />
                   {user.user_metadata.login || 'ADMIN'}
                 </Button>
