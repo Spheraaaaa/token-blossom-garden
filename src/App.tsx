@@ -22,6 +22,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,8 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/deposit" element={<Deposit />} />
               <Route path="/withdraw" element={<Withdraw />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
             </Routes>
           </main>
           <Footer />

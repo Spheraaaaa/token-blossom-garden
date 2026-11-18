@@ -1,0 +1,31 @@
+# Run on the server with:
+#   docker compose --env-file deploy.env up -d --build
+# deploy.env holds DOMAIN=your-domain (see deploy.env.example).
+services:
+  # The site itself: static build served by nginx (only reachable through Caddy)
+  web:
+    build: .
+    image: purenft-web
+    restart: unless-stopped
+
+  # Front door: listens on 80/443 and obtains HTTPS certificates automatically.
+  # Without DOMAIN the site is served over plain HTTP on port 80.
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

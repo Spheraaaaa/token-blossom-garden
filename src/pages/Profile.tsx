@@ -415,7 +415,7 @@ const Profile = () => {
             </TabsContent>
 
             <TabsContent value="settings" className={tabContentClass}>
-              <SettingsTab handleLogout={handleLogout} />
+              <SettingsTab handleLogout={handleLogout} currentEmail={userData?.email} />
             </TabsContent>
 
             <TabsContent value="wallet" className={tabContentClass}>
